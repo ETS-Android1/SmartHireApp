@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "86137734197",
+    "firebase_url": "https://hireapp-c84a4.firebaseio.com",
+    "project_id": "hireapp-c84a4",
+    "storage_bucket": "hireapp-c84a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:86137734197:android:bfacd8addcc9ea0c92dd7c",
+        "android_client_info": {
+          "package_name": "com.example.hire"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "86137734197-g6beenjbu088d3qi5qc3oi41i78pcr3n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCPMs2Fr0UMNEljor_eGxkaL4Ts-BLx_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "86137734197-g6beenjbu088d3qi5qc3oi41i78pcr3n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
