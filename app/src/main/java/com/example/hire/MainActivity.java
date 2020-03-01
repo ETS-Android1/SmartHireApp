@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +22,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.ml.vision.FirebaseVision;
+/*import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;*/
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -148,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void detectTextFromImage() {
 
-        final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
+        /*final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
         firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
             @Override
@@ -163,11 +167,33 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d("Error :", e.getMessage());
             }
-        });
+        });*/
+
+        TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+
+        if(!recognizer.isOperational()){
+            Toast.makeText(MainActivity.this, "Error :" , Toast.LENGTH_SHORT).show();
+        }else{
+            Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
+            SparseArray<TextBlock> items = recognizer.detect(frame);
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<items.size();i++){
+                TextBlock myItems = items.valueAt(i);
+                sb.append(myItems.getValue());
+                sb.append("\n");
+            }
+            /*Intent intent1 = new Intent(this,ExtractedText.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("BundleText",sb.toString());
+            intent1.putExtra("EXTRACTED_TEXT",bundle);
+            startActivity(intent1);*/
+            textViewExtractedText.setText(sb.toString());
+
+        }
 
     }
 
-    private void displayTextFromImage(FirebaseVisionText firebaseVisionText) {
+    /*private void displayTextFromImage(FirebaseVisionText firebaseVisionText) {
 
         List<FirebaseVisionText.Block> blockList = firebaseVisionText.getBlocks();
         if (blockList.size() == 0) {
@@ -178,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 textViewExtractedText.setText(text);
             }
         }
-    }
+    }*/
 
     private File getImageFile() throws Exception {
 

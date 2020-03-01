@@ -13,16 +13,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@+id/textViewExtractedText"
+    <ScrollView
+        android:id="@+id/scrollViewExtractedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Take a picture"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewResume" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonExtract"
+        tools:layout_editor_absoluteX="137dp">
+
+        <TextView
+            android:id="@+id/textViewExtractedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false"
+            android:text="Take a picture"
+            android:textSize="18sp" />
+    </ScrollView>
 
     <Button
         android:id="@+id/buttonCamera"
@@ -33,26 +40,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewExtractedText" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewResume" />
 
     <Button
         android:id="@+id/buttonExtract"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="Extract"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCamera" />
+        app:layout_constraintEnd_toEndOf="@+id/buttonDisplay"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/buttonDisplay"
+        app:layout_constraintTop_toBottomOf="@+id/buttonDisplay" />
 
     <Button
         android:id="@+id/buttonDisplay"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="Display"
-        app:layout_constraintBottom_toTopOf="@+id/buttonExtract"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/buttonCamera"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/buttonCamera"
         app:layout_constraintTop_toBottomOf="@+id/buttonCamera" />
 </androidx.constraintlayout.widget.ConstraintLayout>
