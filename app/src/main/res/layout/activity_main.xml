@@ -42,7 +42,7 @@
         android:text="Camera"
         app:layout_constraintEnd_toStartOf="@+id/buttonExtract"
         app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toEndOf="@+id/buttonDisplay"
+        app:layout_constraintStart_toEndOf="@+id/buttonGallery"
         app:layout_constraintTop_toBottomOf="@+id/imageViewResume" />
 
     <Button
@@ -57,12 +57,12 @@
         app:layout_constraintTop_toTopOf="@+id/buttonCamera" />
 
     <Button
-        android:id="@+id/buttonDisplay"
+        android:id="@+id/buttonGallery"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:text="Display"
+        android:text="Gallery"
         app:layout_constraintBottom_toBottomOf="@+id/buttonCamera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/buttonCamera" />

@@ -4,17 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,8 +23,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 /*import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -39,14 +34,12 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button buttonCamera, buttonExtract, buttonDisplay;
+    private Button buttonCamera, buttonExtract, buttonGallery;
     private ImageView imageViewResume;
     private TextView textViewExtractedText;
     private Bitmap imageBitmap;
@@ -56,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
     Uri imageUri;
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int STORAGE_REQUEST_CODE = 400;
+    private static final int IMAGE_PICK_GALLERY_CODE = 1000;
     String camaraPermission[];
+    String storagePermission[];
 
 
     @Override
@@ -66,12 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
         buttonCamera = findViewById(R.id.buttonCamera);
         buttonExtract = findViewById(R.id.buttonExtract);
-        buttonDisplay = findViewById(R.id.buttonDisplay);
+        buttonGallery = findViewById(R.id.buttonGallery);
         imageViewResume = findViewById(R.id.imageViewResume);
         textViewExtractedText = findViewById(R.id.textViewExtractedText);
 
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        //camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,12 +91,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonDisplay.setOnClickListener(new View.OnClickListener() {
+        buttonGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayImage();
+                if(!checkStoragePermission()){
+                    requestStoragePermission();
+                }else{
+                    pickGallery();
+                }
+                //displayImage();
             }
         });
+    }
+
+    private void pickGallery() {
+        //intent to pick image from gallery
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        //set intent tyoe to image
+        intent.setType("image/*");
+        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
+
+    }
+
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result;
     }
 
     private void requestCameraPermission() {
@@ -166,6 +184,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            if(requestCode==IMAGE_PICK_GALLERY_CODE){
+                CropImage.activity(data.getData())
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+            }
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 //Bundle extras = data.getExtras();
                 //imageBitmap = (Bitmap) extras.get("data");
@@ -176,8 +199,6 @@ public class MainActivity extends AppCompatActivity {
 
                 //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
                 //imageViewResume.setImageBitmap(imageBitmap);
-            } else {
-                Toast.makeText(MainActivity.this, "Error 111:", Toast.LENGTH_SHORT).show();
             }
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -278,7 +299,22 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this,"Permission Denied!" ,Toast.LENGTH_SHORT).show();
                     }
                 }
+                break;
+
+            case STORAGE_REQUEST_CODE:
+                if(grantResults.length>0){
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    Log.d("myTag"," Storage:"+writeStorageAccepted);
+                    if(writeStorageAccepted){
+                        pickGallery();
+                    }else{
+                        Toast.makeText(MainActivity.this,"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+
         }
+
     }
 
 }
