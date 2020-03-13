@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -23,23 +22,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/*import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;*/
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.text.Annotation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
+
+//import edu.stanford.nlp.pipeline.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button buttonCamera, buttonExtract, buttonGallery;
+    private Button buttonCamera, buttonExtract, buttonGallery,buttonPost;
+    private RequestQueue mQueue;
     private ImageView imageViewResume;
     private TextView textViewExtractedText;
     private Bitmap imageBitmap;
@@ -62,11 +72,21 @@ public class MainActivity extends AppCompatActivity {
         buttonCamera = findViewById(R.id.buttonCamera);
         buttonExtract = findViewById(R.id.buttonExtract);
         buttonGallery = findViewById(R.id.buttonGallery);
+        buttonPost=findViewById(R.id.buttonPost);
         imageViewResume = findViewById(R.id.imageViewResume);
         textViewExtractedText = findViewById(R.id.textViewExtractedText);
 
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        mQueue = Volley.newRequestQueue(this);
+
+        buttonPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jsonParse();
+            }
+        });
 
         buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +122,91 @@ public class MainActivity extends AppCompatActivity {
                 //displayImage();
             }
         });
+    }
+
+    private void jsonParse() {
+
+        String url = "https://api.myjson.com/bins/n66m2";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("users");
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject users = jsonArray.getJSONObject(i);
+
+                        String first = users.getString("name");
+                        textViewExtractedText.append(first);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+
+            }
+        });
+
+        mQueue.add(request);
+
+        /*Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+        StanfordCoreNLPClient pipeline = new StanfordCoreNLPClient(props, "http://localhost", 9000, 2);
+// read some text in the text variable
+        String text = "Tan Hao Yang"; // Add your text here!
+// create an empty Annotation just with the given text
+        Annotation document = new Annotation(text);
+// run all Annotators on this text
+        pipeline.annotate((Iterable<edu.stanford.nlp.pipeline.Annotation>) document);*/
+
+    }
+
+    // Post Request For JSONObject
+    public void postData() {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        JSONObject object = new JSONObject();
+        JSONObject object1 = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+
+
+        try {
+            object1.put("id","100");
+            object1.put("name","yujune");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        jsonArray.put(object1);
+
+
+        try {
+            //input your API parameters
+            object.put("users",object1);
+            //object.put("name","yujune");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Enter the correct url for your api service site
+        String url = "https://api.myjson.com/bins/n66m2";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        textViewExtractedText.setText("String Response : "+ response.toString());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textViewExtractedText.setText("Error getting response");
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void pickGallery() {
