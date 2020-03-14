@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     private void Submit(String data)
     {
         final String savedata= data;
-        String URL="http://192.168.0.187:9000";
+        String URL="http://192.168.0.187:9000/?properties%3D%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cpos%22%2C%22outputFormat%22%3A%22json%22%7D";
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -199,8 +200,9 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject objres=new JSONObject(response);
-                    Toast.makeText(getApplicationContext(),"Sucess"+objres.toString(),Toast.LENGTH_LONG).show();
-                    textViewExtractedText.append("Pass All");
+                    //Toast.makeText(getApplicationContext(),"Sucess"+objres.toString(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Posted",Toast.LENGTH_LONG).show();
+                    textViewExtractedText.setText(objres.toString());
 
 
 
@@ -220,13 +222,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }){
             @Override
-            protected Map<String, String> getParams(){
+            protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                params.put("sentences",savedata);
-
+                params.put("sentences","Hey Setapak");
                 return params;
             }
 
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
         };
         requestQueue.add(stringRequest);
     }

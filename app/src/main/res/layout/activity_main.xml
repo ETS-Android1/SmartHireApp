@@ -18,9 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#FFEB3B"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+        app:layout_constraintTop_toBottomOf="@+id/buttonPost">
 
         <TextView
             android:id="@+id/textViewExtractedText"
@@ -78,10 +80,10 @@
         android:id="@+id/buttonPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Post"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollViewExtractedText" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonCamera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
