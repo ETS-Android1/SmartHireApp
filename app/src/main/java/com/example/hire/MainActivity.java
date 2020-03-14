@@ -27,6 +27,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
@@ -39,10 +40,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.text.Annotation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 //import edu.stanford.nlp.pipeline.*;
 
@@ -84,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
         buttonPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jsonParse();
+                //jsonParse();
+                Submit("Tan Hao Yang lives in Seetapak");
             }
         });
 
@@ -170,31 +172,8 @@ public class MainActivity extends AppCompatActivity {
     // Post Request For JSONObject
     public void postData() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        JSONObject object = new JSONObject();
-        JSONObject object1 = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-
-
-
-        try {
-            object1.put("id","100");
-            object1.put("name","yujune");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        jsonArray.put(object1);
-
-
-        try {
-            //input your API parameters
-            object.put("users",object1);
-            //object.put("name","yujune");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // Enter the correct url for your api service site
         String url = "https://api.myjson.com/bins/n66m2";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -207,6 +186,49 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonObjectRequest);
+    }
+
+    private void Submit(String data)
+    {
+        final String savedata= data;
+        String URL="http://192.168.0.187:9000";
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject objres=new JSONObject(response);
+                    Toast.makeText(getApplicationContext(),"Sucess"+objres.toString(),Toast.LENGTH_LONG).show();
+                    textViewExtractedText.append("Pass All");
+
+
+
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(),"Server Error",Toast.LENGTH_LONG).show();
+
+                }
+                //Log.i("VOLLEY", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Toast.makeText(getApplicationContext(), "Errorrr: "+error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                //Log.v("VOLLEY", error.toString());
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("sentences",savedata);
+
+                return params;
+            }
+
+        };
+        requestQueue.add(stringRequest);
     }
 
     private void pickGallery() {
