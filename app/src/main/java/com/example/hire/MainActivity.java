@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //jsonParse();
                 //Submit("Tan Hao Yang lives in Seetapak");
-                postData();
+                //postData();
             }
         });
 
@@ -172,11 +172,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Post Request For JSONObject
-    public void postData() {
+    public void postData(String extractedText) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
         try {
-            object.put("parameters","Tan Shin Ning is studying in Tunku Abdul Rahman University College and she is having class at 10a.m.");
+            object.put("parameters",extractedText);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -411,7 +411,9 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString("BundleText",sb.toString());
             intent1.putExtra("EXTRACTED_TEXT",bundle);
             startActivity(intent1);*/
-            textViewExtractedText.setText(sb.toString());
+            String extractedTextFromImage = sb.toString();
+            //textViewExtractedText.setText(extractedTextFromImage);
+            postData(extractedTextFromImage);
 
         }
 
