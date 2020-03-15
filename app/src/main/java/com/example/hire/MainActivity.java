@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //jsonParse();
-                Submit("Tan Hao Yang lives in Seetapak");
+                //Submit("Tan Hao Yang lives in Seetapak");
+                postData();
             }
         });
 
@@ -173,8 +174,14 @@ public class MainActivity extends AppCompatActivity {
     // Post Request For JSONObject
     public void postData() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        String url = "https://api.myjson.com/bins/n66m2";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,null,
+        JSONObject object = new JSONObject();
+        try {
+            object.put("senetencess","Tan Hao Yang is studying at Tunku Abdul Rahman University College.");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = "http://192.168.0.187:9000/?properties%3D%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C%22outputFormat%22%3A%22json%22%7D";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -192,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     private void Submit(String data)
     {
         final String savedata= data;
-        String URL="http://192.168.0.187:9000/?properties%3D%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cpos%22%2C%22outputFormat%22%3A%22json%22%7D";
+        String URL="http://192.168.0.187:9000/?properties%3D%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C%22outputFormat%22%3A%22json%22%7D";
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -224,14 +231,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
-                params.put("sentences","Hey Setapak");
+                params.put("sentences","Tan Hao Yang is studying at Tunku Abdul Rahman University College.");
                 return params;
             }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type","application/x-www-form-urlencoded");
+                params.put("Content-Type","application/json");
                 return params;
             }
         };
