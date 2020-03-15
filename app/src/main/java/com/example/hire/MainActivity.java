@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
         try {
-            object.put("senetencess","Tan Hao Yang is studying at Tunku Abdul Rahman University College.");
+            object.put("parameters","Tan Shin Ning is studying in Tunku Abdul Rahman University College and she is having class at 10a.m.");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -185,12 +185,29 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        textViewExtractedText.setText("String Response : "+ response.toString());
+
+                        try {
+                            JSONArray ary = response.getJSONArray("sentences");
+                            JSONObject obj1 = ary.getJSONObject(0);
+                            JSONArray ary2 =  obj1.getJSONArray("entitymentions");
+                            textViewExtractedText.setText("--- Result ---\n\n");
+                            for(int i=0;i<ary2.length();i++){
+                                JSONObject obj2 = ary2.getJSONObject(i);
+                                String namedEntity = obj2.getString("ner");
+                                String namedEntityResult = obj2.getString("text");
+                                textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                textViewExtractedText.setText("Error getting response");
+                Toast.makeText(getApplicationContext(),"Error getting response",Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
