@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
     String camaraPermission[];
     String storagePermission[];
 
+    String phoneNumber="";
+    String email="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,15 +234,23 @@ public class MainActivity extends AppCompatActivity {
                             Pattern emailPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
                             Matcher matcher = pattern.matcher(str);
                             while (matcher.find()) {
-                                textViewExtractedText.append("Phone Number: "+matcher.group(0)+"\n");
+                                phoneNumber = matcher.group(0);
+                                textViewExtractedText.append("Phone Number: "+phoneNumber+"\n");
+
                             }
 
                             Matcher emailMatcher = emailPattern.matcher(str);
                             if (emailMatcher.find()) {
-                                textViewExtractedText.append("Email: "+emailMatcher.group(0)+"\n");
+                                email = emailMatcher.group(0);
+                                textViewExtractedText.append("Email: "+email+"\n");
                             }
 
-
+                            Intent intent1 = new Intent(getApplicationContext(),ExtractedText.class);
+                            //Bundle bundle = new Bundle();
+                            //bundle.putString("BundleText",sb.toString());
+                            intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
+                            intent1.putExtra("EXTRACTED_EMAIL",email);
+                            startActivity(intent1);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -252,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(jsonObjectRequest);
+
     }
 
     private void Submit(String data)

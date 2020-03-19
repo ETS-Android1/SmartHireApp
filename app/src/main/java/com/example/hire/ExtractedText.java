@@ -10,21 +10,25 @@ import org.w3c.dom.Text;
 
 public class ExtractedText extends AppCompatActivity {
 
-    TextView textViewExtractedText;
+    TextView textViewExtractedPhone;
+    TextView textViewExtractedEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extracted_text);
-        textViewExtractedText = findViewById(R.id.textViewExtractedText);
+        textViewExtractedPhone = findViewById(R.id.textViewExtractedPhone);
+        textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
 
-        //String extractedText = getIntent().getStringExtra("EXTRACTED_TEXT");
+        String extractedPhoneNumber = getIntent().getStringExtra("EXTRACTED_PHONE");
+        String extractedEmail = getIntent().getStringExtra("EXTRACTED_EMAIL");
+        textViewExtractedPhone.setText(extractedPhoneNumber);
+        textViewExtractedEmail.setText(extractedEmail);
+
+        //Intent i = getIntent();
+        //Bundle b =i.getBundleExtra("EXTRACTED_TEXT");
+        //String extractedText = b.getString("BundleText");
         //textViewExtractedText.setText(extractedText);
-
-        Intent i = getIntent();
-        Bundle b =i.getBundleExtra("EXTRACTED_TEXT");
-        String extractedText = b.getString("BundleText");
-        textViewExtractedText.setText(extractedText);
 
     }
 }
