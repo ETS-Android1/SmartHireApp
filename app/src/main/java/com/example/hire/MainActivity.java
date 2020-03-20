@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Post Request For JSONObject
     public void postData(final String extractedText) {
+        extractedName="";
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
         extractedText.replaceAll("\n","");
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject obj2 = ary2.getJSONObject(i);
                                 String namedEntity = obj2.getString("ner");
                                 String namedEntityResult = obj2.getString("text");
-                                if(namedEntity.equals("PERSON")){
+                                if(namedEntity.equals("PERSON") && extractedName.isEmpty()){
                                     extractedName = namedEntityResult;
                                 }
                                 textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
@@ -240,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                             Pattern pattern = Pattern.compile("\\d{3}-?\\d{7,8}");
                             Pattern emailPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
                             Matcher matcher = pattern.matcher(str);
-                            while (matcher.find()) {
+                            if (matcher.find()) {
                                 phoneNumber = matcher.group(0);
                                 textViewExtractedText.append("Phone Number: "+phoneNumber+"\n");
 
@@ -472,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString("BundleText",sb.toString());
             intent1.putExtra("EXTRACTED_TEXT",bundle);
             startActivity(intent1);*/
-            extractedTextFromImage = sb.toString().replaceAll("\n"," ");;
+            extractedTextFromImage = sb.toString().replaceAll("\n"," \n ");;
 
             //textViewExtractedText.setText(extractedTextFromImage);
             postData(extractedTextFromImage);
