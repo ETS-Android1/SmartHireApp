@@ -12,6 +12,7 @@ public class ExtractedText extends AppCompatActivity {
 
     TextView textViewExtractedPhone;
     TextView textViewExtractedEmail;
+    TextView textViewExtractedName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,11 +20,14 @@ public class ExtractedText extends AppCompatActivity {
         setContentView(R.layout.activity_extracted_text);
         textViewExtractedPhone = findViewById(R.id.textViewExtractedPhone);
         textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
+        textViewExtractedName = findViewById(R.id.textViewExtractedName);
 
         String extractedPhoneNumber = getIntent().getStringExtra("EXTRACTED_PHONE");
         String extractedEmail = getIntent().getStringExtra("EXTRACTED_EMAIL");
+        String extractedName = getIntent().getStringExtra("EXTRACTED_NAME");
         textViewExtractedPhone.setText(extractedPhoneNumber);
         textViewExtractedEmail.setText(extractedEmail);
+        textViewExtractedName.setText(extractedName);
 
         //Intent i = getIntent();
         //Bundle b =i.getBundleExtra("EXTRACTED_TEXT");

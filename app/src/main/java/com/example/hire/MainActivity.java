@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     String phoneNumber="";
     String email="";
+    String extractedTextFromImage="";
+    String extractedName="";
 
 
     @Override
@@ -206,8 +208,10 @@ public class MainActivity extends AppCompatActivity {
     public void postData(final String extractedText) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
+        extractedText.replaceAll("\n","");
         try {
             object.put("parameters",extractedText);
+            object.getString("parameters");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -226,6 +230,9 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject obj2 = ary2.getJSONObject(i);
                                 String namedEntity = obj2.getString("ner");
                                 String namedEntityResult = obj2.getString("text");
+                                if(namedEntity.equals("PERSON")){
+                                    extractedName = namedEntityResult;
+                                }
                                 textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
                             }
                             String str = extractedText;
@@ -250,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                             //bundle.putString("BundleText",sb.toString());
                             intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
                             intent1.putExtra("EXTRACTED_EMAIL",email);
+                            intent1.putExtra("EXTRACTED_NAME",extractedName);
                             startActivity(intent1);
 
                         } catch (JSONException e) {
@@ -464,7 +472,8 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString("BundleText",sb.toString());
             intent1.putExtra("EXTRACTED_TEXT",bundle);
             startActivity(intent1);*/
-            String extractedTextFromImage = sb.toString();
+            extractedTextFromImage = sb.toString().replaceAll("\n"," ");;
+
             //textViewExtractedText.setText(extractedTextFromImage);
             postData(extractedTextFromImage);
 
