@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,14 +51,33 @@ import java.util.regex.Pattern;
 
 //import edu.stanford.nlp.pipeline.*;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.util.SparseArray;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button buttonCamera, buttonExtract, buttonGallery,buttonPost;
     private RequestQueue mQueue;
     private ImageView imageViewResume;
     private TextView textViewExtractedText;
-    private Bitmap imageBitmap;
+    private Bitmap imageBitmap,croppedBitmap;
     private BitmapDrawable imageBitmapDrawable;
+    private float x1,x2,y1,y2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     String currentImagePath = null;
     Uri imageUri;
@@ -137,6 +157,69 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractText() {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable=true;
+
+
+        Paint myRectPaint = new Paint();
+        myRectPaint.setStrokeWidth(5);
+        myRectPaint.setColor(Color.RED);
+        myRectPaint.setStyle(Paint.Style.STROKE);
+
+        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
+
+        FaceDetector faceDetector = new
+                FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false)
+                .build();
+        if(!faceDetector.isOperational()){
+            new AlertDialog.Builder(getApplicationContext()).setMessage("Could not set up the face detector!").show();
+            return;
+        }
+
+        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
+        SparseArray<Face> faces = faceDetector.detect(frame1);
+        Log.d("FACE", "Face Size : "+faces.size());
+        Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
+        Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
+
+        if(faces.size()!=0){
+            for(int i=0; i<faces.size(); i++) {
+                Face thisFace = faces.valueAt(i);
+                x1 = thisFace.getPosition().x;
+                Log.d("FACE", "x1 : "+x1);
+                y1 = thisFace.getPosition().y;
+                Log.d("FACE", "y1 : "+y1);
+                x2 = x1 + thisFace.getWidth();
+                Log.d("FACE", "x2 : "+x2);
+                y2 = y1 + thisFace.getHeight();
+                Log.d("FACE", "y2 : "+y2);
+                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+
+            }
+            //tempCanvas.drawBitmap();
+
+            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
+
+            //Canvas canvas = new Canvas (tempBitmap);
+            //imageViewResume.draw(canvas);
+            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
+
+            imageViewResume.setImageBitmap(croppedBitmap);
+
+            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
+            //Rect dst = new Rect(0, 0, 200, 200);
+            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
+        }else{
+            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
+            Log.d("FACE", "No face detected");
+        }
+
+
+
+
 
         TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
