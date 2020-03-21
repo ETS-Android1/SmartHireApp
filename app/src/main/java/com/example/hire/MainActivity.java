@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     String extractedTextFromImage="";
     String extractedName="";
 
+    Intent intent1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        intent1 = new Intent(getApplicationContext(),ExtractedText.class);
 
         mQueue = Volley.newRequestQueue(this);
 
@@ -157,69 +161,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractText() {
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable=true;
-
-
-        Paint myRectPaint = new Paint();
-        myRectPaint.setStrokeWidth(5);
-        myRectPaint.setColor(Color.RED);
-        myRectPaint.setStyle(Paint.Style.STROKE);
-
-        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
-        Canvas tempCanvas = new Canvas(tempBitmap);
-        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
-
-        FaceDetector faceDetector = new
-                FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false)
-                .build();
-        if(!faceDetector.isOperational()){
-            new AlertDialog.Builder(getApplicationContext()).setMessage("Could not set up the face detector!").show();
-            return;
-        }
-
-        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
-        SparseArray<Face> faces = faceDetector.detect(frame1);
-        Log.d("FACE", "Face Size : "+faces.size());
-        Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
-        Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
-
-        if(faces.size()!=0){
-            for(int i=0; i<faces.size(); i++) {
-                Face thisFace = faces.valueAt(i);
-                x1 = thisFace.getPosition().x;
-                Log.d("FACE", "x1 : "+x1);
-                y1 = thisFace.getPosition().y;
-                Log.d("FACE", "y1 : "+y1);
-                x2 = x1 + thisFace.getWidth();
-                Log.d("FACE", "x2 : "+x2);
-                y2 = y1 + thisFace.getHeight();
-                Log.d("FACE", "y2 : "+y2);
-                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-
-            }
-            //tempCanvas.drawBitmap();
-
-            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
-
-            //Canvas canvas = new Canvas (tempBitmap);
-            //imageViewResume.draw(canvas);
-            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
-
-            imageViewResume.setImageBitmap(croppedBitmap);
-
-            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
-            //Rect dst = new Rect(0, 0, 200, 200);
-            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
-        }else{
-            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
-            Log.d("FACE", "No face detected");
-        }
-
-
-
-
 
         TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
@@ -335,8 +276,6 @@ public class MainActivity extends AppCompatActivity {
                                 email = emailMatcher.group(0);
                                 textViewExtractedText.append("Email: "+email+"\n");
                             }
-
-                            Intent intent1 = new Intent(getApplicationContext(),ExtractedText.class);
                             //Bundle bundle = new Bundle();
                             //bundle.putString("BundleText",sb.toString());
                             intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
@@ -520,6 +459,69 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void detectTextFromImage() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable=true;
+
+
+        Paint myRectPaint = new Paint();
+        myRectPaint.setStrokeWidth(5);
+        myRectPaint.setColor(Color.RED);
+        myRectPaint.setStyle(Paint.Style.STROKE);
+
+        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
+
+        FaceDetector faceDetector = new
+                FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false)
+                .build();
+        if(!faceDetector.isOperational()){
+            new AlertDialog.Builder(getApplicationContext()).setMessage("Could not set up the face detector!").show();
+            return;
+        }
+
+        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
+        SparseArray<Face> faces = faceDetector.detect(frame1);
+        Log.d("FACE", "Face Size : "+faces.size());
+        Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
+        Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
+
+        if(faces.size()!=0){
+            for(int i=0; i<faces.size(); i++) {
+                Face thisFace = faces.valueAt(i);
+                x1 = thisFace.getPosition().x;
+                Log.d("FACE", "x1 : "+x1);
+                y1 = thisFace.getPosition().y;
+                Log.d("FACE", "y1 : "+y1);
+                x2 = x1 + thisFace.getWidth();
+                Log.d("FACE", "x2 : "+x2);
+                y2 = y1 + thisFace.getHeight();
+                Log.d("FACE", "y2 : "+y2);
+                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+
+            }
+            //tempCanvas.drawBitmap();
+
+            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
+
+            //Canvas canvas = new Canvas (tempBitmap);
+            //imageViewResume.draw(canvas);
+            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
+
+            imageViewResume.setImageBitmap(croppedBitmap);
+
+            intent1.putExtra("EXTRACTED_FACE",croppedBitmap);
+
+            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
+            //Rect dst = new Rect(0, 0, 200, 200);
+            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
+        }else{
+            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
+            Log.d("FACE", "No face detected");
+            Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
+            intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
+
+        }
 
         /*final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();

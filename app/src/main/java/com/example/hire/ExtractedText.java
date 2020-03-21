@@ -3,7 +3,9 @@ package com.example.hire;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -13,6 +15,7 @@ public class ExtractedText extends AppCompatActivity {
     TextView textViewExtractedPhone;
     TextView textViewExtractedEmail;
     TextView textViewExtractedName;
+    ImageView imageViewExtractedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +24,21 @@ public class ExtractedText extends AppCompatActivity {
         textViewExtractedPhone = findViewById(R.id.textViewExtractedPhone);
         textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
         textViewExtractedName = findViewById(R.id.textViewExtractedName);
+        imageViewExtractedImage = findViewById(R.id.imageViewExtractedImage);
+
+        //imageViewExtractedImage.setImageResource(R.mipmap.ic_launcher_round);
 
         String extractedPhoneNumber = getIntent().getStringExtra("EXTRACTED_PHONE");
         String extractedEmail = getIntent().getStringExtra("EXTRACTED_EMAIL");
         String extractedName = getIntent().getStringExtra("EXTRACTED_NAME");
+
+        Bitmap bitmap = getIntent().getParcelableExtra("EXTRACTED_FACE");
         textViewExtractedPhone.setText(extractedPhoneNumber);
         textViewExtractedEmail.setText(extractedEmail);
         textViewExtractedName.setText(extractedName);
+        imageViewExtractedImage.setImageBitmap(bitmap);
+        //bitmap.recycle();
+
 
         //Intent i = getIntent();
         //Bundle b =i.getBundleExtra("EXTRACTED_TEXT");
