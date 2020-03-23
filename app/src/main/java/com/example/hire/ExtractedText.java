@@ -15,6 +15,7 @@ public class ExtractedText extends AppCompatActivity {
     TextView textViewExtractedPhone;
     TextView textViewExtractedEmail;
     TextView textViewExtractedName;
+    TextView textViewExtractedAddress;
     ImageView imageViewExtractedImage;
 
     @Override
@@ -24,6 +25,7 @@ public class ExtractedText extends AppCompatActivity {
         textViewExtractedPhone = findViewById(R.id.textViewExtractedPhone);
         textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
         textViewExtractedName = findViewById(R.id.textViewExtractedName);
+        textViewExtractedAddress = findViewById(R.id.textViewExtractedAddress);
         imageViewExtractedImage = findViewById(R.id.imageViewExtractedImage);
 
         //imageViewExtractedImage.setImageResource(R.mipmap.ic_launcher_round);
@@ -31,11 +33,13 @@ public class ExtractedText extends AppCompatActivity {
         String extractedPhoneNumber = getIntent().getStringExtra("EXTRACTED_PHONE");
         String extractedEmail = getIntent().getStringExtra("EXTRACTED_EMAIL");
         String extractedName = getIntent().getStringExtra("EXTRACTED_NAME");
+        String extractedAddress = getIntent().getStringExtra("EXTRACTED_ADDRESS");
 
         Bitmap bitmap = getIntent().getParcelableExtra("EXTRACTED_FACE");
         textViewExtractedPhone.setText(extractedPhoneNumber);
         textViewExtractedEmail.setText(extractedEmail);
         textViewExtractedName.setText(extractedName);
+        textViewExtractedAddress.setText(extractedAddress);
         imageViewExtractedImage.setImageBitmap(bitmap);
         //bitmap.recycle();
 

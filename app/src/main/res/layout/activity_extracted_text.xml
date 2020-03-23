@@ -83,4 +83,24 @@
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textViewExtractedPhone" />
 
+    <TextView
+        android:id="@+id/textViewLabelAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewExtractedAddress"
+        app:layout_constraintEnd_toEndOf="@+id/textViewLabelEmail"
+        app:layout_constraintStart_toStartOf="@+id/textViewLabelEmail"
+        app:layout_constraintTop_toTopOf="@+id/textViewExtractedAddress" />
+
+    <TextView
+        android:id="@+id/textViewExtractedAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textViewExtractedEmail" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

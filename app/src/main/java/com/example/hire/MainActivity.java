@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     String phoneNumber="";
     String email="";
+    String address="";
     String extractedTextFromImage="";
     String extractedName="";
 
@@ -161,28 +162,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractText() {
-
-        TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-
-        if (!recognizer.isOperational()) {
-            Toast.makeText(MainActivity.this, "Error :", Toast.LENGTH_SHORT).show();
-        } else {
-            Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
-            SparseArray<TextBlock> items = recognizer.detect(frame);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < items.size(); i++) {
-                TextBlock myItems = items.valueAt(i);
-                sb.append(myItems.getValue());
-                sb.append("\n");
-            }
-            /*Intent intent1 = new Intent(this,ExtractedText.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("BundleText",sb.toString());
-            intent1.putExtra("EXTRACTED_TEXT",bundle);
-            startActivity(intent1);*/
-            String extractedTextFromImage = sb.toString();
-            textViewExtractedText.setText(extractedTextFromImage);
-        }
+        String addressRegex = "(Address|address|ADDRESS):?";
+        String abc = " \n ";
+        final Pattern pattern = Pattern.compile(addressRegex+"(.+?)"+abc, Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher("Age: 12. \n Email: yujune99@gmail.com. \n Address: No.49 Jalan\nCempaka Wangi 12, Taman Cempaka, 42700, Banting, Selangor. \n Hi");
+        matcher.find();
+        textViewExtractedText.setText(matcher.group(2));
     }
 
     private void jsonParse() {
@@ -235,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         JSONObject object = new JSONObject();
         extractedText.replaceAll("\n","");
         try {
-            object.put("parameters",extractedText);
+            object.put("parameters","Selangor" + extractedText);
             object.getString("parameters");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -257,16 +242,20 @@ public class MainActivity extends AppCompatActivity {
                                 String namedEntityResult = obj2.getString("text");
                                 if(namedEntity.equals("PERSON") && extractedName.isEmpty()){
                                     extractedName = namedEntityResult;
+                                    Log.d("NAMEFOUND", namedEntityResult);
+                                    System.out.println("NAME FOUND"+ namedEntityResult);
+                                }else if(namedEntity.equals("LOCATION") || namedEntity.equals("CITY")){
+                                    Log.d("LOCATIONFOUND", namedEntityResult);
                                 }
                                 textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
                             }
                             String str = extractedText;
 
-                            Pattern pattern = Pattern.compile("\\d{3}-?\\d{7,8}");
+                            Pattern phonePattern = Pattern.compile("\\d{3}-?\\d{7,8}");
                             Pattern emailPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
-                            Matcher matcher = pattern.matcher(str);
-                            if (matcher.find()) {
-                                phoneNumber = matcher.group(0);
+                            Matcher phoneMatcher = phonePattern.matcher(str);
+                            if (phoneMatcher.find()) {
+                                phoneNumber = phoneMatcher.group(0);
                                 textViewExtractedText.append("Phone Number: "+phoneNumber+"\n");
 
                             }
@@ -276,11 +265,22 @@ public class MainActivity extends AppCompatActivity {
                                 email = emailMatcher.group(0);
                                 textViewExtractedText.append("Email: "+email+"\n");
                             }
+
+                            String addressRegex = "(Address|address|ADDRESS):?";
+                            String abc = " \n ";
+                            Pattern addressPattern = Pattern.compile(addressRegex+"(.+?)"+abc,Pattern.DOTALL);
+                            Matcher addressMatcher = addressPattern.matcher(str);
+                            if (addressMatcher.find()) {
+                                address = addressMatcher.group(2);
+                                textViewExtractedText.append("address "+address+"\n");
+                            }
+                            //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
                             //bundle.putString("BundleText",sb.toString());
                             intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
                             intent1.putExtra("EXTRACTED_EMAIL",email);
                             intent1.putExtra("EXTRACTED_NAME",extractedName);
+                            intent1.putExtra("EXTRACTED_ADDRESS",address);
                             startActivity(intent1);
 
                         } catch (JSONException e) {
@@ -483,6 +483,7 @@ public class MainActivity extends AppCompatActivity {
         Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
         SparseArray<Face> faces = faceDetector.detect(frame1);
         Log.d("FACE", "Face Size : "+faces.size());
+        System.out.println("Face Size : "+faces.size());
         Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
         Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
 
@@ -551,15 +552,15 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < items.size(); i++) {
                 TextBlock myItems = items.valueAt(i);
                 sb.append(myItems.getValue());
-                sb.append("\n");
+                sb.append(" \n ");
             }
             /*Intent intent1 = new Intent(this,ExtractedText.class);
             Bundle bundle = new Bundle();
             bundle.putString("BundleText",sb.toString());
             intent1.putExtra("EXTRACTED_TEXT",bundle);
             startActivity(intent1);*/
-            extractedTextFromImage = sb.toString().replaceAll("\n"," \n ");;
-
+            extractedTextFromImage = sb.toString();
+            //extractedTextFromImage.substring(0,1000);
             //textViewExtractedText.setText(extractedTextFromImage);
             postData(extractedTextFromImage);
 

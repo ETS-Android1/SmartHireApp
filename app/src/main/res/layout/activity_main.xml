@@ -31,7 +31,7 @@
             android:scrollbars="vertical"
             android:scrollHorizontally="false"
             android:text="Take a picture"
-            android:textSize="8sp" />
+            android:textSize="14sp" />
     </ScrollView>
 
     <Button
