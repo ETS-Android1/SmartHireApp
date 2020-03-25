@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     String address="";
     String extractedTextFromImage="";
     String extractedName="";
+    String extractedLocation = "";
+    String extractedOrganization="";
 
     Intent intent1;
 
@@ -162,12 +164,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractText() {
-        String addressRegex = "(Address|address|ADDRESS):?";
+        /*String addressRegex = "(Address|address|ADDRESS):?";
         String abc = " \n ";
         final Pattern pattern = Pattern.compile(addressRegex+"(.+?)"+abc, Pattern.DOTALL);
         final Matcher matcher = pattern.matcher("Age: 12. \n Email: yujune99@gmail.com. \n Address: No.49 Jalan\nCempaka Wangi 12, Taman Cempaka, 42700, Banting, Selangor. \n Hi");
         matcher.find();
-        textViewExtractedText.setText(matcher.group(2));
+        textViewExtractedText.setText(matcher.group(2));*/
+        String val="abc KEYWORD1 def KEYWORD1 ghi KEYWORD2 jkl KEYWORD2";
+        String REGEX="KEYWORD1((.(?!KEYWORD1))+?)KEYWORD2";
+        Pattern pattern = Pattern.compile(REGEX);
+        Matcher matcher = pattern.matcher(val);
+        if(matcher.find()){
+            System.out.println(matcher.group());
+        }
     }
 
     private void jsonParse() {
@@ -213,19 +222,131 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void detectTextFromImage() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable=true;
+
+        Paint myRectPaint = new Paint();
+        myRectPaint.setStrokeWidth(5);
+        myRectPaint.setColor(Color.RED);
+        myRectPaint.setStyle(Paint.Style.STROKE);
+
+        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
+
+        FaceDetector faceDetector = new
+                FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false)
+                .build();
+        if(!faceDetector.isOperational()){
+            new AlertDialog.Builder(getApplicationContext()).setMessage("Could not set up the face detector!").show();
+            return;
+        }
+
+        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
+        SparseArray<Face> faces = faceDetector.detect(frame1);
+        Log.d("FACE", "Face Size : "+faces.size());
+        System.out.println("Face Size : "+faces.size());
+        Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
+        Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
+
+        if(faces.size()!=0){
+            for(int i=0; i<faces.size(); i++) {
+                Face thisFace = faces.valueAt(i);
+                x1 = thisFace.getPosition().x;
+                Log.d("FACE", "x1 : "+x1);
+                y1 = thisFace.getPosition().y;
+                Log.d("FACE", "y1 : "+y1);
+                x2 = x1 + thisFace.getWidth();
+                Log.d("FACE", "x2 : "+x2);
+                y2 = y1 + thisFace.getHeight();
+                Log.d("FACE", "y2 : "+y2);
+                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+
+            }
+            //tempCanvas.drawBitmap();
+
+            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
+
+            //Canvas canvas = new Canvas (tempBitmap);
+            //imageViewResume.draw(canvas);
+            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
+
+            imageViewResume.setImageBitmap(croppedBitmap);
+
+            intent1.putExtra("EXTRACTED_FACE",croppedBitmap);
+
+            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
+            //Rect dst = new Rect(0, 0, 200, 200);
+            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
+        }else{
+            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
+            Log.d("FACE", "No face detected");
+            Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
+            intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
+
+        }
+
+        /*final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
+        FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
+        firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+            @Override
+            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+
+                displayTextFromImage(firebaseVisionText);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d("Error :", e.getMessage());
+            }
+        });*/
+
+        TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+
+        if (!recognizer.isOperational()) {
+            Toast.makeText(MainActivity.this, "Error :", Toast.LENGTH_SHORT).show();
+        } else {
+            Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
+            SparseArray<TextBlock> items = recognizer.detect(frame);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < items.size(); i++) {
+                TextBlock myItems = items.valueAt(i);
+                sb.append(myItems.getValue());
+                sb.append("  ");
+            }
+            /*Intent intent1 = new Intent(this,ExtractedText.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("BundleText",sb.toString());
+            intent1.putExtra("EXTRACTED_TEXT",bundle);
+            startActivity(intent1);*/
+            extractedTextFromImage = sb.toString().replaceAll("\n"," ");
+            String newExtractedText = extractedTextFromImage.replaceAll(" \\ ",".\n ");
+            //extractedTextFromImage.substring(0,1000);
+            //textViewExtractedText.setText(extractedTextFromImage);
+            postData(newExtractedText);
+
+
+        }
+
+    }
+
     // Post Request For JSONObject
     public void postData(final String extractedText) {
         extractedName="";
+        extractedLocation="";
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
-        extractedText.replaceAll("\n","");
+
         try {
-            object.put("parameters","Selangor" + extractedText);
-            object.getString("parameters");
+            object.put("parameters",extractedText);
+            //object.getString("parameters");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://192.168.0.187:9000/?properties%3D%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C%22outputFormat%22%3A%22json%22%7D";
+        String url = "http://192.168.0.187:9000/?properties=%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%7D";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,object,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -233,25 +354,37 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
                             JSONArray ary = response.getJSONArray("sentences");
-                            JSONObject obj1 = ary.getJSONObject(0);
-                            JSONArray ary2 =  obj1.getJSONArray("entitymentions");
-                            textViewExtractedText.setText("--- Result ---\n\n");
-                            for(int i=0;i<ary2.length();i++){
-                                JSONObject obj2 = ary2.getJSONObject(i);
-                                String namedEntity = obj2.getString("ner");
-                                String namedEntityResult = obj2.getString("text");
-                                if(namedEntity.equals("PERSON") && extractedName.isEmpty()){
-                                    extractedName = namedEntityResult;
-                                    Log.d("NAMEFOUND", namedEntityResult);
-                                    System.out.println("NAME FOUND"+ namedEntityResult);
-                                }else if(namedEntity.equals("LOCATION") || namedEntity.equals("CITY")){
-                                    Log.d("LOCATIONFOUND", namedEntityResult);
+                            for(int i=0;i<ary.length();i++){
+
+                                JSONObject obj1 = ary.getJSONObject(i);
+                                JSONArray testarray = obj1.getJSONArray("entitymentions");
+                                System.out.println(testarray);
+
+                                JSONArray ary2 =  obj1.getJSONArray("entitymentions");
+
+                                textViewExtractedText.setText("--- Result ---\n\n");
+
+                                for(int y=0;y<ary2.length();y++){
+                                    JSONObject obj2 = ary2.getJSONObject(y);
+                                    String namedEntity = obj2.getString("ner");
+                                    String namedEntityResult = obj2.getString("text");
+                                    if(namedEntity.equals("PERSON") && extractedName.isEmpty()){
+                                        extractedName = namedEntityResult;
+                                        Log.d("NAMEFOUND : ", namedEntityResult);
+                                    }else if((namedEntity.equals("LOCATION") || namedEntity.equals("CITY") ||namedEntity.equals("COUNTRY"))&&extractedLocation.isEmpty()){
+                                        extractedLocation = namedEntityResult;
+                                        Log.d("LOCATIONFOUND", namedEntityResult);
+                                    }else if (namedEntity.equals("ORGANIZATION")){
+                                        extractedOrganization = namedEntityResult;
+                                    }
+                                    textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
+                                    Log.d("NER", namedEntity+" : "+namedEntityResult+"\n");
                                 }
-                                textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
                             }
+
                             String str = extractedText;
 
-                            Pattern phonePattern = Pattern.compile("\\d{3}-?\\d{7,8}");
+                            Pattern phonePattern = Pattern.compile("((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}");
                             Pattern emailPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
                             Matcher phoneMatcher = phonePattern.matcher(str);
                             if (phoneMatcher.find()) {
@@ -267,12 +400,17 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             String addressRegex = "(Address|address|ADDRESS):?";
-                            String abc = " \n ";
-                            Pattern addressPattern = Pattern.compile(addressRegex+"(.+?)"+abc,Pattern.DOTALL);
+                            String addressFormat = "(NO|no|No|LOT|Lot|lot)?.?:?";
+                            String location = extractedLocation;
+                            Pattern addressPattern = Pattern.compile(addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+(location),Pattern.DOTALL);
                             Matcher addressMatcher = addressPattern.matcher(str);
                             if (addressMatcher.find()) {
-                                address = addressMatcher.group(2);
-                                textViewExtractedText.append("address "+address+"\n");
+                                address = addressMatcher.group(0);
+                                Log.d("Address: ",address);
+                                /*if(address.length()>100){
+                                    address="";
+                                }*/
+                                textViewExtractedText.append("Address :"+address+"\n");
                             }
                             //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
@@ -458,116 +596,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void detectTextFromImage() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable=true;
 
-
-        Paint myRectPaint = new Paint();
-        myRectPaint.setStrokeWidth(5);
-        myRectPaint.setColor(Color.RED);
-        myRectPaint.setStyle(Paint.Style.STROKE);
-
-        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
-        Canvas tempCanvas = new Canvas(tempBitmap);
-        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
-
-        FaceDetector faceDetector = new
-                FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false)
-                .build();
-        if(!faceDetector.isOperational()){
-            new AlertDialog.Builder(getApplicationContext()).setMessage("Could not set up the face detector!").show();
-            return;
-        }
-
-        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
-        SparseArray<Face> faces = faceDetector.detect(frame1);
-        Log.d("FACE", "Face Size : "+faces.size());
-        System.out.println("Face Size : "+faces.size());
-        Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
-        Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
-
-        if(faces.size()!=0){
-            for(int i=0; i<faces.size(); i++) {
-                Face thisFace = faces.valueAt(i);
-                x1 = thisFace.getPosition().x;
-                Log.d("FACE", "x1 : "+x1);
-                y1 = thisFace.getPosition().y;
-                Log.d("FACE", "y1 : "+y1);
-                x2 = x1 + thisFace.getWidth();
-                Log.d("FACE", "x2 : "+x2);
-                y2 = y1 + thisFace.getHeight();
-                Log.d("FACE", "y2 : "+y2);
-                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-
-            }
-            //tempCanvas.drawBitmap();
-
-            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
-
-            //Canvas canvas = new Canvas (tempBitmap);
-            //imageViewResume.draw(canvas);
-            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
-
-            imageViewResume.setImageBitmap(croppedBitmap);
-
-            intent1.putExtra("EXTRACTED_FACE",croppedBitmap);
-
-            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
-            //Rect dst = new Rect(0, 0, 200, 200);
-            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
-        }else{
-            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
-            Log.d("FACE", "No face detected");
-            Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
-            intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
-
-        }
-
-        /*final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
-        FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
-        firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-            @Override
-            public void onSuccess(FirebaseVisionText firebaseVisionText) {
-
-                displayTextFromImage(firebaseVisionText);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.d("Error :", e.getMessage());
-            }
-        });*/
-
-        TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-
-        if (!recognizer.isOperational()) {
-            Toast.makeText(MainActivity.this, "Error :", Toast.LENGTH_SHORT).show();
-        } else {
-            Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
-            SparseArray<TextBlock> items = recognizer.detect(frame);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < items.size(); i++) {
-                TextBlock myItems = items.valueAt(i);
-                sb.append(myItems.getValue());
-                sb.append(" \n ");
-            }
-            /*Intent intent1 = new Intent(this,ExtractedText.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("BundleText",sb.toString());
-            intent1.putExtra("EXTRACTED_TEXT",bundle);
-            startActivity(intent1);*/
-            extractedTextFromImage = sb.toString();
-            //extractedTextFromImage.substring(0,1000);
-            //textViewExtractedText.setText(extractedTextFromImage);
-            postData(extractedTextFromImage);
-
-
-        }
-
-    }
 
     /*private void displayTextFromImage(FirebaseVisionText firebaseVisionText) {
 
