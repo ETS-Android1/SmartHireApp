@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +17,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -51,21 +53,13 @@ import java.util.regex.Pattern;
 
 //import edu.stanford.nlp.pipeline.*;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import com.google.android.gms.vision.Frame;
+
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
@@ -97,11 +91,15 @@ public class MainActivity extends AppCompatActivity {
 
     Intent intent1;
 
+    FloatingActionButton fab,fab1,fab2;
+    Animation fabOpen, fabClose, rotateForward, rotateBackward;
+    boolean isOpen = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_fab);
 
         buttonCamera = findViewById(R.id.buttonCamera);
         buttonExtract = findViewById(R.id.buttonExtract);
@@ -116,6 +114,43 @@ public class MainActivity extends AppCompatActivity {
         intent1 = new Intent(getApplicationContext(),ExtractedText.class);
 
         mQueue = Volley.newRequestQueue(this);
+
+        fab = findViewById(R.id.fab);
+        fab1 = findViewById(R.id.fab1);
+        fab2 = findViewById(R.id.fab2);
+
+        fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
+
+        rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+
+        Log.d("FAB", ""+isOpen);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View view) {
+                animateFab();
+                Log.d("FAB", ""+isOpen);
+            }
+        });
+
+        fab1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"Camera is opening",Toast.LENGTH_SHORT).show();
+                animateFab();
+            }
+        });
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"Gallery is opening",Toast.LENGTH_SHORT).show();
+                animateFab();
+            }
+        });
 
         buttonPost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +196,24 @@ public class MainActivity extends AppCompatActivity {
                 //displayImage();
             }
         });
+    }
+
+    private void animateFab(){
+        if (isOpen){
+            fab.startAnimation(rotateBackward);
+            fab1.startAnimation(fabClose);
+            fab2.startAnimation(fabClose);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            isOpen=false;
+        }else{
+            fab.startAnimation(rotateForward);
+            fab1.startAnimation(fabOpen);
+            fab2.startAnimation(fabOpen);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            isOpen=true;
+        }
     }
 
     private void extractText() {
@@ -512,11 +565,6 @@ public class MainActivity extends AppCompatActivity {
         return result && result1;
     }
 
-    private void displayImage() {
-        Intent intent = new Intent(this, DisplayImage.class);
-        intent.putExtra("image_path", currentImagePath);
-        startActivity(intent);
-    }
 
     /*private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
