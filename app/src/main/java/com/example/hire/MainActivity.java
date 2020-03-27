@@ -5,14 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
@@ -21,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonCamera, buttonExtract, buttonGallery,buttonPost;
     private RequestQueue mQueue;
     private ImageView imageViewResume;
-    private TextView textViewExtractedText;
+    private TextView textViewExtractedText, textViewProgress;
     private Bitmap imageBitmap,croppedBitmap;
     private BitmapDrawable imageBitmapDrawable;
     private float x1,x2,y1,y2;
@@ -91,22 +97,27 @@ public class MainActivity extends AppCompatActivity {
 
     Intent intent1;
 
-    FloatingActionButton fab,fab1,fab2;
+    FloatingActionButton fab,fab1,fab2,fab3;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
+
+    ProgressBar progressBar;
+
+    private int progressStatus = 0;
+    private Handler handler = new Handler();
+    private boolean isCanceled;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fab);
-
-        buttonCamera = findViewById(R.id.buttonCamera);
-        buttonExtract = findViewById(R.id.buttonExtract);
-        buttonGallery = findViewById(R.id.buttonGallery);
-        buttonPost=findViewById(R.id.buttonPost);
+        //buttonCamera = findViewById(R.id.buttonCamera);
+        //buttonExtract = findViewById(R.id.buttonExtract);
+        //buttonGallery = findViewById(R.id.buttonGallery);
+        //buttonPost=findViewById(R.id.buttonPost);
         imageViewResume = findViewById(R.id.imageViewResume);
-        textViewExtractedText = findViewById(R.id.textViewExtractedText);
+        //textViewExtractedText = findViewById(R.id.textViewExtractedText);
 
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -118,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab);
         fab1 = findViewById(R.id.fab1);
         fab2 = findViewById(R.id.fab2);
+        fab3 = findViewById(R.id.fab3);
+
+        progressBar = findViewById(R.id.progressBar);
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
@@ -139,20 +153,47 @@ public class MainActivity extends AppCompatActivity {
         fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Camera is opening",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Capture the resume",Toast.LENGTH_SHORT).show();
                 animateFab();
+                if (!checkCameraPermission()) {
+                    requestCameraPermission();
+                } else {
+                    dispatchTakePictureIntent();
+                }
             }
         });
 
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Gallery is opening",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Choose a resume",Toast.LENGTH_SHORT).show();
                 animateFab();
+
+                if(!checkStoragePermission()){
+                    requestStoragePermission();
+                }else{
+                    pickGallery();
+                }
             }
         });
 
-        buttonPost.setOnClickListener(new View.OnClickListener() {
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View v) {
+                //fab.setVisibility(FloatingActionButton.INVISIBLE);
+                fab.setClickable(false);
+                Toast.makeText(MainActivity.this,"Extracting...",Toast.LENGTH_LONG).show();
+                animateFab();
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                ExtractThread extractThread = new ExtractThread();
+                new Thread(extractThread).start();
+
+
+            }
+        });
+
+        /*buttonPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //jsonParse();
@@ -160,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
                 //postData();
                 extractText();
             }
-        });
+        });*/
 
-        buttonCamera.setOnClickListener(new View.OnClickListener() {
+        /*buttonCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -175,17 +216,19 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-        });
+        });*/
 
-        buttonExtract.setOnClickListener(new View.OnClickListener() {
+        /*buttonExtract.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                detectTextFromImage();
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                ExtractThread extractThread = new ExtractThread();
+                new Thread(extractThread).start();
+                //detectTextFromImage();
             }
-        });
+        });*/
 
-        buttonGallery.setOnClickListener(new View.OnClickListener() {
+        /*buttonGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!checkStoragePermission()){
@@ -195,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //displayImage();
             }
-        });
+        });*/
     }
 
     private void animateFab(){
@@ -203,15 +246,19 @@ public class MainActivity extends AppCompatActivity {
             fab.startAnimation(rotateBackward);
             fab1.startAnimation(fabClose);
             fab2.startAnimation(fabClose);
+            fab3.startAnimation(fabClose);
             fab1.setClickable(false);
             fab2.setClickable(false);
+            fab3.setClickable(false);
             isOpen=false;
         }else{
             fab.startAnimation(rotateForward);
             fab1.startAnimation(fabOpen);
             fab2.startAnimation(fabOpen);
+            fab3.startAnimation(fabOpen);
             fab1.setClickable(true);
             fab2.setClickable(true);
+            fab3.setClickable(true);
             isOpen=true;
         }
     }
@@ -279,10 +326,10 @@ public class MainActivity extends AppCompatActivity {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable=true;
 
-        Paint myRectPaint = new Paint();
+        /*Paint myRectPaint = new Paint();
         myRectPaint.setStrokeWidth(5);
         myRectPaint.setColor(Color.RED);
-        myRectPaint.setStyle(Paint.Style.STROKE);
+        myRectPaint.setStyle(Paint.Style.STROKE);*/
 
         Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
         Canvas tempCanvas = new Canvas(tempBitmap);
@@ -314,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("FACE", "x2 : "+x2);
                 y2 = y1 + thisFace.getHeight();
                 Log.d("FACE", "y2 : "+y2);
-                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+                //tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
 
             }
             //tempCanvas.drawBitmap();
@@ -325,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
             //imageViewResume.draw(canvas);
             croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
 
-            imageViewResume.setImageBitmap(croppedBitmap);
+            //imageViewResume.setImageBitmap(croppedBitmap);
 
             intent1.putExtra("EXTRACTED_FACE",croppedBitmap);
 
@@ -415,7 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 JSONArray ary2 =  obj1.getJSONArray("entitymentions");
 
-                                textViewExtractedText.setText("--- Result ---\n\n");
+                                //textViewExtractedText.setText("--- Result ---\n\n");
 
                                 for(int y=0;y<ary2.length();y++){
                                     JSONObject obj2 = ary2.getJSONObject(y);
@@ -430,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
                                     }else if (namedEntity.equals("ORGANIZATION")){
                                         extractedOrganization = namedEntityResult;
                                     }
-                                    textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
+                                    //textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
                                     Log.d("NER", namedEntity+" : "+namedEntityResult+"\n");
                                 }
                             }
@@ -442,14 +489,14 @@ public class MainActivity extends AppCompatActivity {
                             Matcher phoneMatcher = phonePattern.matcher(str);
                             if (phoneMatcher.find()) {
                                 phoneNumber = phoneMatcher.group(0);
-                                textViewExtractedText.append("Phone Number: "+phoneNumber+"\n");
+                                //textViewExtractedText.append("Phone Number: "+phoneNumber+"\n");
 
                             }
 
                             Matcher emailMatcher = emailPattern.matcher(str);
                             if (emailMatcher.find()) {
                                 email = emailMatcher.group(0);
-                                textViewExtractedText.append("Email: "+email+"\n");
+                                //textViewExtractedText.append("Email: "+email+"\n");
                             }
 
                             String addressRegex = "(Address|address|ADDRESS):?";
@@ -463,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
                                 /*if(address.length()>100){
                                     address="";
                                 }*/
-                                textViewExtractedText.append("Address :"+address+"\n");
+                                //textViewExtractedText.append("Address :"+address+"\n");
                             }
                             //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
@@ -472,6 +519,7 @@ public class MainActivity extends AppCompatActivity {
                             intent1.putExtra("EXTRACTED_EMAIL",email);
                             intent1.putExtra("EXTRACTED_NAME",extractedName);
                             intent1.putExtra("EXTRACTED_ADDRESS",address);
+                            progressBar.setVisibility(ProgressBar.INVISIBLE);
                             startActivity(intent1);
 
                         } catch (JSONException e) {
@@ -481,6 +529,7 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
                 Toast.makeText(getApplicationContext(),"Error getting response",Toast.LENGTH_LONG).show();
             }
         });
@@ -608,6 +657,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -636,6 +686,7 @@ public class MainActivity extends AppCompatActivity {
                 imageViewResume.setImageURI(resultUri);
                 imageBitmapDrawable = (BitmapDrawable) imageViewResume.getDrawable();
                 imageBitmap = imageBitmapDrawable.getBitmap();
+                //code here
             }
         } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
             Toast.makeText(MainActivity.this, "Error :", Toast.LENGTH_SHORT).show();
@@ -704,4 +755,96 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void intermediateProgressbar(){
+        isCanceled = false;
+        // Initialize a new instance of progress dialog
+        final ProgressDialog pd = new ProgressDialog(MainActivity.this);
+
+        // Set progress dialog style horizontal
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+        // Set the progress dialog title and message
+        pd.setTitle("Title of progress dialog.");
+        pd.setMessage("Loading.........");
+        // Set the progress dialog background color
+        pd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFD4D9D0")));
+
+        pd.setIndeterminate(false);
+                /*
+                    Set the progress dialog non cancelable
+                    It will disallow user's to cancel progress dialog by clicking outside of dialog
+                    But, user's can cancel the progress dialog by cancel button
+                 */
+        pd.setCancelable(false);
+
+        pd.setMax(100);
+
+        pd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener(){
+            // Set a click listener for progress dialog cancel button
+            @Override
+            public void onClick(DialogInterface dialog, int which){
+                // dismiss the progress dialog
+                pd.dismiss();
+                // Tell the system about cancellation
+                isCanceled = true;
+            }
+        });
+
+        pd.show();
+
+        // Set the progress status zero on each button click
+        progressStatus = 0;
+
+        // Start the lengthy operation in a background thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(progressStatus < pd.getMax()){
+                    // If user's click the cancel button from progress dialog
+                    if(isCanceled)
+                    {
+                        // Stop the operation/loop
+                        break;
+                    }
+                    // Update the progress status
+                    progressStatus +=1;
+
+                    // Try to sleep the thread for 200 milliseconds
+                    try{
+                        Thread.sleep(200);
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    // Update the progress bar
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Update the progress status
+                            pd.setProgress(progressStatus);
+                            //textViewProgress.setText(progressStatus+"");
+                            // If task execution completed
+                            if(progressStatus == pd.getMax()){
+                                // Dismiss/hide the progress dialog
+                                pd.dismiss();
+                                //textViewProgress.setText("Operation completed.");
+                            }
+                        }
+                    });
+                }
+            }
+        }).start(); // Start the operation
+    }
+
+    class ExtractThread implements Runnable{
+
+        @Override
+        public void run() {
+            detectTextFromImage();
+
+        }
+    }
+
+
 }
+
