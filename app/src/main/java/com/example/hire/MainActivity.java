@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     Intent intent1;
 
     FloatingActionButton fab,fab1,fab2,fab3;
+    TextView textViewCamera, textViewGallery, textViewExtract;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
 
@@ -130,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
         fab1 = findViewById(R.id.fab1);
         fab2 = findViewById(R.id.fab2);
         fab3 = findViewById(R.id.fab3);
+
+        textViewCamera = findViewById(R.id.textViewCamera);
+        textViewGallery= findViewById(R.id.textViewGallery);
+        textViewExtract = findViewById(R.id.textViewExtract);
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -245,6 +250,10 @@ public class MainActivity extends AppCompatActivity {
         if (isOpen){
             fab.startAnimation(rotateBackward);
             fab1.startAnimation(fabClose);
+            //textViewCamera.setVisibility(View.GONE);
+            textViewCamera.setAnimation(fabClose);
+            textViewGallery.setAnimation(fabClose);
+            textViewExtract.setAnimation(fabClose);
             fab2.startAnimation(fabClose);
             fab3.startAnimation(fabClose);
             fab1.setClickable(false);
@@ -254,8 +263,12 @@ public class MainActivity extends AppCompatActivity {
         }else{
             fab.startAnimation(rotateForward);
             fab1.startAnimation(fabOpen);
+            //textViewCamera.setVisibility(View.VISIBLE);
             fab2.startAnimation(fabOpen);
             fab3.startAnimation(fabOpen);
+            textViewCamera.setAnimation(fabOpen);
+            textViewGallery.setAnimation(fabOpen);
+            textViewExtract.setAnimation(fabOpen);
             fab1.setClickable(true);
             fab2.setClickable(true);
             fab3.setClickable(true);
@@ -382,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
             Log.d("FACE", "No face detected");
-            Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
+            Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
             intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
 
         }
