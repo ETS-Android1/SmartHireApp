@@ -24,7 +24,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab1"
+        android:id="@+id/fabCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -44,16 +44,15 @@
         android:layout_marginRight="80dp"
         android:layout_marginBottom="107dp"
         android:background="#00BBAFAF"
-        android:backgroundTint="@color/colorPrimary"
         android:elevation="16dp"
         android:gravity="center"
         android:text="Gallery"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:visibility="invisible"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fab2"
+    android:id="@+id/fabGallery"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
@@ -73,16 +72,15 @@
         android:layout_marginRight="80dp"
         android:layout_marginBottom="178dp"
         android:background="#00BBAFAF"
-        android:backgroundTint="@color/colorPrimary"
         android:elevation="16dp"
         android:gravity="center"
         android:text="Camera"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:visibility="invisible"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab3"
+        android:id="@+id/fabExtract"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -102,12 +100,11 @@
         android:layout_marginRight="150dp"
         android:layout_marginBottom="33dp"
         android:background="#00BBAFAF"
-        android:backgroundTint="@color/colorPrimary"
         android:elevation="16dp"
         android:gravity="center"
         android:text="Extract"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:visibility="invisible"/>
 
     <ProgressBar

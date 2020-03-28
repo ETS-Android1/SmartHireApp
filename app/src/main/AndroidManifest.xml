@@ -20,6 +20,9 @@
         <activity
             android:name=".ExtractedText"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ExtractedTextEdit"
+            android:parentActivityName=".ExtractedText" />
         <activity android:name=".MainActivity">
             <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"

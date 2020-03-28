@@ -63,8 +63,6 @@ import android.app.AlertDialog;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     Intent intent1;
 
-    FloatingActionButton fab,fab1,fab2,fab3;
+    FloatingActionButton fab, fabCamera, fabGallery, fabExtract;
     TextView textViewCamera, textViewGallery, textViewExtract;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
@@ -128,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
         mQueue = Volley.newRequestQueue(this);
 
         fab = findViewById(R.id.fab);
-        fab1 = findViewById(R.id.fab1);
-        fab2 = findViewById(R.id.fab2);
-        fab3 = findViewById(R.id.fab3);
+        fabCamera = findViewById(R.id.fabCamera);
+        fabGallery = findViewById(R.id.fabGallery);
+        fabExtract = findViewById(R.id.fabExtract);
 
         textViewCamera = findViewById(R.id.textViewCamera);
         textViewGallery= findViewById(R.id.textViewGallery);
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab1.setOnClickListener(new View.OnClickListener() {
+        fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"Capture the resume",Toast.LENGTH_SHORT).show();
@@ -168,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab2.setOnClickListener(new View.OnClickListener() {
+        fabGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"Choose a resume",Toast.LENGTH_SHORT).show();
@@ -182,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fab3.setOnClickListener(new View.OnClickListener() {
+        fabExtract.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View v) {
@@ -193,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 ExtractThread extractThread = new ExtractThread();
                 new Thread(extractThread).start();
+
 
 
             }
@@ -249,29 +248,29 @@ public class MainActivity extends AppCompatActivity {
     private void animateFab(){
         if (isOpen){
             fab.startAnimation(rotateBackward);
-            fab1.startAnimation(fabClose);
+            fabCamera.startAnimation(fabClose);
             //textViewCamera.setVisibility(View.GONE);
             textViewCamera.setAnimation(fabClose);
             textViewGallery.setAnimation(fabClose);
             textViewExtract.setAnimation(fabClose);
-            fab2.startAnimation(fabClose);
-            fab3.startAnimation(fabClose);
-            fab1.setClickable(false);
-            fab2.setClickable(false);
-            fab3.setClickable(false);
+            fabGallery.startAnimation(fabClose);
+            fabExtract.startAnimation(fabClose);
+            fabCamera.setClickable(false);
+            fabGallery.setClickable(false);
+            fabExtract.setClickable(false);
             isOpen=false;
         }else{
             fab.startAnimation(rotateForward);
-            fab1.startAnimation(fabOpen);
+            fabCamera.startAnimation(fabOpen);
             //textViewCamera.setVisibility(View.VISIBLE);
-            fab2.startAnimation(fabOpen);
-            fab3.startAnimation(fabOpen);
+            fabGallery.startAnimation(fabOpen);
+            fabExtract.startAnimation(fabOpen);
             textViewCamera.setAnimation(fabOpen);
             textViewGallery.setAnimation(fabOpen);
             textViewExtract.setAnimation(fabOpen);
-            fab1.setClickable(true);
-            fab2.setClickable(true);
-            fab3.setClickable(true);
+            fabCamera.setClickable(true);
+            fabGallery.setClickable(true);
+            fabExtract.setClickable(true);
             isOpen=true;
         }
     }
@@ -854,6 +853,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             detectTextFromImage();
+            fab.setClickable(true);
 
         }
     }
