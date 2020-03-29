@@ -1,8 +1,13 @@
 package com.example.hire;
 
+import com.google.firebase.database.Exclude;
+
 public class Employee {
 
-    private String mName,mPosition,mImageUrl;
+    private String mName,mPosition,mImageUrl,key;
+
+    public Employee(){
+    }
 
     public Employee(String mName, String mImageUrl) {
         this.mName = mName;
@@ -39,7 +44,14 @@ public class Employee {
         this.mImageUrl = mImageUrl;
     }
 
-    public Employee(){
+    //exclude from firebase database
+    @Exclude
+    public String getKey() {
+        return key;
+    }
 
+    @Exclude
+    public void setKey(String key) {
+        this.key = key;
     }
 }

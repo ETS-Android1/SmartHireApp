@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     String extractedName="";
     String extractedLocation = "";
     String extractedOrganization="";
+    Uri croppedFace;
 
     Intent intent1;
 
@@ -392,8 +393,9 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
             Log.d("FACE", "No face detected");
-            Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
-            intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
+            croppedFace = Uri.parse("android.resource://com.example.hire/drawable/ic_person");
+            //Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
+            //intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
 
         }
 
@@ -533,7 +535,7 @@ public class MainActivity extends AppCompatActivity {
                             //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
                             //bundle.putString("BundleText",sb.toString());
-                            Uri croppedFace = getImageUri(MainActivity.this,croppedBitmap);
+                            croppedFace = getImageUri(MainActivity.this,croppedBitmap);
                             intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
                             intent1.putExtra("EXTRACTED_EMAIL",email);
                             intent1.putExtra("EXTRACTED_NAME",extractedName);
