@@ -1,19 +1,33 @@
 package com.example.hire;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
 public class ExtractedText extends AppCompatActivity {
 
@@ -26,13 +40,27 @@ public class ExtractedText extends AppCompatActivity {
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
     Intent intent;
-    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress;
+    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedFace;
     private static final int EDIT_EXTRACTED_TEXT_CODE = 6;
+
+    //google firebase database
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+    private StorageTask mUploadTask;
+
+    private ProgressBar mProgressBar;
+    private Uri photoUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fab_for_extacted);
+
+        //firebase
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+
+        mProgressBar = findViewById(R.id.progressBar);
 
         textViewExtractedPhone = findViewById(R.id.editTextExtractedPhone);
         textViewExtractedEmail = findViewById(R.id.editTextExtractedEmail);
@@ -41,8 +69,8 @@ public class ExtractedText extends AppCompatActivity {
         imageViewExtractedImage = findViewById(R.id.imageViewExtractedImage);
 
         fab = findViewById(R.id.fab);
-        fab1 = findViewById(R.id.fabCamera);
-        fab2 = findViewById(R.id.fabGallery);
+        fab1 = findViewById(R.id.fabEdit);
+        fab2 = findViewById(R.id.fabSave);
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
@@ -55,13 +83,14 @@ public class ExtractedText extends AppCompatActivity {
         extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         extractedName = intent.getStringExtra("EXTRACTED_NAME");
         extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
-        final Bitmap bitmap = intent.getParcelableExtra("EXTRACTED_FACE");
+        extractedFace = intent.getStringExtra("EXTRACTED_FACE");
+        photoUri = Uri.parse(extractedFace);
 
         textViewExtractedPhone.setText(extractedPhoneNumber);
         textViewExtractedEmail.setText(extractedEmail);
         textViewExtractedName.setText(extractedName);
         textViewExtractedAddress.setText(extractedAddress);
-        imageViewExtractedImage.setImageBitmap(bitmap);
+        imageViewExtractedImage.setImageURI(photoUri);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +108,7 @@ public class ExtractedText extends AppCompatActivity {
                 intent2.putExtra("EXTRACTED_PHONE",extractedPhoneNumber);
                 intent2.putExtra("EXTRACTED_EMAIL",extractedEmail);
                 intent2.putExtra("EXTRACTED_ADDRESS",extractedAddress);
-                intent2.putExtra("EXTRACTED_FACE",bitmap);
+                intent2.putExtra("EXTRACTED_FACE",photoUri.toString());
 
                 startActivityForResult(intent2,EDIT_EXTRACTED_TEXT_CODE);
             }
@@ -89,6 +118,13 @@ public class ExtractedText extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 animateFab();
+                if (mUploadTask != null && mUploadTask.isInProgress()) {
+                    //mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                    Toast.makeText(ExtractedText.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                } else {
+                    uploadToDatabase();
+
+                }
             }
         });
 
@@ -116,29 +152,83 @@ public class ExtractedText extends AppCompatActivity {
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
         if(requestCode==EDIT_EXTRACTED_TEXT_CODE)
         {
-            String newName =data.getStringExtra("NEW_NAME");
-            String newPhoneNum =data.getStringExtra("NEW_PHONE_NUM");
-            String newEmail =data.getStringExtra("NEW_EMAIL");
-            String newAddress =data.getStringExtra("NEW_ADDRESS");
+            extractedName =data.getStringExtra("NEW_NAME");
+            extractedPhoneNumber =data.getStringExtra("NEW_PHONE_NUM");
+            extractedEmail =data.getStringExtra("NEW_EMAIL");
+            extractedAddress =data.getStringExtra("NEW_ADDRESS");
             //final Bitmap bitmap = data.getParcelableExtra("NEW_PHOTO");
-            Bundle extras = data.getExtras();
+            //Bundle extras = data.getExtras();
             //byte[] b = extras.getByteArray("NEW_PHOTO");
-            String newPhoto = data.getStringExtra("NEW_PHOTO");
-            Uri photoUri = Uri.parse(newPhoto);
+            extractedFace = data.getStringExtra("NEW_PHOTO");
+            photoUri = Uri.parse(extractedFace);
             //Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
 
 
-            textViewExtractedPhone.setText(newPhoneNum);
-            textViewExtractedEmail.setText(newEmail);
-            textViewExtractedName.setText(newName);
-            textViewExtractedAddress.setText(newAddress);
+            textViewExtractedPhone.setText(extractedPhoneNumber);
+            textViewExtractedEmail.setText(extractedEmail);
+            textViewExtractedName.setText(extractedName);
+            textViewExtractedAddress.setText(extractedAddress);
             imageViewExtractedImage.setImageURI(photoUri);
         }
     }
+
+    //Firebase
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void uploadToDatabase() {
+        if (photoUri != null) {
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(photoUri));
+
+            fileReference.putFile(photoUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //mProgressBar.setProgress(0);
+                                    mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                                }
+                            }, 200);
+
+                            Toast.makeText(ExtractedText.this, "Upload successful", Toast.LENGTH_LONG).show();
+                            Employee upload = new Employee(textViewExtractedName.getText().toString().trim(),
+                                    photoUri.toString());
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                            Intent intent = new Intent(ExtractedText.this,RecylerViewActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ExtractedText.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                            //double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            //mProgressBar.setProgress((int) progress);
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }

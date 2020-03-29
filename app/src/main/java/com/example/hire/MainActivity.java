@@ -8,6 +8,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -49,6 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -126,8 +128,8 @@ public class MainActivity extends AppCompatActivity {
         mQueue = Volley.newRequestQueue(this);
 
         fab = findViewById(R.id.fab);
-        fabCamera = findViewById(R.id.fabCamera);
-        fabGallery = findViewById(R.id.fabGallery);
+        fabCamera = findViewById(R.id.fabEdit);
+        fabGallery = findViewById(R.id.fabSave);
         fabExtract = findViewById(R.id.fabExtract);
 
         textViewCamera = findViewById(R.id.textViewCamera);
@@ -383,11 +385,7 @@ public class MainActivity extends AppCompatActivity {
             //Canvas canvas = new Canvas (tempBitmap);
             //imageViewResume.draw(canvas);
             croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
-
             //imageViewResume.setImageBitmap(croppedBitmap);
-
-            intent1.putExtra("EXTRACTED_FACE",croppedBitmap);
-
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
             //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
@@ -443,6 +441,14 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, timeStamp, null);
+        return Uri.parse(path);
     }
 
     // Post Request For JSONObject
@@ -527,10 +533,13 @@ public class MainActivity extends AppCompatActivity {
                             //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
                             //bundle.putString("BundleText",sb.toString());
+                            Uri croppedFace = getImageUri(MainActivity.this,croppedBitmap);
                             intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
                             intent1.putExtra("EXTRACTED_EMAIL",email);
                             intent1.putExtra("EXTRACTED_NAME",extractedName);
                             intent1.putExtra("EXTRACTED_ADDRESS",address);
+                            intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
+
                             progressBar.setVisibility(ProgressBar.INVISIBLE);
                             startActivity(intent1);
 

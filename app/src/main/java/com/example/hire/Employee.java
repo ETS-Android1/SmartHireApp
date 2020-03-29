@@ -2,30 +2,44 @@ package com.example.hire;
 
 public class Employee {
 
-    private String name,position;
-    private int img;
+    private String mName,mPosition,mImageUrl;
 
-    public String getName() {
-        return name;
+    public Employee(String mName, String mImageUrl) {
+        this.mName = mName;
+        this.mImageUrl = mImageUrl;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Employee(String mName, String mPosition, String mImageUrl) {
+        this.mName = mName;
+        this.mPosition = mPosition;
+        this.mImageUrl = mImageUrl;
     }
 
-    public String getPosition() {
-        return position;
+    public String getmName() {
+        return mName;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setmName(String mName) {
+        this.mName = mName;
     }
 
-    public int getImg() {
-        return img;
+    public String getmPosition() {
+        return mPosition;
     }
 
-    public void setImg(int img) {
-        this.img = img;
+    public void setmPosition(String mPosition) {
+        this.mPosition = mPosition;
+    }
+
+    public String getmImageUrl() {
+        return mImageUrl;
+    }
+
+    public void setmImageUrl(String mImageUrl) {
+        this.mImageUrl = mImageUrl;
+    }
+
+    public Employee(){
+
     }
 }

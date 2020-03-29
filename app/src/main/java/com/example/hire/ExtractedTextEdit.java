@@ -74,13 +74,14 @@ public class ExtractedTextEdit extends AppCompatActivity {
         String extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         String extractedName = intent.getStringExtra("EXTRACTED_NAME");
         String extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
-        Bitmap bitmap = intent.getParcelableExtra("EXTRACTED_FACE");
+        String extractedFace = intent.getStringExtra("EXTRACTED_FACE");
+        resultUri = Uri.parse(extractedFace);
 
         editTextExtractedPhone.setText(extractedPhoneNumber);
         editTextExtractedEmail.setText(extractedEmail);
         editTextExtractedName.setText(extractedName);
         editTextExtractedAddress.setText(extractedAddress);
-        imageViewExtractedImageEdit.setImageBitmap(bitmap);
+        imageViewExtractedImageEdit.setImageURI(resultUri);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

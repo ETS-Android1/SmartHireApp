@@ -24,7 +24,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabCamera"
+        android:id="@+id/fabEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -52,7 +52,7 @@
         android:visibility="invisible"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fabGallery"
+    android:id="@+id/fabSave"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
