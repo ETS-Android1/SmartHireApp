@@ -1,6 +1,7 @@
 package com.example.hire;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,6 +48,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
                 .fit()
                 .centerCrop()
                 .into(myHolder.mImageView);
+        Log.d("IMAGE: ", "onBindViewHolder:  "+ employeeCurrent.getmImageUrl());
         //myHolder.mImageView.setImageResource(employees.get(i).getImg()); //here we use image resource because we will use images in our resource folder which is drawable
 
     }

@@ -18,8 +18,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -185,44 +188,49 @@ public class ExtractedText extends AppCompatActivity {
     }
 
     private void uploadToDatabase() {
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
         if (photoUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+            final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(photoUri));
 
-            fileReference.putFile(photoUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            fileReference.putFile(photoUri).continueWithTask(
+                    new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //mProgressBar.setProgress(0);
-                                    mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                                }
-                            }, 200);
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException(); }
+                            return fileReference.getDownloadUrl();
+                        } })
+                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
 
-                            Toast.makeText(ExtractedText.this, "Upload successful", Toast.LENGTH_LONG).show();
-                            Employee upload = new Employee(textViewExtractedName.getText().toString().trim(),
-                                    photoUri.toString());
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
-                            Intent intent = new Intent(ExtractedText.this,RecylerViewActivity.class);
-                            startActivity(intent);
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                                    }
+                                }, 200);
+
+                                Uri downloadUri = task.getResult();
+                                Employee upload = new Employee(extractedName.trim(), downloadUri.toString());
+                                String uploadId = mDatabaseRef.push().getKey();
+                                mDatabaseRef.child(uploadId).setValue(upload);
+                                //mDatabaseRef.push().setValue(upload);
+                                Toast.makeText(ExtractedText.this, "Upload successful", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(ExtractedText.this,RecylerViewActivity.class);
+                                startActivity(intent);
+                            }
+                            else { Toast.makeText(ExtractedText.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(ExtractedText.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            mProgressBar.setVisibility(ProgressBar.VISIBLE);
-                            //double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            //mProgressBar.setProgress((int) progress);
+                            Toast.makeText(ExtractedText.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         } else {
