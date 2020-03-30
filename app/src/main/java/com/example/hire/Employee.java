@@ -4,7 +4,13 @@ import com.google.firebase.database.Exclude;
 
 public class Employee {
 
-    private String mName,mPosition,mImageUrl,key;
+    private String mName;
+    private String mPosition;
+    private String mImageUrl;
+    private String key;
+    private String mAddress;
+    private String mPhoneNumber;
+    private String mEmail;
 
     public Employee(){
     }
@@ -19,6 +25,39 @@ public class Employee {
         this.mPosition = mPosition;
         this.mImageUrl = mImageUrl;
     }
+
+    public Employee(String mName, String mImageUrl, String mAddress, String mPhoneNumber, String mEmail) {
+        this.mName = mName;
+        this.mImageUrl = mImageUrl;
+        this.mAddress = mAddress;
+        this.mPhoneNumber = mPhoneNumber;
+        this.mEmail = mEmail;
+    }
+
+    public String getmAddress() {
+        return mAddress;
+    }
+
+    public void setmAddress(String mAddress) {
+        this.mAddress = mAddress;
+    }
+
+    public String getmPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    public void setmPhoneNumber(String mPhoneNumber) {
+        this.mPhoneNumber = mPhoneNumber;
+    }
+
+    public String getmEmail() {
+        return mEmail;
+    }
+
+    public void setmEmail(String mEmail) {
+        this.mEmail = mEmail;
+    }
+
 
     public String getmName() {
         return mName;

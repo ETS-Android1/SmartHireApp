@@ -215,7 +215,7 @@ public class ExtractedText extends AppCompatActivity {
                                 }, 200);
 
                                 Uri downloadUri = task.getResult();
-                                Employee upload = new Employee(extractedName.trim(), downloadUri.toString());
+                                Employee upload = new Employee(extractedName.trim(), downloadUri.toString(),extractedAddress.trim(),extractedEmail.trim(),extractedPhoneNumber.trim());
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);

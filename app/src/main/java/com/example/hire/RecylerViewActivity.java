@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -91,6 +92,16 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
     @Override
     public void onItemClick(int position) {
         Toast.makeText(this, "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
+        Employee selectedItem = employees.get(position);
+        String selectedKey = selectedItem.getKey();
+        String name = selectedItem.getmName();
+        String profilePhoto = selectedItem.getmImageUrl();
+        Intent intent = new Intent(RecylerViewActivity.this,EmployeeProfile.class);
+        intent.putExtra("EMPLOYEE_NAME",name);
+        intent.putExtra("EMPLOYEE_PHOTO",profilePhoto);
+        startActivity(intent);
+
+
     }
 
     @Override
