@@ -115,12 +115,20 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
         final String selectedKey = selectedItem.getKey();
 
         StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
+        final StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
+
         Log.d("ERROR", "onDeleteClick: "+imageRef);
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                mDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(RecylerViewActivity.this, "Employee deleted", Toast.LENGTH_SHORT).show();
+                imageResumeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        mDatabaseRef.child(selectedKey).removeValue();
+                        Toast.makeText(RecylerViewActivity.this, "Employee deleted", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
     }

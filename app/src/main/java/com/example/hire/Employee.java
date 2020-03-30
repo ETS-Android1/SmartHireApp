@@ -7,6 +7,7 @@ public class Employee {
     private String mName;
     private String mPosition;
     private String mImageUrl;
+    private String resumeImageUrl;
     private String key;
     private String mAddress;
     private String mPhoneNumber;
@@ -33,6 +34,24 @@ public class Employee {
         this.mPhoneNumber = mPhoneNumber;
         this.mEmail = mEmail;
     }
+
+    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail) {
+        this.mName = mName;
+        this.mImageUrl = mImageUrl;
+        this.resumeImageUrl = resumeImageUrl;
+        this.mAddress = mAddress;
+        this.mPhoneNumber = mPhoneNumber;
+        this.mEmail = mEmail;
+    }
+
+    public String getResumeImageUrl() {
+        return resumeImageUrl;
+    }
+
+    public void setResumeImageUrl(String resumeImageUrl) {
+        this.resumeImageUrl = resumeImageUrl;
+    }
+
 
     public String getmAddress() {
         return mAddress;

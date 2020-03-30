@@ -45,7 +45,6 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
     String extractedName="";
     String extractedLocation = "";
     String extractedOrganization="";
-    Uri croppedFace;
+    Uri croppedFace,resultUri;
+
 
     Intent intent1;
 
@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private boolean isCanceled;
+
+    private int expandWidth, expandHeight, faceWidth, faceHeight;
 
 
     @Override
@@ -271,6 +273,10 @@ public class MainActivity extends AppCompatActivity {
             textViewCamera.setAnimation(fabOpen);
             textViewGallery.setAnimation(fabOpen);
             textViewExtract.setAnimation(fabOpen);
+            //textViewExtract.setBackgroundResource(R.color.colorPrimary);
+            textViewCamera.setBackgroundResource(R.drawable.rounded_corner);
+            textViewGallery.setBackgroundResource(R.drawable.rounded_corner);
+            textViewExtract.setBackgroundResource(R.drawable.rounded_corner);
             fabCamera.setClickable(true);
             fabGallery.setClickable(true);
             fabExtract.setClickable(true);
@@ -373,8 +379,10 @@ public class MainActivity extends AppCompatActivity {
                 y1 = thisFace.getPosition().y;
                 Log.d("FACE", "y1 : "+y1);
                 x2 = x1 + thisFace.getWidth();
+                expandWidth = (int)(thisFace.getWidth()*0.25);
                 Log.d("FACE", "x2 : "+x2);
                 y2 = y1 + thisFace.getHeight();
+                expandHeight = (int)(thisFace.getHeight()*0.30);
                 Log.d("FACE", "y2 : "+y2);
                 //tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
 
@@ -385,7 +393,9 @@ public class MainActivity extends AppCompatActivity {
 
             //Canvas canvas = new Canvas (tempBitmap);
             //imageViewResume.draw(canvas);
-            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1,(int)y1,(int)x2-(int)x1,(int)y2-(int)y1);
+            faceWidth = (int)x2-(int)x1;
+            faceHeight = (int)y2-(int)y1;
+            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1-expandWidth,(int)y1-expandHeight,faceWidth+(2*expandWidth),faceHeight+(2*expandHeight));
             //imageViewResume.setImageBitmap(croppedBitmap);
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
@@ -424,6 +434,7 @@ public class MainActivity extends AppCompatActivity {
             Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
             SparseArray<TextBlock> items = recognizer.detect(frame);
             StringBuilder sb = new StringBuilder();
+            Log.d("TESTING", "detectTextFromImage: "+ items.size());
             for (int i = 0; i < items.size(); i++) {
                 TextBlock myItems = items.valueAt(i);
                 sb.append(myItems.getValue());
@@ -466,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         String url = "http://192.168.0.187:9000/?properties=%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%7D";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,object,
                 new Response.Listener<JSONObject>() {
@@ -541,6 +553,7 @@ public class MainActivity extends AppCompatActivity {
                             intent1.putExtra("EXTRACTED_NAME",extractedName);
                             intent1.putExtra("EXTRACTED_ADDRESS",address);
                             intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
+                            intent1.putExtra("RESUME",resultUri.toString());
 
                             progressBar.setVisibility(ProgressBar.INVISIBLE);
                             startActivity(intent1);
@@ -705,7 +718,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();//get image uri
+                resultUri = result.getUri();//get image uri
                 imageViewResume.setImageURI(resultUri);
                 imageBitmapDrawable = (BitmapDrawable) imageViewResume.getDrawable();
                 imageBitmap = imageBitmapDrawable.getBitmap();

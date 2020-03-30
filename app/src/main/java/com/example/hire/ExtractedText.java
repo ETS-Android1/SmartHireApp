@@ -43,7 +43,7 @@ public class ExtractedText extends AppCompatActivity {
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
     Intent intent;
-    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedFace;
+    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedFace,resume;
     private static final int EDIT_EXTRACTED_TEXT_CODE = 6;
 
     //google firebase database
@@ -52,7 +52,7 @@ public class ExtractedText extends AppCompatActivity {
     private StorageTask mUploadTask;
 
     private ProgressBar mProgressBar;
-    private Uri photoUri;
+    private Uri photoUri,resumeUri,photoDownloadUri,resumeDownloadUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +87,8 @@ public class ExtractedText extends AppCompatActivity {
         extractedName = intent.getStringExtra("EXTRACTED_NAME");
         extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
         extractedFace = intent.getStringExtra("EXTRACTED_FACE");
+        resume = intent.getStringExtra("RESUME");
+        resumeUri = Uri.parse(resume);
         photoUri = Uri.parse(extractedFace);
 
         textViewExtractedPhone.setText(extractedPhoneNumber);
@@ -206,6 +208,40 @@ public class ExtractedText extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Uri> task) {
                             if (task.isSuccessful()) {
 
+                                photoDownloadUri = task.getResult();
+
+                            }
+                            else { Toast.makeText(ExtractedText.this, "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(ExtractedText.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+
+        if (resumeUri != null) {
+            final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + "." + getFileExtension(resumeUri));
+
+            fileReference.putFile(resumeUri).continueWithTask(
+                    new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException(); }
+                            return fileReference.getDownloadUrl();
+                        } })
+                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
                                     @Override
@@ -214,8 +250,8 @@ public class ExtractedText extends AppCompatActivity {
                                     }
                                 }, 200);
 
-                                Uri downloadUri = task.getResult();
-                                Employee upload = new Employee(extractedName.trim(), downloadUri.toString(),extractedAddress.trim(),extractedEmail.trim(),extractedPhoneNumber.trim());
+                                resumeDownloadUri = task.getResult();
+                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(),resumeDownloadUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim());
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);

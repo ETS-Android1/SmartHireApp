@@ -40,16 +40,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="80dp"
-        android:layout_marginRight="80dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
         android:layout_marginBottom="107dp"
         android:background="#00BBAFAF"
         android:elevation="16dp"
         android:gravity="center"
         android:text="Gallery"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorPrimaryDark"
-        android:visibility="invisible"/>
+        android:textColor="#FFFFFF"
+        android:visibility="invisible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/fabSave"
@@ -68,16 +68,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="78dp"
-        android:layout_marginRight="80dp"
-        android:layout_marginBottom="178dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginBottom="170dp"
         android:background="#00BBAFAF"
         android:elevation="16dp"
         android:gravity="center"
         android:text="Camera"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorPrimaryDark"
-        android:visibility="invisible"/>
+        android:textColor="#FFFFFF"
+        android:visibility="invisible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabExtract"
@@ -104,8 +104,9 @@
         android:gravity="center"
         android:text="Extract"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorPrimaryDark"
-        android:visibility="invisible"/>
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#00FF0000"
+        android:visibility="invisible" />
 
     <ProgressBar
         android:id="@+id/progressBar"
