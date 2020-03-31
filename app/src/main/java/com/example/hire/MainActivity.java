@@ -1,11 +1,13 @@
 package com.example.hire;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,13 +17,19 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
+import android.view.Surface;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,10 +47,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import org.json.JSONArray;
@@ -86,13 +99,8 @@ public class MainActivity extends AppCompatActivity {
     String camaraPermission[];
     String storagePermission[];
 
-    String phoneNumber="";
-    String email="";
-    String address="";
-    String extractedTextFromImage="";
-    String extractedName="";
-    String extractedLocation = "";
-    String extractedOrganization="";
+    private String employeePhoneNum,employeeEmail,employeeAddress,employeeName,employeeLocation,employeeOrganization,employeeAge,employeeSkills;
+    private String extractedTextFromImage="";
     Uri croppedFace,resultUri;
 
 
@@ -285,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractText() {
-        /*String addressRegex = "(Address|address|ADDRESS):?";
+        /*String addressRegex = "(Address|employeeAddress|ADDRESS):?";
         String abc = " \n ";
         final Pattern pattern = Pattern.compile(addressRegex+"(.+?)"+abc, Pattern.DOTALL);
         final Matcher matcher = pattern.matcher("Age: 12. \n Email: yujune99@gmail.com. \n Address: No.49 Jalan\nCempaka Wangi 12, Taman Cempaka, 42700, Banting, Selangor. \n Hi");
@@ -409,23 +417,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        /*final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
-        FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
-        firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-            @Override
-            public void onSuccess(FirebaseVisionText firebaseVisionText) {
-
-                displayTextFromImage(firebaseVisionText);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.d("Error :", e.getMessage());
-            }
-        });*/
-
         TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
 
         if (!recognizer.isOperational()) {
@@ -466,8 +457,13 @@ public class MainActivity extends AppCompatActivity {
 
     // Post Request For JSONObject
     public void postData(final String extractedText) {
-        extractedName="";
-        extractedLocation="";
+        employeeName ="";
+        employeeLocation ="";
+        employeeOrganization="";
+        employeeEmail="";
+        employeePhoneNum="";
+        employeeAddress ="";
+
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
 
@@ -500,14 +496,14 @@ public class MainActivity extends AppCompatActivity {
                                     JSONObject obj2 = ary2.getJSONObject(y);
                                     String namedEntity = obj2.getString("ner");
                                     String namedEntityResult = obj2.getString("text");
-                                    if(namedEntity.equals("PERSON") && extractedName.isEmpty()){
-                                        extractedName = namedEntityResult;
+                                    if(namedEntity.equals("PERSON") && employeeName.isEmpty()){
+                                        employeeName = namedEntityResult;
                                         Log.d("NAMEFOUND : ", namedEntityResult);
-                                    }else if((namedEntity.equals("LOCATION") || namedEntity.equals("CITY") ||namedEntity.equals("COUNTRY"))&&extractedLocation.isEmpty()){
-                                        extractedLocation = namedEntityResult;
+                                    }else if((namedEntity.equals("LOCATION") || namedEntity.equals("CITY") ||namedEntity.equals("COUNTRY"))&& employeeLocation.isEmpty()){
+                                        employeeLocation = namedEntityResult;
                                         Log.d("LOCATIONFOUND", namedEntityResult);
                                     }else if (namedEntity.equals("ORGANIZATION")){
-                                        extractedOrganization = namedEntityResult;
+                                        employeeOrganization = namedEntityResult;
                                     }
                                     //textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
                                     Log.d("NER", namedEntity+" : "+namedEntityResult+"\n");
@@ -515,43 +511,64 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             String str = extractedText;
+                            String phoneRegex = "((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}";
+                            String ageHeader = "((Age|age):?)?";
+                            String ageRegex = ageHeader +"\\d{2} (years)? (old)?";
+                            String addressHeader = "((Address|address|ADDRESS):?)?";
+                            String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)?";
+                            String location = employeeLocation;
+                            String addressRegex = addressHeader + addressFormat+"((\\d{1,2}-)?(\\d{1,2}[A-Z]?-)?(\\d{1,4})?,.+?)"+location;
+                            String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
-                            Pattern phonePattern = Pattern.compile("((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}");
+                            Pattern allPattern = Pattern.compile(phoneRegex+"|"+emailRegex+"|"+addressRegex+"|"+ageRegex);
+                            Matcher allMatcher = allPattern.matcher(str);
+                            while(allMatcher.find()){
+                                String result = allMatcher.group(0);
+                                if (result.matches(phoneRegex)){
+                                    employeePhoneNum = result;
+                                }else if(result.matches(addressRegex)){
+                                    employeeAddress = result;
+                                }else if(result.matches(emailRegex)){
+                                    employeeEmail = result;
+                                }else if(result.matches(ageRegex)){
+                                    employeeAge = result;
+                                }
+                            }
+
+                            /*Pattern phonePattern = Pattern.compile("((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}");
                             Pattern emailPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
                             Matcher phoneMatcher = phonePattern.matcher(str);
                             if (phoneMatcher.find()) {
-                                phoneNumber = phoneMatcher.group(0);
-                                //textViewExtractedText.append("Phone Number: "+phoneNumber+"\n");
+                                employeePhoneNum = phoneMatcher.group(0);
+                                //textViewExtractedText.append("Phone Number: "+employeePhoneNum+"\n");
 
                             }
 
                             Matcher emailMatcher = emailPattern.matcher(str);
                             if (emailMatcher.find()) {
-                                email = emailMatcher.group(0);
-                                //textViewExtractedText.append("Email: "+email+"\n");
+                                employeeEmail = emailMatcher.group(0);
+                                //textViewExtractedText.append("Email: "+employeeEmail+"\n");
                             }
 
-                            String addressRegex = "(Address|address|ADDRESS):?";
+                            String addressRegex = "(Address|employeeAddress|ADDRESS):?";
                             String addressFormat = "(NO|no|No|LOT|Lot|lot)?.?:?";
-                            String location = extractedLocation;
+                            String location = employeeLocation;
                             Pattern addressPattern = Pattern.compile(addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+(location),Pattern.DOTALL);
                             Matcher addressMatcher = addressPattern.matcher(str);
                             if (addressMatcher.find()) {
-                                address = addressMatcher.group(0);
-                                Log.d("Address: ",address);
-                                /*if(address.length()>100){
-                                    address="";
-                                }*/
-                                //textViewExtractedText.append("Address :"+address+"\n");
-                            }
+                                employeeAddress = addressMatcher.group(0);
+                                Log.d("Address: ",employeeAddress);
+                                //textViewExtractedText.append("Address :"+employeeAddress+"\n");
+                            }*/
                             //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
                             //bundle.putString("BundleText",sb.toString());
                             croppedFace = getImageUri(MainActivity.this,croppedBitmap);
-                            intent1.putExtra("EXTRACTED_PHONE",phoneNumber);
-                            intent1.putExtra("EXTRACTED_EMAIL",email);
-                            intent1.putExtra("EXTRACTED_NAME",extractedName);
-                            intent1.putExtra("EXTRACTED_ADDRESS",address);
+                            intent1.putExtra("EXTRACTED_PHONE", employeePhoneNum);
+                            intent1.putExtra("EXTRACTED_EMAIL", employeeEmail);
+                            intent1.putExtra("EXTRACTED_NAME", employeeName);
+                            intent1.putExtra("EXTRACTED_ADDRESS", employeeAddress);
+                            intent1.putExtra("EXTRACTED_AGE",employeeAge);
                             intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
                             intent1.putExtra("RESUME",resultUri.toString());
 
@@ -730,6 +747,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*private void firebaseTextDetecter(){
+        final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
+        FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
+        firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+            @Override
+            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+
+                displayTextFromImage(firebaseVisionText);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d("Error :", e.getMessage());
+            }
+        });
+    }*/
+
 
 
 
@@ -881,7 +917,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
 }
 

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public class EmployeeProfile extends AppCompatActivity {
 
-    TextView textViewName;
+    TextView textViewExtractedName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,9 +16,9 @@ public class EmployeeProfile extends AppCompatActivity {
         setContentView(R.layout.activity_employee_profile);
         Intent intent = getIntent();
 
-        textViewName = findViewById(R.id.textViewName);
+        textViewExtractedName = findViewById(R.id.textViewExtractedName);
         String employee_name = intent.getStringExtra("EMPLOYEE_NAME");
-        textViewName.setText(employee_name);
+        textViewExtractedName.setText(employee_name);
 
     }
 

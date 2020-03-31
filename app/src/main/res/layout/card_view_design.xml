@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="3dp"
+    app:cardCornerRadius="10dp"
     app:cardElevation="3dp"
     app:cardUseCompatPadding="true">
 
@@ -12,21 +12,23 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageViewPerson"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             app:srcCompat="@drawable/extracted_name" />
 
         <TextView
             android:id="@+id/textViewName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageViewPerson"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/imageViewPerson"
             android:layout_toRightOf="@id/imageViewPerson"
-            android:text="Title"
+            android:text="Name"
             android:textSize="22dp" />
 
         <TextView
@@ -42,6 +44,17 @@
             android:layout_marginTop="8dp"
             android:layout_below="@+id/textViewName"/>
 
+        <TextView
+            android:id="@+id/textViewDateRecruited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewPosition"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="11dp"
+            android:layout_toEndOf="@+id/imageViewPerson"
+            android:layout_toRightOf="@+id/imageViewPerson"
+            android:text="Date Recruited" />
 
 
     </RelativeLayout>

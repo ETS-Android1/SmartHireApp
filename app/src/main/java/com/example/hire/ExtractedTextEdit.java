@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,8 +25,6 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.ByteArrayOutputStream;
 
 public class ExtractedTextEdit extends AppCompatActivity {
 
@@ -60,10 +57,10 @@ public class ExtractedTextEdit extends AppCompatActivity {
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        editTextExtractedName = findViewById(R.id.editTextExtractedName);
-        editTextExtractedPhone = findViewById(R.id.editTextExtractedPhone);
-        editTextExtractedEmail = findViewById(R.id.editTextExtractedEmail);
-        editTextExtractedAddress = findViewById(R.id.editTextExtractedAddress);
+        editTextExtractedName = findViewById(R.id.textViewExtractedName);
+        editTextExtractedPhone = findViewById(R.id.textViewExtractedPhone);
+        editTextExtractedEmail = findViewById(R.id.textViewExtractedEmail);
+        editTextExtractedAddress = findViewById(R.id.textViewExtractedAddress);
 
         imageViewExtractedImageEdit = findViewById(R.id.imageViewExtractedImage);
         fab = findViewById(R.id.fab);

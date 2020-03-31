@@ -12,6 +12,7 @@ public class Employee {
     private String mAddress;
     private String mPhoneNumber;
     private String mEmail;
+    private String recruitedDate;
 
     public Employee(){
     }
@@ -42,6 +43,24 @@ public class Employee {
         this.mAddress = mAddress;
         this.mPhoneNumber = mPhoneNumber;
         this.mEmail = mEmail;
+    }
+
+    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate) {
+        this.mName = mName;
+        this.mImageUrl = mImageUrl;
+        this.resumeImageUrl = resumeImageUrl;
+        this.mAddress = mAddress;
+        this.mPhoneNumber = mPhoneNumber;
+        this.mEmail = mEmail;
+        this.recruitedDate = recruitedDate;
+    }
+
+    public String getRecruitedDate() {
+        return recruitedDate;
+    }
+
+    public void setRecruitedDate(String recruitedDate) {
+        this.recruitedDate = recruitedDate;
     }
 
     public String getResumeImageUrl() {

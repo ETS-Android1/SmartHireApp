@@ -55,7 +55,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     <EditText
-        android:id="@+id/editTextExtractedName"
+        android:id="@+id/textViewExtractedName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewLabelName" />
 
     <EditText
-        android:id="@+id/editTextExtractedPhone"
+        android:id="@+id/textViewExtractedPhone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -84,7 +84,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewLabelPhoneNumber" />
 
     <EditText
-        android:id="@+id/editTextExtractedEmail"
+        android:id="@+id/textViewExtractedEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -109,7 +109,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
     <EditText
-        android:id="@+id/editTextExtractedAddress"
+        android:id="@+id/textViewExtractedAddress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

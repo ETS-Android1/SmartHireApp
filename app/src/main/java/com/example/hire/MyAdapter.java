@@ -43,6 +43,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
         Employee employeeCurrent = employees.get(i);
         myHolder.mName.setText(employeeCurrent.getmName()); // here i is the position
         myHolder.mPosition.setText(employeeCurrent.getmPosition());
+        myHolder.textViewRecruitedDate.setText(employeeCurrent.getRecruitedDate());
         Picasso.get()
                 .load(employeeCurrent.getmImageUrl())
                 .fit()
@@ -61,7 +62,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         ImageView mImageView;
-        TextView mName, mPosition;
+        TextView mName, mPosition,textViewRecruitedDate;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +70,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
             this.mImageView = itemView.findViewById(R.id.imageViewPerson);
             this.mName = itemView.findViewById(R.id.textViewName);
             this.mPosition = itemView.findViewById(R.id.textViewPosition);
+            this.textViewRecruitedDate = itemView.findViewById(R.id.textViewDateRecruited);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -87,10 +89,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Do whatever");
+            MenuItem phoneCall = menu.add(Menu.NONE, 1, 1, "Call");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
 
-            doWhatever.setOnMenuItemClickListener(this);
+            phoneCall.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 

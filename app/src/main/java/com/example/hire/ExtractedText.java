@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,16 +20,17 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ExtractedText extends AppCompatActivity {
 
@@ -38,12 +38,13 @@ public class ExtractedText extends AppCompatActivity {
     TextView textViewExtractedEmail;
     TextView textViewExtractedName;
     TextView textViewExtractedAddress;
+    TextView textViewExtractedAge;
     ImageView imageViewExtractedImage;
     FloatingActionButton fab,fab1,fab2;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
     Intent intent;
-    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedFace,resume;
+    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedAge,extractedFace,resume;
     private static final int EDIT_EXTRACTED_TEXT_CODE = 6;
 
     //google firebase database
@@ -65,10 +66,12 @@ public class ExtractedText extends AppCompatActivity {
 
         mProgressBar = findViewById(R.id.progressBar);
 
-        textViewExtractedPhone = findViewById(R.id.editTextExtractedPhone);
-        textViewExtractedEmail = findViewById(R.id.editTextExtractedEmail);
-        textViewExtractedName = findViewById(R.id.editTextExtractedName);
-        textViewExtractedAddress = findViewById(R.id.editTextExtractedAddress);
+        textViewExtractedPhone = findViewById(R.id.textViewExtractedPhone);
+        textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
+        textViewExtractedName = findViewById(R.id.textViewExtractedName);
+        textViewExtractedAddress = findViewById(R.id.textViewExtractedAddress);
+        textViewExtractedAge = findViewById(R.id.textViewExtractedAge);
+
         imageViewExtractedImage = findViewById(R.id.imageViewExtractedImage);
 
         fab = findViewById(R.id.fab);
@@ -86,6 +89,8 @@ public class ExtractedText extends AppCompatActivity {
         extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         extractedName = intent.getStringExtra("EXTRACTED_NAME");
         extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
+        extractedAge = intent.getStringExtra("EXTRACTED_AGE");
+
         extractedFace = intent.getStringExtra("EXTRACTED_FACE");
         resume = intent.getStringExtra("RESUME");
         resumeUri = Uri.parse(resume);
@@ -95,6 +100,7 @@ public class ExtractedText extends AppCompatActivity {
         textViewExtractedEmail.setText(extractedEmail);
         textViewExtractedName.setText(extractedName);
         textViewExtractedAddress.setText(extractedAddress);
+        textViewExtractedAge.setText(extractedAge);
         imageViewExtractedImage.setImageURI(photoUri);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +257,8 @@ public class ExtractedText extends AppCompatActivity {
                                 }, 200);
 
                                 resumeDownloadUri = task.getResult();
-                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(),resumeDownloadUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim());
+                                String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
+                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(),resumeDownloadUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim(),timeStamp);
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);
