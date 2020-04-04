@@ -95,9 +95,22 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
         Employee selectedItem = employees.get(position);
         String selectedKey = selectedItem.getKey();
         String name = selectedItem.getmName();
+        String employeePosition = selectedItem.getmPosition();
+        String employeePhoneNum = selectedItem.getmPhoneNumber();
+        String employeeEmail = selectedItem.getmEmail();
+        int employeeAge = selectedItem.getmAge();
+        String employeeSkills = selectedItem.getmSkills();
+        String employeeEducation = selectedItem.getmEducation();
+
         String profilePhoto = selectedItem.getmImageUrl();
         Intent intent = new Intent(RecylerViewActivity.this,EmployeeProfile.class);
         intent.putExtra("EMPLOYEE_NAME",name);
+        intent.putExtra("EMPLOYEE_POSITION",employeePosition);
+        intent.putExtra("EMPLOYEE_PHONE",employeePhoneNum);
+        intent.putExtra("EMPLOYEE_EMAIL",employeeEmail);
+        intent.putExtra("EMPLOYEE_AGE",employeeAge);
+        intent.putExtra("EMPLOYEE_SKILLS",employeeSkills);
+        intent.putExtra("EMPLOYEE_EDUCATION",employeeEducation);
         intent.putExtra("EMPLOYEE_PHOTO",profilePhoto);
         startActivity(intent);
 

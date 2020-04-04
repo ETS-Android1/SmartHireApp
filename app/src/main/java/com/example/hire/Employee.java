@@ -13,6 +13,33 @@ public class Employee {
     private String mPhoneNumber;
     private String mEmail;
     private String recruitedDate;
+    private String mSkills;
+    private String mEducation;
+    private int mAge;
+
+    public int getmAge() {
+        return mAge;
+    }
+
+    public void setmAge(int mAge) {
+        this.mAge = mAge;
+    }
+
+    public String getmSkills() {
+        return mSkills;
+    }
+
+    public void setmSkills(String mSkills) {
+        this.mSkills = mSkills;
+    }
+
+    public String getmEducation() {
+        return mEducation;
+    }
+
+    public void setmEducation(String mEducation) {
+        this.mEducation = mEducation;
+    }
 
     public Employee(){
     }
@@ -45,7 +72,7 @@ public class Employee {
         this.mEmail = mEmail;
     }
 
-    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate) {
+    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate, String mSkills,String mEducation,int mAge) {
         this.mName = mName;
         this.mImageUrl = mImageUrl;
         this.resumeImageUrl = resumeImageUrl;
@@ -53,6 +80,10 @@ public class Employee {
         this.mPhoneNumber = mPhoneNumber;
         this.mEmail = mEmail;
         this.recruitedDate = recruitedDate;
+        this.mSkills = mSkills;
+        this.mEducation = mEducation;
+        this.mPosition = "Employee";
+        this.mAge = mAge;
     }
 
     public String getRecruitedDate() {

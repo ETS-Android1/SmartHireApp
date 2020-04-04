@@ -39,12 +39,16 @@ public class ExtractedText extends AppCompatActivity {
     TextView textViewExtractedName;
     TextView textViewExtractedAddress;
     TextView textViewExtractedAge;
+    TextView textViewExtractedSkills;
+    TextView textViewExtractedEducation;
+    //TextView textViewExtractedOther;
     ImageView imageViewExtractedImage;
-    FloatingActionButton fab,fab1,fab2;
+    FloatingActionButton fab, fabEdit, fabSave;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
     Intent intent;
-    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedAge,extractedFace,resume;
+    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedSkills,extractedEducation,extractedOther,extractedFace,resume;
+    private int extractedAge;
     private static final int EDIT_EXTRACTED_TEXT_CODE = 6;
 
     //google firebase database
@@ -66,17 +70,20 @@ public class ExtractedText extends AppCompatActivity {
 
         mProgressBar = findViewById(R.id.progressBar);
 
-        textViewExtractedPhone = findViewById(R.id.textViewExtractedPhone);
+        textViewExtractedPhone = findViewById(R.id.textViewExtractedPhoneNum);
         textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
         textViewExtractedName = findViewById(R.id.textViewExtractedName);
         textViewExtractedAddress = findViewById(R.id.textViewExtractedAddress);
         textViewExtractedAge = findViewById(R.id.textViewExtractedAge);
+        textViewExtractedSkills = findViewById(R.id.textViewExtractedSkills);
+        textViewExtractedEducation = findViewById(R.id.textViewExtractedEducation);
+        //textViewExtractedOther = findViewById(R.id.textViewExtractedOther);
 
         imageViewExtractedImage = findViewById(R.id.imageViewExtractedImage);
 
         fab = findViewById(R.id.fab);
-        fab1 = findViewById(R.id.fabEdit);
-        fab2 = findViewById(R.id.fabSave);
+        fabEdit = findViewById(R.id.fabEdit);
+        fabSave = findViewById(R.id.fabSave);
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
@@ -89,7 +96,10 @@ public class ExtractedText extends AppCompatActivity {
         extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         extractedName = intent.getStringExtra("EXTRACTED_NAME");
         extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
-        extractedAge = intent.getStringExtra("EXTRACTED_AGE");
+        extractedAge = Integer.parseInt(intent.getStringExtra("EXTRACTED_AGE"));
+        extractedSkills = intent.getStringExtra("EXTRACTED_SKILLS");
+        extractedEducation = intent.getStringExtra("EXTRACTED_EDUCATION");
+        //extractedOther = intent.getStringExtra("EXTRACTED_OTHER");
 
         extractedFace = intent.getStringExtra("EXTRACTED_FACE");
         resume = intent.getStringExtra("RESUME");
@@ -101,6 +111,9 @@ public class ExtractedText extends AppCompatActivity {
         textViewExtractedName.setText(extractedName);
         textViewExtractedAddress.setText(extractedAddress);
         textViewExtractedAge.setText(extractedAge);
+        textViewExtractedSkills.setText(extractedSkills);
+        textViewExtractedEducation.setText(extractedEducation);
+        //textViewExtractedOther.setText(extractedOther);
         imageViewExtractedImage.setImageURI(photoUri);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +123,7 @@ public class ExtractedText extends AppCompatActivity {
             }
         });
 
-        fab1.setOnClickListener(new View.OnClickListener() {
+        fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animateFab();
@@ -119,13 +132,16 @@ public class ExtractedText extends AppCompatActivity {
                 intent2.putExtra("EXTRACTED_PHONE",extractedPhoneNumber);
                 intent2.putExtra("EXTRACTED_EMAIL",extractedEmail);
                 intent2.putExtra("EXTRACTED_ADDRESS",extractedAddress);
+                intent2.putExtra("EXTRACTED_AGE",extractedAge);
+                intent2.putExtra("EXTRACTED_SKILLS",extractedSkills);
+                intent2.putExtra("EXTRACTED_EDUCATION",extractedEducation);
                 intent2.putExtra("EXTRACTED_FACE",photoUri.toString());
 
                 startActivityForResult(intent2,EDIT_EXTRACTED_TEXT_CODE);
             }
         });
 
-        fab2.setOnClickListener(new View.OnClickListener() {
+        fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animateFab();
@@ -144,20 +160,20 @@ public class ExtractedText extends AppCompatActivity {
     private void animateFab(){
         if (isOpen){
             fab.startAnimation(rotateBackward);
-            fab1.startAnimation(fabClose);
-            fab2.startAnimation(fabClose);
+            fabEdit.startAnimation(fabClose);
+            fabSave.startAnimation(fabClose);
             //fabExtract.startAnimation(fabClose);
-            fab1.setClickable(false);
-            fab2.setClickable(false);
+            fabEdit.setClickable(false);
+            fabSave.setClickable(false);
             //fabExtract.setClickable(false);
             isOpen=false;
         }else{
             fab.startAnimation(rotateForward);
-            fab1.startAnimation(fabOpen);
-            fab2.startAnimation(fabOpen);
+            fabEdit.startAnimation(fabOpen);
+            fabSave.startAnimation(fabOpen);
             //fabExtract.startAnimation(fabOpen);
-            fab1.setClickable(true);
-            fab2.setClickable(true);
+            fabEdit.setClickable(true);
+            fabSave.setClickable(true);
             //fabExtract.setClickable(true);
             isOpen=true;
         }
@@ -258,7 +274,7 @@ public class ExtractedText extends AppCompatActivity {
 
                                 resumeDownloadUri = task.getResult();
                                 String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
-                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(),resumeDownloadUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim(),timeStamp);
+                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(),resumeDownloadUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim(),timeStamp,extractedSkills.trim(),extractedEducation.trim(),extractedAge);
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);

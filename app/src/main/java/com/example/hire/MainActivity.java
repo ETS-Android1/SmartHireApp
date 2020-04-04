@@ -9,11 +9,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     String camaraPermission[];
     String storagePermission[];
 
-    private String employeePhoneNum,employeeEmail,employeeAddress,employeeName,employeeLocation,employeeOrganization,employeeAge,employeeSkills;
+    private String employeePhoneNum,employeeEmail,employeeAddress,employeeName,employeeLocation,employeeEducation,employeeAge,employeeSkills,employeeOther,employeeOrganization;
     private String extractedTextFromImage="";
     Uri croppedFace,resultUri;
 
@@ -118,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean isCanceled;
 
     private int expandWidth, expandHeight, faceWidth, faceHeight;
+
+    StringBuilder stringBuilderSkills;
+    StringBuilder stringBuilderEducation ;
+    StringBuilder stringBuilderOther ;
+
 
 
     @Override
@@ -154,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+
 
         Log.d("FAB", ""+isOpen);
 
@@ -404,14 +412,19 @@ public class MainActivity extends AppCompatActivity {
             faceWidth = (int)x2-(int)x1;
             faceHeight = (int)y2-(int)y1;
             croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1-expandWidth,(int)y1-expandHeight,faceWidth+(2*expandWidth),faceHeight+(2*expandHeight));
+            croppedFace = getImageUri(MainActivity.this,croppedBitmap);
             //imageViewResume.setImageBitmap(croppedBitmap);
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
             //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
         }else{
-            Toast.makeText(this, "No face detected", Toast.LENGTH_SHORT).show();
-            Log.d("FACE", "No face detected");
-            croppedFace = Uri.parse("android.resource://com.example.hire/drawable/ic_person");
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(MainActivity.this, "No Face Detected", Toast.LENGTH_SHORT).show();
+                }
+            });
+            Resources resources = MainActivity.this.getResources();
+            croppedFace = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(R.drawable.ic_person) + '/' + resources.getResourceTypeName(R.drawable.ic_person) + '/' + resources.getResourceEntryName(R.drawable.ic_person));
             //Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
             //intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
 
@@ -430,6 +443,7 @@ public class MainActivity extends AppCompatActivity {
                 TextBlock myItems = items.valueAt(i);
                 sb.append(myItems.getValue());
                 sb.append("  ");
+                Log.d("BOUNDING","Block "+i +" : " +myItems.getValue()+ "Top: "+myItems.getBoundingBox().top+"Bottom :"+myItems.getBoundingBox().bottom);
             }
             /*Intent intent1 = new Intent(this,ExtractedText.class);
             Bundle bundle = new Bundle();
@@ -463,6 +477,13 @@ public class MainActivity extends AppCompatActivity {
         employeeEmail="";
         employeePhoneNum="";
         employeeAddress ="";
+        employeeSkills="";
+        employeeEducation="";
+        employeeOther="";
+        employeeAge="";
+        stringBuilderSkills = new StringBuilder();
+        stringBuilderEducation = new StringBuilder();
+        stringBuilderOther = new StringBuilder();
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         JSONObject object = new JSONObject();
@@ -474,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://192.168.0.187:9000/?properties=%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%7D";
+        String url = "http://192.168.0.187:9000/?properties=%7B%22ner.model%22%3A%22/Users/ASUS/Desktop/stanford-corenlp-full-2018-10-05/ner-model.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz%22%2C%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%7D";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,object,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -504,34 +525,58 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d("LOCATIONFOUND", namedEntityResult);
                                     }else if (namedEntity.equals("ORGANIZATION")){
                                         employeeOrganization = namedEntityResult;
+                                    }else if (namedEntity.equals("SKILL")){
+                                        employeeSkills = namedEntityResult;
+                                        if (employeeSkills.isEmpty()){
+                                            stringBuilderSkills.append(employeeSkills);
+                                        }else{
+                                            stringBuilderSkills.append(" , " + employeeSkills);
+                                        }
+
+                                    }else if(namedEntity.equals("EDUCATION")){
+                                        employeeEducation = namedEntityResult;
+                                        if(stringBuilderEducation.indexOf(employeeEducation)==-1){
+                                            stringBuilderEducation.append(employeeEducation+"\n");
+                                        }
+
                                     }
+                                    /*else if(namedEntity.equals("COURSE")||namedEntity.equals("SUBJECT")||namedEntity.equals("CERTIFICATE")){
+                                        employeeOther = namedEntityResult;
+                                        stringBuilderOther.append(employeeOther+"\n");
+
+                                    }*/
                                     //textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
                                     Log.d("NER", namedEntity+" : "+namedEntityResult+"\n");
                                 }
                             }
 
+                            employeeSkills = stringBuilderSkills.toString();
+                            employeeEducation = stringBuilderEducation.toString();
+                            employeeOther = stringBuilderOther.toString();
+
                             String str = extractedText;
                             String phoneRegex = "((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}";
                             String ageHeader = "((Age|age):?)?";
-                            String ageRegex = ageHeader +"\\d{2} (years)? (old)?";
+                            String ageRegex = ageHeader +"\\d{2} ?(years)? (old)?";
                             String addressHeader = "((Address|address|ADDRESS):?)?";
                             String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)?";
                             String location = employeeLocation;
-                            String addressRegex = addressHeader + addressFormat+"((\\d{1,2}-)?(\\d{1,2}[A-Z]?-)?(\\d{1,4})?,.+?)"+location;
+                            String addressRegex = addressHeader + addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+location;
                             String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
                             Pattern allPattern = Pattern.compile(phoneRegex+"|"+emailRegex+"|"+addressRegex+"|"+ageRegex);
                             Matcher allMatcher = allPattern.matcher(str);
                             while(allMatcher.find()){
                                 String result = allMatcher.group(0);
-                                if (result.matches(phoneRegex)){
+                                if (result.matches(phoneRegex) && employeePhoneNum.isEmpty()){
                                     employeePhoneNum = result;
-                                }else if(result.matches(addressRegex)){
+                                }else if(result.matches(addressRegex)&& employeeAddress.isEmpty()){
                                     employeeAddress = result;
-                                }else if(result.matches(emailRegex)){
+                                }else if(result.matches(emailRegex) && employeeEmail.isEmpty()){
                                     employeeEmail = result;
-                                }else if(result.matches(ageRegex)){
+                                }else if(result.matches(ageRegex) && employeeAge.isEmpty()){
                                     employeeAge = result;
+                                    employeeAge.substring(0,1);
                                 }
                             }
 
@@ -563,11 +608,14 @@ public class MainActivity extends AppCompatActivity {
                             //textViewExtractedText.setText(matcher.group(2));
                             //Bundle bundle = new Bundle();
                             //bundle.putString("BundleText",sb.toString());
-                            croppedFace = getImageUri(MainActivity.this,croppedBitmap);
+
                             intent1.putExtra("EXTRACTED_PHONE", employeePhoneNum);
                             intent1.putExtra("EXTRACTED_EMAIL", employeeEmail);
                             intent1.putExtra("EXTRACTED_NAME", employeeName);
                             intent1.putExtra("EXTRACTED_ADDRESS", employeeAddress);
+                            intent1.putExtra("EXTRACTED_SKILLS",employeeSkills);
+                            intent1.putExtra("EXTRACTED_EDUCATION",employeeEducation);
+                            //intent1.putExtra("EXTRACTED_OTHER",employeeOther);
                             intent1.putExtra("EXTRACTED_AGE",employeeAge);
                             intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
                             intent1.putExtra("RESUME",resultUri.toString());

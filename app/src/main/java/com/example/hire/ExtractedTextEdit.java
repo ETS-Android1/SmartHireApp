@@ -28,7 +28,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ExtractedTextEdit extends AppCompatActivity {
 
-    EditText editTextExtractedName, editTextExtractedPhone,editTextExtractedEmail,editTextExtractedAddress;
+    EditText editTextExtractedName, editTextExtractedPhone,editTextExtractedEmail,editTextExtractedAddress,editTextSkills,editTextEducation,editTextAge;
     ImageView imageViewExtractedImageEdit;
     FloatingActionButton fab,fabEditPhoto;
     Intent intent;
@@ -57,10 +57,13 @@ public class ExtractedTextEdit extends AppCompatActivity {
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        editTextExtractedName = findViewById(R.id.textViewExtractedName);
-        editTextExtractedPhone = findViewById(R.id.textViewExtractedPhone);
-        editTextExtractedEmail = findViewById(R.id.textViewExtractedEmail);
-        editTextExtractedAddress = findViewById(R.id.textViewExtractedAddress);
+        editTextExtractedName = findViewById(R.id.editTextExtractedName);
+        editTextExtractedPhone = findViewById(R.id.editTextExtractedPhone);
+        editTextExtractedEmail = findViewById(R.id.editTextExtractedEmail);
+        editTextExtractedAddress = findViewById(R.id.editTextExtractedAddress);
+        editTextAge = findViewById(R.id.editTextExtractedAge);
+        editTextSkills = findViewById(R.id.editTextSkills);
+        editTextEducation = findViewById(R.id.editTextEducation);
 
         imageViewExtractedImageEdit = findViewById(R.id.imageViewExtractedImage);
         fab = findViewById(R.id.fab);
@@ -71,6 +74,9 @@ public class ExtractedTextEdit extends AppCompatActivity {
         String extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         String extractedName = intent.getStringExtra("EXTRACTED_NAME");
         String extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
+        String extractedAge = intent.getStringExtra("EXTRACTED_AGE");
+        String extractedSkills = intent.getStringExtra("EXTRACTED_SKILLS");
+        String extractedEducation = intent.getStringExtra("EXTARCTED_EDUCATION");
         String extractedFace = intent.getStringExtra("EXTRACTED_FACE");
         resultUri = Uri.parse(extractedFace);
 
@@ -78,6 +84,9 @@ public class ExtractedTextEdit extends AppCompatActivity {
         editTextExtractedEmail.setText(extractedEmail);
         editTextExtractedName.setText(extractedName);
         editTextExtractedAddress.setText(extractedAddress);
+        editTextAge.setText(extractedAge);
+        editTextSkills.setText(extractedSkills);
+        editTextEducation.setText(extractedEducation);
         imageViewExtractedImageEdit.setImageURI(resultUri);
 
         fab.setOnClickListener(new View.OnClickListener() {
