@@ -74,9 +74,9 @@ public class ExtractedTextEdit extends AppCompatActivity {
         String extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         String extractedName = intent.getStringExtra("EXTRACTED_NAME");
         String extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
-        String extractedAge = intent.getStringExtra("EXTRACTED_AGE");
+        int extractedAge = intent.getIntExtra("EXTRACTED_AGE",0);
         String extractedSkills = intent.getStringExtra("EXTRACTED_SKILLS");
-        String extractedEducation = intent.getStringExtra("EXTARCTED_EDUCATION");
+        String extractedEducation = intent.getStringExtra("EXTRACTED_EDUCATION");
         String extractedFace = intent.getStringExtra("EXTRACTED_FACE");
         resultUri = Uri.parse(extractedFace);
 
@@ -84,7 +84,7 @@ public class ExtractedTextEdit extends AppCompatActivity {
         editTextExtractedEmail.setText(extractedEmail);
         editTextExtractedName.setText(extractedName);
         editTextExtractedAddress.setText(extractedAddress);
-        editTextAge.setText(extractedAge);
+        editTextAge.setText(Integer.toString(extractedAge));
         editTextSkills.setText(extractedSkills);
         editTextEducation.setText(extractedEducation);
         imageViewExtractedImageEdit.setImageURI(resultUri);

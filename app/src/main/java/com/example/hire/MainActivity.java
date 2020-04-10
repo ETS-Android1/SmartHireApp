@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
     private String extractedTextFromImage="";
     Uri croppedFace,resultUri;
 
-
     Intent intent1;
 
     FloatingActionButton fab, fabCamera, fabGallery, fabExtract;
@@ -124,8 +123,6 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder stringBuilderSkills;
     StringBuilder stringBuilderEducation ;
     StringBuilder stringBuilderOther ;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,8 +209,6 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(ProgressBar.VISIBLE);
                 ExtractThread extractThread = new ExtractThread();
                 new Thread(extractThread).start();
-
-
 
             }
         });
@@ -526,10 +521,12 @@ public class MainActivity extends AppCompatActivity {
                                     }else if (namedEntity.equals("ORGANIZATION")){
                                         employeeOrganization = namedEntityResult;
                                     }else if (namedEntity.equals("SKILL")){
-                                        employeeSkills = namedEntityResult;
+                                        //employeeSkills = namedEntityResult;
                                         if (employeeSkills.isEmpty()){
+                                            employeeSkills = namedEntityResult;
                                             stringBuilderSkills.append(employeeSkills);
                                         }else{
+                                            employeeSkills = namedEntityResult;
                                             stringBuilderSkills.append(" , " + employeeSkills);
                                         }
 
@@ -577,6 +574,7 @@ public class MainActivity extends AppCompatActivity {
                                 }else if(result.matches(ageRegex) && employeeAge.isEmpty()){
                                     employeeAge = result;
                                     employeeAge.substring(0,1);
+                                    Log.d("AGE:",employeeAge+employeeAge.substring(0,1));
                                 }
                             }
 
@@ -616,7 +614,7 @@ public class MainActivity extends AppCompatActivity {
                             intent1.putExtra("EXTRACTED_SKILLS",employeeSkills);
                             intent1.putExtra("EXTRACTED_EDUCATION",employeeEducation);
                             //intent1.putExtra("EXTRACTED_OTHER",employeeOther);
-                            intent1.putExtra("EXTRACTED_AGE",employeeAge);
+                            intent1.putExtra("EXTRACTED_AGE",Integer.parseInt(employeeAge.trim()));
                             intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
                             intent1.putExtra("RESUME",resultUri.toString());
 

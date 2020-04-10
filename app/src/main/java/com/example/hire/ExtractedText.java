@@ -96,7 +96,7 @@ public class ExtractedText extends AppCompatActivity {
         extractedEmail = intent.getStringExtra("EXTRACTED_EMAIL");
         extractedName = intent.getStringExtra("EXTRACTED_NAME");
         extractedAddress = intent.getStringExtra("EXTRACTED_ADDRESS");
-        extractedAge = Integer.parseInt(intent.getStringExtra("EXTRACTED_AGE"));
+        extractedAge = intent.getIntExtra("EXTRACTED_AGE",0);
         extractedSkills = intent.getStringExtra("EXTRACTED_SKILLS");
         extractedEducation = intent.getStringExtra("EXTRACTED_EDUCATION");
         //extractedOther = intent.getStringExtra("EXTRACTED_OTHER");
@@ -110,7 +110,7 @@ public class ExtractedText extends AppCompatActivity {
         textViewExtractedEmail.setText(extractedEmail);
         textViewExtractedName.setText(extractedName);
         textViewExtractedAddress.setText(extractedAddress);
-        textViewExtractedAge.setText(extractedAge);
+        textViewExtractedAge.setText(Integer.toString(extractedAge));
         textViewExtractedSkills.setText(extractedSkills);
         textViewExtractedEducation.setText(extractedEducation);
         //textViewExtractedOther.setText(extractedOther);

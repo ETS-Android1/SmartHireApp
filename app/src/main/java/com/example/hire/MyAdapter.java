@@ -43,7 +43,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
         Employee employeeCurrent = employees.get(i);
         myHolder.mName.setText(employeeCurrent.getmName()); // here i is the position
         myHolder.mPosition.setText(employeeCurrent.getmPosition());
-        myHolder.textViewRecruitedDate.setText(employeeCurrent.getRecruitedDate());
+        myHolder.textViewRecruitedDate.setText("Recruited ON: "+employeeCurrent.getRecruitedDate());
         Picasso.get()
                 .load(employeeCurrent.getmImageUrl())
                 .fit()

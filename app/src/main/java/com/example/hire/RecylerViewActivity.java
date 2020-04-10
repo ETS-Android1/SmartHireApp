@@ -39,7 +39,7 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recyler_view);
 
-        progressCircle = findViewById(R.id.progress_circle);
+        //progressCircle = findViewById(R.id.progress_circle);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this)); // it will create recyclerview in linear layout
 
@@ -74,14 +74,14 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
 
                 myAdapter.notifyDataSetChanged();
 
-                progressCircle.setVisibility(View.INVISIBLE);
+                //progressCircle.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 Toast.makeText(RecylerViewActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                progressCircle.setVisibility(View.INVISIBLE);
+                //progressCircle.setVisibility(View.INVISIBLE);
 
             }
         });

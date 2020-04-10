@@ -34,7 +34,7 @@ public class EmployeeProfile extends AppCompatActivity {
         String employeePhone = intent.getStringExtra("EMPLOYEE_PHONE");
         String employeeEmail= intent.getStringExtra("EMPLOYEE_EMAIL");
         String employeeAddress = intent.getStringExtra("EMPLOYEE_ADDRESS");
-        int employeeAge = Integer.parseInt(intent.getStringExtra("EMPLOYEE_AGE"));
+        int employeeAge = intent.getIntExtra("EMPLOYEE_AGE",0);
         String employeeSkills = intent.getStringExtra("EMPLOYEE_SKILLS");
         String employeeEducation = intent.getStringExtra("EMPLOYEE_EDUCATION");
         String employeeProfilePhoto = intent.getStringExtra("EMPLOYEE_PHOTO");
@@ -48,7 +48,7 @@ public class EmployeeProfile extends AppCompatActivity {
         textViewProfileName.setText(employeeName);
         textViewProfilePosition.setText(employeePosition);
         textViewProfileEmail.setText(employeeEmail);
-        textViewProfileAge.setText(employeeAge);
+        textViewProfileAge.setText(Integer.toString(employeeAge));
         textViewProfilePhoneNum.setText(employeePhone);
         textViewProfileAddress.setText(employeeAddress);
         textViewProfileSkills.setText(employeeSkills);
