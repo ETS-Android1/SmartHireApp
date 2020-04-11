@@ -19,6 +19,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    viewBinding.enabled = true
+
 }
 
 dependencies {
@@ -50,6 +52,7 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
 
 }
 

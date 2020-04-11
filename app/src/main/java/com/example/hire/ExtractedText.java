@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hire.databinding.ActivityFabForExtactedBinding;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,20 +35,10 @@ import java.util.Date;
 
 public class ExtractedText extends AppCompatActivity {
 
-    TextView textViewExtractedPhone;
-    TextView textViewExtractedEmail;
-    TextView textViewExtractedName;
-    TextView textViewExtractedAddress;
-    TextView textViewExtractedAge;
-    TextView textViewExtractedSkills;
-    TextView textViewExtractedEducation;
-    //TextView textViewExtractedOther;
-    ImageView imageViewExtractedImage;
-    FloatingActionButton fab, fabEdit, fabSave;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
     Intent intent;
-    String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedSkills,extractedEducation,extractedOther,extractedFace,resume;
+    private String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedSkills,extractedEducation,extractedOther,extractedFace,resume;
     private int extractedAge;
     private static final int EDIT_EXTRACTED_TEXT_CODE = 6;
 
@@ -56,34 +47,20 @@ public class ExtractedText extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private StorageTask mUploadTask;
 
-    private ProgressBar mProgressBar;
     private Uri photoUri,resumeUri,photoDownloadUri,resumeDownloadUri;
+
+    private ActivityFabForExtactedBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fab_for_extacted);
+        binding = ActivityFabForExtactedBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         //firebase
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
-
-        mProgressBar = findViewById(R.id.progressBar);
-
-        textViewExtractedPhone = findViewById(R.id.textViewExtractedPhoneNum);
-        textViewExtractedEmail = findViewById(R.id.textViewExtractedEmail);
-        textViewExtractedName = findViewById(R.id.textViewExtractedName);
-        textViewExtractedAddress = findViewById(R.id.textViewExtractedAddress);
-        textViewExtractedAge = findViewById(R.id.textViewExtractedAge);
-        textViewExtractedSkills = findViewById(R.id.textViewExtractedSkills);
-        textViewExtractedEducation = findViewById(R.id.textViewExtractedEducation);
-        //textViewExtractedOther = findViewById(R.id.textViewExtractedOther);
-
-        imageViewExtractedImage = findViewById(R.id.imageViewExtractedImage);
-
-        fab = findViewById(R.id.fab);
-        fabEdit = findViewById(R.id.fabEdit);
-        fabSave = findViewById(R.id.fabSave);
 
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
@@ -106,24 +83,24 @@ public class ExtractedText extends AppCompatActivity {
         resumeUri = Uri.parse(resume);
         photoUri = Uri.parse(extractedFace);
 
-        textViewExtractedPhone.setText(extractedPhoneNumber);
-        textViewExtractedEmail.setText(extractedEmail);
-        textViewExtractedName.setText(extractedName);
-        textViewExtractedAddress.setText(extractedAddress);
-        textViewExtractedAge.setText(Integer.toString(extractedAge));
-        textViewExtractedSkills.setText(extractedSkills);
-        textViewExtractedEducation.setText(extractedEducation);
+        binding.include.textViewExtractedPhoneNum.setText(extractedPhoneNumber);
+        binding.include.textViewExtractedEmail.setText(extractedEmail);
+        binding.include.textViewExtractedName.setText(extractedName);
+        binding.include.textViewExtractedAddress.setText(extractedAddress);
+        binding.include.textViewExtractedAge.setText(Integer.toString(extractedAge));
+        binding.include.textViewExtractedSkills.setText(extractedSkills);
+        binding.include.textViewExtractedEducation.setText(extractedEducation);
         //textViewExtractedOther.setText(extractedOther);
-        imageViewExtractedImage.setImageURI(photoUri);
+        binding.include.imageViewExtractedImage.setImageURI(photoUri);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animateFab();
             }
         });
 
-        fabEdit.setOnClickListener(new View.OnClickListener() {
+        binding.fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animateFab();
@@ -141,7 +118,7 @@ public class ExtractedText extends AppCompatActivity {
             }
         });
 
-        fabSave.setOnClickListener(new View.OnClickListener() {
+        binding.fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 animateFab();
@@ -159,21 +136,21 @@ public class ExtractedText extends AppCompatActivity {
 
     private void animateFab(){
         if (isOpen){
-            fab.startAnimation(rotateBackward);
-            fabEdit.startAnimation(fabClose);
-            fabSave.startAnimation(fabClose);
+            binding.fab.startAnimation(rotateBackward);
+            binding.fabEdit.startAnimation(fabClose);
+            binding.fabSave.startAnimation(fabClose);
             //fabExtract.startAnimation(fabClose);
-            fabEdit.setClickable(false);
-            fabSave.setClickable(false);
+            binding.fabEdit.setClickable(false);
+            binding.fabSave.setClickable(false);
             //fabExtract.setClickable(false);
             isOpen=false;
         }else{
-            fab.startAnimation(rotateForward);
-            fabEdit.startAnimation(fabOpen);
-            fabSave.startAnimation(fabOpen);
+            binding.fab.startAnimation(rotateForward);
+            binding.fabEdit.startAnimation(fabOpen);
+            binding.fabSave.startAnimation(fabOpen);
             //fabExtract.startAnimation(fabOpen);
-            fabEdit.setClickable(true);
-            fabSave.setClickable(true);
+            binding.fabEdit.setClickable(true);
+            binding.fabSave.setClickable(true);
             //fabExtract.setClickable(true);
             isOpen=true;
         }
@@ -196,11 +173,11 @@ public class ExtractedText extends AppCompatActivity {
             //Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
 
 
-            textViewExtractedPhone.setText(extractedPhoneNumber);
-            textViewExtractedEmail.setText(extractedEmail);
-            textViewExtractedName.setText(extractedName);
-            textViewExtractedAddress.setText(extractedAddress);
-            imageViewExtractedImage.setImageURI(photoUri);
+            binding.include.textViewExtractedPhoneNum.setText(extractedPhoneNumber);
+            binding.include.textViewExtractedEmail.setText(extractedEmail);
+            binding.include.textViewExtractedName.setText(extractedName);
+            binding.include.textViewExtractedAddress.setText(extractedAddress);
+            binding.include.imageViewExtractedImage.setImageURI(photoUri);
         }
     }
 
@@ -212,7 +189,7 @@ public class ExtractedText extends AppCompatActivity {
     }
 
     private void uploadToDatabase() {
-        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+        binding.progressBarExtracted.setVisibility(ProgressBar.VISIBLE);
         if (photoUri != null) {
             final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(photoUri));
@@ -268,7 +245,7 @@ public class ExtractedText extends AppCompatActivity {
                                 handler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                                        binding.progressBarExtracted.setVisibility(ProgressBar.INVISIBLE);
                                     }
                                 }, 200);
 

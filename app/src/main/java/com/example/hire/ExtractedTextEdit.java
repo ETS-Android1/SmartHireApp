@@ -22,15 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.hire.databinding.ActivityExtractedTextEditBinding;
+import com.example.hire.databinding.ActivityFabForExtactedEditBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ExtractedTextEdit extends AppCompatActivity {
 
-    EditText editTextExtractedName, editTextExtractedPhone,editTextExtractedEmail,editTextExtractedAddress,editTextSkills,editTextEducation,editTextAge;
-    ImageView imageViewExtractedImageEdit;
-    FloatingActionButton fab,fabEditPhoto;
     Intent intent;
     private static final int EDIT_EXTRACTED_TEXT_CODE = 6;
     private static final int CAMERA_REQUEST_CODE = 200;
@@ -49,25 +48,18 @@ public class ExtractedTextEdit extends AppCompatActivity {
 
     Uri imageUri;
 
+    private ActivityFabForExtactedEditBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fab_for_extacted_edit);
+        binding = ActivityFabForExtactedEditBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        editTextExtractedName = findViewById(R.id.editTextExtractedName);
-        editTextExtractedPhone = findViewById(R.id.editTextExtractedPhone);
-        editTextExtractedEmail = findViewById(R.id.editTextExtractedEmail);
-        editTextExtractedAddress = findViewById(R.id.editTextExtractedAddress);
-        editTextAge = findViewById(R.id.editTextExtractedAge);
-        editTextSkills = findViewById(R.id.editTextSkills);
-        editTextEducation = findViewById(R.id.editTextEducation);
-
-        imageViewExtractedImageEdit = findViewById(R.id.imageViewExtractedImage);
-        fab = findViewById(R.id.fab);
-        fabEditPhoto = findViewById(R.id.fabEditPhoto);
         intent = getIntent();
 
         String extractedPhoneNumber = intent.getStringExtra("EXTRACTED_PHONE");
@@ -80,22 +72,22 @@ public class ExtractedTextEdit extends AppCompatActivity {
         String extractedFace = intent.getStringExtra("EXTRACTED_FACE");
         resultUri = Uri.parse(extractedFace);
 
-        editTextExtractedPhone.setText(extractedPhoneNumber);
-        editTextExtractedEmail.setText(extractedEmail);
-        editTextExtractedName.setText(extractedName);
-        editTextExtractedAddress.setText(extractedAddress);
-        editTextAge.setText(Integer.toString(extractedAge));
-        editTextSkills.setText(extractedSkills);
-        editTextEducation.setText(extractedEducation);
-        imageViewExtractedImageEdit.setImageURI(resultUri);
+        binding.include.editTextExtractedPhone.setText(extractedPhoneNumber);
+        binding.include.editTextExtractedEmail.setText(extractedEmail);
+        binding.include.editTextExtractedName.setText(extractedName);
+        binding.include.editTextExtractedAddress.setText(extractedAddress);
+        binding.include.editTextExtractedAge.setText(Integer.toString(extractedAge));
+        binding.include.editTextSkills.setText(extractedSkills);
+        binding.include.editTextEducation.setText(extractedEducation);
+        binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newName = editTextExtractedName.getText().toString();
-                String newPhoneNum = editTextExtractedPhone.getText().toString();
-                String newEmail = editTextExtractedEmail.getText().toString();
-                String newAddress = editTextExtractedAddress.getText().toString();
+                String newName = binding.include.editTextExtractedName.getText().toString();
+                String newPhoneNum = binding.include.editTextExtractedPhone.getText().toString();
+                String newEmail = binding.include.editTextExtractedEmail.getText().toString();
+                String newAddress = binding.include.editTextExtractedAddress.getText().toString();
 
                 Intent intent = new Intent();
                 intent.putExtra("NEW_NAME",newName);
@@ -109,7 +101,7 @@ public class ExtractedTextEdit extends AppCompatActivity {
             }
         });
 
-        fabEditPhoto.setOnClickListener(new View.OnClickListener() {
+        binding.include.fabEditPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String[] colors = {"Camera", "Gallery"};
@@ -242,9 +234,9 @@ public class ExtractedTextEdit extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();//get image uri
-                imageViewExtractedImageEdit.setImageURI(resultUri);
+                binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
                 Log.d("Image",""+resultUri);
-                imageBitmapDrawable = (BitmapDrawable) imageViewExtractedImageEdit.getDrawable();
+                imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewExtractedImageEdit.getDrawable();
                 imageBitmap = imageBitmapDrawable.getBitmap();
 
             }

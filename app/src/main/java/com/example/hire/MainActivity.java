@@ -49,6 +49,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.hire.databinding.ActivityFabBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
@@ -79,16 +80,14 @@ import android.app.AlertDialog;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button buttonCamera, buttonExtract, buttonGallery,buttonPost;
     private RequestQueue mQueue;
-    private ImageView imageViewResume;
-    private TextView textViewExtractedText, textViewProgress;
     private Bitmap imageBitmap,croppedBitmap;
     private BitmapDrawable imageBitmapDrawable;
     private float x1,x2,y1,y2;
@@ -107,12 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
     Intent intent1;
 
-    FloatingActionButton fab, fabCamera, fabGallery, fabExtract;
-    TextView textViewCamera, textViewGallery, textViewExtract;
     Animation fabOpen, fabClose, rotateForward, rotateBackward;
     boolean isOpen = false;
-
-    ProgressBar progressBar;
 
     private int progressStatus = 0;
     private Handler handler = new Handler();
@@ -124,16 +119,14 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder stringBuilderEducation ;
     StringBuilder stringBuilderOther ;
 
+    private ActivityFabBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fab);
-        //buttonCamera = findViewById(R.id.buttonCamera);
-        //buttonExtract = findViewById(R.id.buttonExtract);
-        //buttonGallery = findViewById(R.id.buttonGallery);
-        //buttonPost=findViewById(R.id.buttonPost);
-        imageViewResume = findViewById(R.id.imageViewResume);
-        //textViewExtractedText = findViewById(R.id.textViewExtractedText);
+        binding = ActivityFabBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -142,27 +135,19 @@ public class MainActivity extends AppCompatActivity {
 
         mQueue = Volley.newRequestQueue(this);
 
-        fab = findViewById(R.id.fab);
-        fabCamera = findViewById(R.id.fabEdit);
-        fabGallery = findViewById(R.id.fabSave);
-        fabExtract = findViewById(R.id.fabExtract);
-
-        textViewCamera = findViewById(R.id.textViewCamera);
-        textViewGallery= findViewById(R.id.textViewGallery);
-        textViewExtract = findViewById(R.id.textViewExtract);
-
-        progressBar = findViewById(R.id.progressBar);
-
         fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
 
         rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
 
+        setSupportActionBar(binding.include.toolbarMain);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //getSupportActionBar().setTitle("Hirkle");
+        //getSupportActionBar().setIcon(getDrawable(R.drawable.hire_logo));
 
-        Log.d("FAB", ""+isOpen);
-
-        fab.setOnClickListener(new View.OnClickListener() {
+        binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View view) {
@@ -171,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fabCamera.setOnClickListener(new View.OnClickListener() {
+        binding.fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"Capture the resume",Toast.LENGTH_SHORT).show();
@@ -184,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fabGallery.setOnClickListener(new View.OnClickListener() {
+        binding.fabGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this,"Choose a resume",Toast.LENGTH_SHORT).show();
@@ -198,99 +183,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fabExtract.setOnClickListener(new View.OnClickListener() {
+        binding.fabExtract.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View v) {
                 //fab.setVisibility(FloatingActionButton.INVISIBLE);
-                fab.setClickable(false);
+                binding.fab.setClickable(false);
                 Toast.makeText(MainActivity.this,"Extracting...",Toast.LENGTH_LONG).show();
                 animateFab();
-                progressBar.setVisibility(ProgressBar.VISIBLE);
+                binding.progressBar.setVisibility(ProgressBar.VISIBLE);
                 ExtractThread extractThread = new ExtractThread();
                 new Thread(extractThread).start();
 
             }
         });
 
-        /*buttonPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //jsonParse();
-                //Submit("Tan Hao Yang lives in Seetapak");
-                //postData();
-                extractText();
-            }
-        });*/
-
-        /*buttonCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!checkCameraPermission()) {
-                    requestCameraPermission();
-                } else {
-                    dispatchTakePictureIntent();
-
-                    textViewExtractedText.setText("");
-                }
-
-            }
-        });*/
-
-        /*buttonExtract.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(ProgressBar.VISIBLE);
-                ExtractThread extractThread = new ExtractThread();
-                new Thread(extractThread).start();
-                //detectTextFromImage();
-            }
-        });*/
-
-        /*buttonGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!checkStoragePermission()){
-                    requestStoragePermission();
-                }else{
-                    pickGallery();
-                }
-                //displayImage();
-            }
-        });*/
     }
 
     private void animateFab(){
         if (isOpen){
-            fab.startAnimation(rotateBackward);
-            fabCamera.startAnimation(fabClose);
+            binding.fab.startAnimation(rotateBackward);
+            binding.fabCamera.startAnimation(fabClose);
             //textViewCamera.setVisibility(View.GONE);
-            textViewCamera.setAnimation(fabClose);
-            textViewGallery.setAnimation(fabClose);
-            textViewExtract.setAnimation(fabClose);
-            fabGallery.startAnimation(fabClose);
-            fabExtract.startAnimation(fabClose);
-            fabCamera.setClickable(false);
-            fabGallery.setClickable(false);
-            fabExtract.setClickable(false);
+            binding.textViewCamera.setAnimation(fabClose);
+            binding.textViewGallery.setAnimation(fabClose);
+            binding.textViewExtract.setAnimation(fabClose);
+            binding.fabGallery.startAnimation(fabClose);
+            binding.fabExtract.startAnimation(fabClose);
+            binding.fabCamera.setClickable(false);
+            binding.fabGallery.setClickable(false);
+            binding.fabExtract.setClickable(false);
             isOpen=false;
         }else{
-            fab.startAnimation(rotateForward);
-            fabCamera.startAnimation(fabOpen);
+            binding.fab.startAnimation(rotateForward);
+            binding.fabCamera.startAnimation(fabOpen);
             //textViewCamera.setVisibility(View.VISIBLE);
-            fabGallery.startAnimation(fabOpen);
-            fabExtract.startAnimation(fabOpen);
-            textViewCamera.setAnimation(fabOpen);
-            textViewGallery.setAnimation(fabOpen);
-            textViewExtract.setAnimation(fabOpen);
+            binding.fabGallery.startAnimation(fabOpen);
+            binding.fabExtract.startAnimation(fabOpen);
+            binding.textViewCamera.setAnimation(fabOpen);
+            binding.textViewGallery.setAnimation(fabOpen);
+            binding.textViewExtract.setAnimation(fabOpen);
             //textViewExtract.setBackgroundResource(R.color.colorPrimary);
-            textViewCamera.setBackgroundResource(R.drawable.rounded_corner);
-            textViewGallery.setBackgroundResource(R.drawable.rounded_corner);
-            textViewExtract.setBackgroundResource(R.drawable.rounded_corner);
-            fabCamera.setClickable(true);
-            fabGallery.setClickable(true);
-            fabExtract.setClickable(true);
+            binding.textViewCamera.setBackgroundResource(R.drawable.rounded_corner);
+            binding.textViewGallery.setBackgroundResource(R.drawable.rounded_corner);
+            binding.textViewExtract.setBackgroundResource(R.drawable.rounded_corner);
+            binding.fabCamera.setClickable(true);
+            binding.fabGallery.setClickable(true);
+            binding.fabExtract.setClickable(true);
             isOpen=true;
         }
     }
@@ -309,49 +248,6 @@ public class MainActivity extends AppCompatActivity {
         if(matcher.find()){
             System.out.println(matcher.group());
         }
-    }
-
-    private void jsonParse() {
-
-        String url = "https://api.myjson.com/bins/n66m2";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray jsonArray = response.getJSONArray("users");
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject users = jsonArray.getJSONObject(i);
-
-                        String first = users.getString("name");
-                        textViewExtractedText.append(first);
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-
-            }
-        });
-
-        mQueue.add(request);
-
-        /*Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
-        StanfordCoreNLPClient pipeline = new StanfordCoreNLPClient(props, "http://localhost", 9000, 2);
-// read some text in the text variable
-        String text = "Tan Hao Yang"; // Add your text here!
-// create an empty Annotation just with the given text
-        Annotation document = new Annotation(text);
-// run all Annotators on this text
-        pipeline.annotate((Iterable<edu.stanford.nlp.pipeline.Annotation>) document);*/
-
     }
 
     private void detectTextFromImage() {
@@ -618,7 +514,7 @@ public class MainActivity extends AppCompatActivity {
                             intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
                             intent1.putExtra("RESUME",resultUri.toString());
 
-                            progressBar.setVisibility(ProgressBar.INVISIBLE);
+                            binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
                             startActivity(intent1);
 
                         } catch (JSONException e) {
@@ -628,61 +524,12 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
                 Toast.makeText(getApplicationContext(),"Error getting response",Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
 
-    }
-
-    private void Submit(String data)
-    {
-        final String savedata= data;
-        String URL="http://192.168.0.187:9000/?properties%3D%7B%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C%22outputFormat%22%3A%22json%22%7D";
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject objres=new JSONObject(response);
-                    //Toast.makeText(getApplicationContext(),"Sucess"+objres.toString(),Toast.LENGTH_LONG).show();
-                    Toast.makeText(getApplicationContext(),"Posted",Toast.LENGTH_LONG).show();
-                    textViewExtractedText.setText(objres.toString());
-
-
-
-                } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(),"Server Error",Toast.LENGTH_LONG).show();
-
-                }
-                //Log.i("VOLLEY", response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                Toast.makeText(getApplicationContext(), "Errorrr: "+error.getMessage(), Toast.LENGTH_SHORT).show();
-
-                //Log.v("VOLLEY", error.toString());
-            }
-        }){
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("sentences","Tan Hao Yang is studying at Tunku Abdul Rahman University College.");
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type","application/json");
-                return params;
-            }
-        };
-        requestQueue.add(stringRequest);
     }
 
     private void pickGallery() {
@@ -782,8 +629,8 @@ public class MainActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();//get image uri
-                imageViewResume.setImageURI(resultUri);
-                imageBitmapDrawable = (BitmapDrawable) imageViewResume.getDrawable();
+                binding.include.imageViewResume.setImageURI(resultUri);
+                imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewResume.getDrawable();
                 imageBitmap = imageBitmapDrawable.getBitmap();
                 //code here
             }
@@ -959,7 +806,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             detectTextFromImage();
-            fab.setClickable(true);
+            binding.fab.setClickable(true);
 
         }
     }

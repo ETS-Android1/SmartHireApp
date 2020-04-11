@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.hire.databinding.ActivityRecylerViewBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,29 +25,29 @@ import java.util.ArrayList;
 
 public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.OnItemClickListener {
 
-    RecyclerView recyclerView;
     MyAdapter myAdapter;
-    ProgressBar progressCircle;
-
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
     private ArrayList<Employee> employees;
     private ValueEventListener mDBListener;
 
+    private ActivityRecylerViewBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recyler_view);
+        binding = ActivityRecylerViewBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         //progressCircle = findViewById(R.id.progress_circle);
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // it will create recyclerview in linear layout
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this)); // it will create recyclerview in linear layout
 
         employees = new ArrayList<>();
 
         myAdapter = new MyAdapter(RecylerViewActivity.this, employees);
 
-        recyclerView.setAdapter(myAdapter);
+        binding.recyclerView.setAdapter(myAdapter);
 
         myAdapter.setOnItemClickListener(RecylerViewActivity.this);
 

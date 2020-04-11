@@ -73,21 +73,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextExtractedAddress" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageViewExtractedImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="32dp"
-        android:adjustViewBounds="false"
-        android:background="#00FFFFFF"
-        app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_person" />
-
     <TextView
         android:id="@+id/textViewLabelName"
         android:layout_width="wrap_content"
@@ -133,17 +118,17 @@
         app:layout_constraintTop_toTopOf="@+id/imageViewAddress" />
 
                 <TextView
-        android:id="@+id/textViewExtractedTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="32dp"
-        android:text="Extracted Info"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewExtractedImage" />
+                    android:id="@+id/textViewExtractedTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="32dp"
+                    android:text="Extracted Info"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewExtractedImageEdit" />
 
     <ImageView
         android:id="@+id/imageViewName"
@@ -188,15 +173,14 @@
                     app:srcCompat="@drawable/extracted_location" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabEditPhoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewExtractedImage"
-        app:layout_constraintEnd_toEndOf="@+id/imageViewExtractedImage"
-        app:layout_constraintStart_toEndOf="@+id/imageViewExtractedImage"
-        app:srcCompat="@drawable/fab_edit_24" />
+                    android:id="@+id/fabEditPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:fabSize="mini"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageViewExtractedImageEdit"
+                    app:layout_constraintEnd_toEndOf="@+id/imageViewExtractedImageEdit"
+                    app:srcCompat="@drawable/fab_edit_24" />
 
     <EditText
         android:id="@+id/editTextSkills"
@@ -296,6 +280,21 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageViewAddress"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAddress" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageViewExtractedImageEdit"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="32dp"
+                    android:adjustViewBounds="false"
+                    android:background="#00FFFFFF"
+                    app:civ_border_color="#FF000000"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.501"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_person" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

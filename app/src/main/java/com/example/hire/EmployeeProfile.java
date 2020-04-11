@@ -4,37 +4,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.hire.databinding.ActivityEmployeeProfileBinding;
 import com.squareup.picasso.Picasso;
 
 public class EmployeeProfile extends AppCompatActivity {
 
     TextView textViewProfileName,textViewProfilePosition,textViewProfilePhoneNum,textViewProfileEmail,textViewProfileAge,textViewProfileAddress,textViewProfileSkills,textViewProfileEducation;
     ImageView imageViewEmployeeProfile;
+    private ActivityEmployeeProfileBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_employee_profile);
+        binding = ActivityEmployeeProfileBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+
         Intent intent = getIntent();
-
-        textViewProfileName = findViewById(R.id.textViewProfileName);
-        textViewProfilePosition = findViewById(R.id.textViewProfilePosition);
-        textViewProfilePhoneNum = findViewById(R.id.textViewProfilePhoneNum);
-        textViewProfileEmail = findViewById(R.id.textViewProfileEmail);
-        textViewProfileAddress= findViewById(R.id.textViewProfileAddress);
-        textViewProfileSkills = findViewById(R.id.textViewProfileSkills);
-        textViewProfileAge = findViewById(R.id.textViewProfileAge);
-        textViewProfileEducation = findViewById(R.id.textViewProfileEducation);
-        imageViewEmployeeProfile = findViewById(R.id.imageViewEmployeeProfile);
-
+        
         String employeeName = intent.getStringExtra("EMPLOYEE_NAME");
         String employeePosition = intent.getStringExtra("EMPLOYEE_POSITION");
         String employeePhone = intent.getStringExtra("EMPLOYEE_PHONE");
         String employeeEmail= intent.getStringExtra("EMPLOYEE_EMAIL");
         String employeeAddress = intent.getStringExtra("EMPLOYEE_ADDRESS");
-        int employeeAge = intent.getIntExtra("EMPLOYEE_AGE",0);
+        int employeeAge = intent.getIntExtra("EMPLOYEE_AGE",0
+        );
         String employeeSkills = intent.getStringExtra("EMPLOYEE_SKILLS");
         String employeeEducation = intent.getStringExtra("EMPLOYEE_EDUCATION");
         String employeeProfilePhoto = intent.getStringExtra("EMPLOYEE_PHOTO");
@@ -43,16 +41,16 @@ public class EmployeeProfile extends AppCompatActivity {
                 .load(employeeProfilePhoto)
                 .fit()
                 .centerCrop()
-                .into(imageViewEmployeeProfile);
+                .into(binding.imageViewEmployeeProfile);
 
-        textViewProfileName.setText(employeeName);
-        textViewProfilePosition.setText(employeePosition);
-        textViewProfileEmail.setText(employeeEmail);
-        textViewProfileAge.setText(Integer.toString(employeeAge));
-        textViewProfilePhoneNum.setText(employeePhone);
-        textViewProfileAddress.setText(employeeAddress);
-        textViewProfileSkills.setText(employeeSkills);
-        textViewProfileEducation.setText(employeeEducation);
+        binding.textViewProfileName.setText(employeeName);
+        binding.textViewProfilePosition.setText(employeePosition);
+        binding.textViewProfileEmail.setText(employeeEmail);
+        binding.textViewProfileAge.setText(Integer.toString(employeeAge));
+        binding.textViewProfilePhoneNum.setText(employeePhone);
+        binding.textViewProfileAddress.setText(employeeAddress);
+        binding.textViewProfileSkills.setText(employeeSkills);
+        binding.textViewProfileEducation.setText(employeeEducation);
 
 
     }
