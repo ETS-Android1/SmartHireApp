@@ -176,7 +176,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/floatingActionButton" />
+                    app:layout_constraintTop_toBottomOf="@+id/fabProfileCall" />
 
                 <ImageView
                     android:id="@+id/imageViewPhone"
@@ -246,7 +246,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAge" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floatingActionButton"
+                    android:id="@+id/fabProfileCall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -258,14 +258,14 @@
                     app:srcCompat="@drawable/employee_call" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floatingActionButton2"
+                    android:id="@+id/fabProfileMsg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     app:backgroundTint="#EE9B21"
-                    app:layout_constraintBottom_toBottomOf="@+id/floatingActionButton"
+                    app:layout_constraintBottom_toBottomOf="@+id/fabProfileCall"
                     app:layout_constraintStart_toStartOf="@+id/imageViewEmployeeProfile"
-                    app:layout_constraintTop_toTopOf="@+id/floatingActionButton"
+                    app:layout_constraintTop_toTopOf="@+id/fabProfileCall"
                     app:srcCompat="@drawable/employee_msg" />
 
                 <TextView

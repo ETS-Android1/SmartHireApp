@@ -1,18 +1,20 @@
 package com.example.hire;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
-import com.example.hire.databinding.ActivityRecylerViewBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,7 +26,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.OnItemClickListener {
+public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListener {
 
     MyAdapter myAdapter;
     private DatabaseReference mDatabaseRef;
@@ -34,28 +36,21 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
 
     private ActivityFabForEmployeeListBinding binding;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityFabForEmployeeListBinding.inflate(getLayoutInflater());
-        //includeBinding = ActivityRecylerViewBinding.inflate(getLayoutInflater());
-        //View includedView = binding.include.recyclerView;
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = ActivityFabForEmployeeListBinding.inflate(getLayoutInflater(),container,false);
         View view = binding.getRoot();
-        setContentView(view);
 
-
-
-        //progressCircle = findViewById(R.id.progress_circle);
-        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this)); // it will create recyclerview in linear layout
+        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         employees = new ArrayList<>();
 
-        myAdapter = new MyAdapter(RecylerViewActivity.this, employees);
+        myAdapter = new MyAdapter(this.getActivity(), employees);
 
         binding.include.recyclerView.setAdapter(myAdapter);
 
-        myAdapter.setOnItemClickListener(RecylerViewActivity.this);
+        myAdapter.setOnItemClickListener(this);
 
         mStorage = FirebaseStorage.getInstance();
 
@@ -67,10 +62,6 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
                 uploadResume();
             }
         });
-
-        //myAdapter = new MyAdapter(this,getMyList());
-
-        //recyclerView.setAdapter(myAdapter);
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 
@@ -91,23 +82,23 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                Toast.makeText(RecylerViewActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 //progressCircle.setVisibility(View.INVISIBLE);
 
             }
         });
 
-
+        return view;
     }
 
     public void uploadResume(){
-        Intent intent = new Intent(this,MainActivity.class);
+        Intent intent = new Intent(getActivity(),MainActivity.class);
         startActivity(intent);
     }
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(this, "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
         Employee selectedItem = employees.get(position);
         String selectedKey = selectedItem.getKey();
         String name = selectedItem.getmName();
@@ -119,7 +110,7 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
         String employeeEducation = selectedItem.getmEducation();
 
         String profilePhoto = selectedItem.getmImageUrl();
-        Intent intent = new Intent(RecylerViewActivity.this,EmployeeProfile.class);
+        Intent intent = new Intent(getActivity(),EmployeeProfile.class);
         intent.putExtra("EMPLOYEE_NAME",name);
         intent.putExtra("EMPLOYEE_POSITION",employeePosition);
         intent.putExtra("EMPLOYEE_PHONE",employeePhoneNum);
@@ -130,12 +121,11 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
         intent.putExtra("EMPLOYEE_PHOTO",profilePhoto);
         startActivity(intent);
 
-
     }
 
     @Override
     public void onWhatEverClick(int position) {
-        Toast.makeText(this, "Whatever click at position: " + position, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -154,16 +144,17 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
                     @Override
                     public void onSuccess(Void aVoid) {
                         mDatabaseRef.child(selectedKey).removeValue();
-                        Toast.makeText(RecylerViewActivity.this, "Employee deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Employee deleted", Toast.LENGTH_SHORT).show();
                     }
                 });
 
             }
         });
+
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mDatabaseRef.removeEventListener(mDBListener);
     }

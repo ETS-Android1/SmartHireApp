@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,16 +19,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
+public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implements Filterable {
 
     Context context;
-    ArrayList<Employee> employees;
+    private ArrayList<Employee> employees;
+    private ArrayList<Employee> employeesFull;
     private OnItemClickListener mListener;
 
     public MyAdapter(Context context, ArrayList<Employee> employees) {
         this.context = context;
         this.employees = employees;
+        employeesFull = new ArrayList<>(employees);
     }
 
     @NonNull
@@ -127,5 +132,42 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
     public void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
+
+    @Override
+    public Filter getFilter() {
+        return exampleFilter;
+    }
+
+    public Filter exampleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Employee> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+
+                filteredList.addAll(employeesFull);
+            }else{
+                String filterPatter = constraint.toString().toLowerCase().trim();
+
+                for(Employee item: employeesFull){
+                    if(item.getmName().toLowerCase().contains(filterPatter)){
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            employees.clear();
+            employees.addAll((List)results.values);
+
+        }
+    };
 
 }
