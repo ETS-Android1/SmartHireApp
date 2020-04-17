@@ -2,13 +2,18 @@ package com.example.hire;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
@@ -23,13 +28,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.OnItemClickListener {
 
     MyAdapter myAdapter;
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
-    private ArrayList<Employee> employees;
+    private List<Employee> employees;
     private ValueEventListener mDBListener;
 
     private ActivityFabForEmployeeListBinding binding;
@@ -38,13 +44,11 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityFabForEmployeeListBinding.inflate(getLayoutInflater());
-        //includeBinding = ActivityRecylerViewBinding.inflate(getLayoutInflater());
-        //View includedView = binding.include.recyclerView;
 
         View view = binding.getRoot();
         setContentView(view);
 
-
+        //setSupportActionBar(binding.include.toolbarHomePage);
 
         //progressCircle = findViewById(R.id.progress_circle);
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this)); // it will create recyclerview in linear layout
@@ -53,9 +57,9 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
 
         myAdapter = new MyAdapter(RecylerViewActivity.this, employees);
 
-        binding.include.recyclerView.setAdapter(myAdapter);
-
         myAdapter.setOnItemClickListener(RecylerViewActivity.this);
+
+        binding.include.recyclerView.setAdapter(myAdapter);
 
         mStorage = FirebaseStorage.getInstance();
 
@@ -68,9 +72,14 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
             }
         });
 
+
+
         //myAdapter = new MyAdapter(this,getMyList());
 
         //recyclerView.setAdapter(myAdapter);
+
+        //mDBListener = mDatabaseRef.addValueEventListener(valueEventListener);
+
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 
@@ -82,7 +91,8 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
                     employee.setKey(postSnapshot.getKey());
                     employees.add(employee);
                 }
-
+                Log.d("DATABASE", ""+employees);
+                myAdapter.addToeEmployeesFull(employees);
                 myAdapter.notifyDataSetChanged();
 
                 //progressCircle.setVisibility(View.INVISIBLE);
@@ -96,9 +106,34 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
 
             }
         });
+        //myAdapter = new MyAdapter(RecylerViewActivity.this, employees);
 
 
     }
+
+    /*private ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            employees.clear();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                Employee employee = postSnapshot.getValue(Employee.class);
+                employee.setKey(postSnapshot.getKey());
+                employees.add(employee);
+            }
+
+            myAdapter.notifyDataSetChanged();
+
+            //progressCircle.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+            Toast.makeText(RecylerViewActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            //progressCircle.setVisibility(View.INVISIBLE);
+
+        }
+
+    };*/
 
     public void uploadResume(){
         Intent intent = new Intent(this,MainActivity.class);
@@ -166,5 +201,30 @@ public class RecylerViewActivity extends AppCompatActivity implements MyAdapter.
     protected void onDestroy() {
         super.onDestroy();
         mDatabaseRef.removeEventListener(mDBListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.serach_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                myAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
     }
 }

@@ -24,14 +24,17 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implements Filterable {
 
     Context context;
-    private ArrayList<Employee> employees;
-    private ArrayList<Employee> employeesFull;
+    private List<Employee> employees;
+    private List<Employee> employeesFull;
     private OnItemClickListener mListener;
 
-    public MyAdapter(Context context, ArrayList<Employee> employees) {
+    public MyAdapter(Context context, List<Employee> employees) {
         this.context = context;
         this.employees = employees;
-        employeesFull = new ArrayList<>(employees);
+    }
+
+    public void addToeEmployeesFull(List<Employee> employee){
+        employeesFull = new ArrayList<>(employee);
     }
 
     @NonNull
@@ -138,7 +141,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         return exampleFilter;
     }
 
-    public Filter exampleFilter = new Filter() {
+    private Filter exampleFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<Employee> filteredList = new ArrayList<>();
@@ -156,17 +159,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
                 }
             }
 
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filteredList;
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
 
-            return filterResults;
+            return results;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             employees.clear();
             employees.addAll((List)results.values);
-
+            Log.d("RESULT", ""+results.values);
+            notifyDataSetChanged();
         }
     };
 

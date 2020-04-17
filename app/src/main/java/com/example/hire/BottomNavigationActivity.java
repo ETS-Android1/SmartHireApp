@@ -26,6 +26,9 @@ public class BottomNavigationActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        setSupportActionBar(binding.toolbarHomePage);
+        getSupportActionBar().setTitle("Hire");
+
         binding.bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         //I added this if statement to keep the selected fragment when rotating the device

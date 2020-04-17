@@ -27,6 +27,10 @@ public class EmployeeProfile extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        setSupportActionBar(binding.toolbarProfile);
+        getSupportActionBar().setTitle("Hire");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
 
         employeeName = intent.getStringExtra("EMPLOYEE_NAME");

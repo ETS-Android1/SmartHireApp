@@ -4,8 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,14 +48,19 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         binding = ActivityFabForEmployeeListBinding.inflate(getLayoutInflater(),container,false);
         View view = binding.getRoot();
 
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
+
+        //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Hire");
+
         employees = new ArrayList<>();
 
-        myAdapter = new MyAdapter(this.getActivity(), employees);
+        myAdapter = new MyAdapter( getActivity(),employees);
 
         binding.include.recyclerView.setAdapter(myAdapter);
 
@@ -73,7 +87,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                     employee.setKey(postSnapshot.getKey());
                     employees.add(employee);
                 }
-
+                myAdapter.addToeEmployeesFull(employees);
                 myAdapter.notifyDataSetChanged();
 
                 //progressCircle.setVisibility(View.INVISIBLE);
@@ -87,6 +101,12 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
             }
         });
+
+        if(myAdapter.getItemCount()==0){
+            binding.include.textViewNoItem.setVisibility(TextView.VISIBLE);
+        }else{
+            binding.include.textViewNoItem.setVisibility(TextView.INVISIBLE);
+        }
 
         return view;
     }
@@ -157,5 +177,29 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     public void onDestroy() {
         super.onDestroy();
         mDatabaseRef.removeEventListener(mDBListener);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.serach_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                myAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 }

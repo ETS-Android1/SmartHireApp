@@ -142,8 +142,9 @@ public class MainActivity extends AppCompatActivity {
         rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
 
         setSupportActionBar(binding.include.toolbarMain);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayShowTitleEnabled(false);
         //getSupportActionBar().setTitle("Hirkle");
         //getSupportActionBar().setIcon(getDrawable(R.drawable.hire_logo));
 
