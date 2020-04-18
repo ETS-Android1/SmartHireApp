@@ -10,6 +10,17 @@
         android:id="@+id/include"
         layout="@layout/activity_extracted_text_edit" />
 
+    <ProgressBar
+        android:id="@+id/progressBarExtractedEdit"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

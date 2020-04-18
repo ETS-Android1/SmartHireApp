@@ -29,17 +29,22 @@ public class BottomNavigationActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbarHomePage);
         getSupportActionBar().setTitle("Hire");
 
-        binding.bottomNav.setOnNavigationItemSelectedListener(navListener);
+        NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(binding.bottomNav,navController);
+
+
+
+        //binding.bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         //I added this if statement to keep the selected fragment when rotating the device
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new HomeFragment()).commit();
-        }
+        }*/
 
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+    /*private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -47,10 +52,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
                     switch (item.getItemId()) {
                         case R.id.nav_home:
-                            selectedFragment = new HomeFragment();
-                            break;
-                        case R.id.nav_profile:
-                            selectedFragment = new ProfileFragment();
+                            selectedFragment = new MainFragment();
                             break;
                         case R.id.nav_history:
                             selectedFragment = new HistoryFragment();
@@ -62,6 +64,6 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
                     return true;
                 }
-            };
+            };*/
 
 }

@@ -8,26 +8,6 @@
     android:scrollbars="vertical"
     tools:context=".ExtractedText">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarProfile"
-        android:background="#FFFFFF"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize">
-
-        <ImageView
-            android:id="@+id/logo_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:baselineAlignBottom="false"
-            app:srcCompat="@drawable/hire_logo"
-            android:layout_gravity="left"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
-            android:adjustViewBounds="true"/>
-
-    </androidx.appcompat.widget.Toolbar>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

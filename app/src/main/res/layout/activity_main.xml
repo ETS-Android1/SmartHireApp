@@ -6,45 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <include
+        android:id="@+id/includeStepBar"
+        layout="@layout/steps_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarHomePage" />
+
     <ImageView
         android:id="@+id/imageViewResume"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
         android:adjustViewBounds="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
+        app:layout_constraintTop_toBottomOf="@+id/includeStepBar"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/resume_upload" />
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarMain"
-        android:background="#FFFFFF"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/logo_main"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:baselineAlignBottom="false"
-            app:srcCompat="@drawable/hire_logo"
-            android:layout_gravity="left"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
-            android:adjustViewBounds="true"/>
-
-    </androidx.appcompat.widget.Toolbar>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

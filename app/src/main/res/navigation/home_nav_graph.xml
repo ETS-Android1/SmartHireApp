@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/uploadFragment">
+
+    <fragment
+        android:id="@+id/uploadFragment"
+        android:name="com.example.hire.UploadFragment"
+        android:label="fragment_blank"
+        tools:layout="@layout/activity_fab" >
+        <action
+            android:id="@+id/action_uploadFragment_to_extractedTextEditFragment"
+            app:destination="@id/extractedTextEditFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/extractedTextEditFragment"
+        android:name="com.example.hire.ExtractedEditFragment"
+        android:label="fragment_blank"
+        tools:layout="@layout/activity_fab_for_extacted_edit" >
+    </fragment>
+
+
+
+</navigation>

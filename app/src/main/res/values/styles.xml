@@ -17,5 +17,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="StepTextViewDesign">
+        <item name="color">@color/white</item>
+        <item name="fontFamily">@font/amita</item>
+    </style>
+
 
 </resources>

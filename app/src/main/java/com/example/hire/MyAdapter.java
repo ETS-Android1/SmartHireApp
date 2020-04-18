@@ -12,6 +12,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -147,7 +148,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
             List<Employee> filteredList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
-
                 filteredList.addAll(employeesFull);
             }else{
                 String filterPatter = constraint.toString().toLowerCase().trim();
@@ -168,7 +168,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             employees.clear();
-            employees.addAll((List)results.values);
+            if(results.values!=null){
+                employees.addAll((List)results.values);
+            }
+
             Log.d("RESULT", ""+results.values);
             notifyDataSetChanged();
         }

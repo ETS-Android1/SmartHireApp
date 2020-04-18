@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".HomeActivity"></activity>
         <activity
             android:name=".BottomNavigationActivity"
             android:label="@string/title_activity_bottom_navigation">
@@ -27,11 +28,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".TestFireBase" />
-        <activity android:name=".EmployeeProfile"
+        <activity
+            android:name=".EmployeeProfile"
             android:parentActivityName=".RecylerViewActivity" />
         <activity android:name=".RecylerViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -41,11 +44,18 @@
         <activity
             android:name=".ExtractedTextEdit"
             android:parentActivityName=".ExtractedText" />
-        <activity android:name=".MainActivity"
-            android:parentActivityName=".BottomNavigationActivity" >
+        <activity
+            android:name=".MainActivity"
+            android:parentActivityName=".BottomNavigationActivity">
             <meta-data
                 android:name="com.google.firebase.ml.vision.DEPENDENCIES"
                 android:value="ocr" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

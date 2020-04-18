@@ -3,20 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/nav_home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/bottom_home"
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/nav_profile"
+        android:id="@+id/profileFragment"
         android:icon="@drawable/bottom_profile"
         android:title="Profile" />
 
     <item
-        android:id="@+id/nav_history"
+        android:id="@+id/historyFragment"
         android:icon="@drawable/bottom_history"
         android:title="History" />
-
-
 
 </menu>

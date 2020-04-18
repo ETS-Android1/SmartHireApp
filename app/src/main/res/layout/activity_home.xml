@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical"
+    tools:context=".HomeActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarHomePage"
+        android:id="@+id/toolbarHomePage2"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#FFFFFF"
-        android:minHeight="?attr/actionBarSize">
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/logo_main"
@@ -27,22 +33,12 @@
 
     <fragment
         android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbarHomePage"
-        android:layout_above="@+id/bottom_nav"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        app:navGraph="@navigation/bottom_nav_graph"
-        app:defaultNavHost="true">
-    </fragment>
+        app:defaultNavHost="true"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarHomePage"
+        app:navGraph="@navigation/home_nav_graph"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?android:windowBackground"
-        app:menu="@menu/bottom_nav_menu" />
-
-
-</RelativeLayout>
+</LinearLayout>

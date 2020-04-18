@@ -1,91 +1,86 @@
 package com.example.hire;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.SparseIntArray;
-import android.view.Surface;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.hire.databinding.ActivityFabBinding;
+import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
+import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
-import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//import edu.stanford.nlp.pipeline.*;
-
-import android.app.AlertDialog;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.gms.vision.face.Face;
-import com.google.android.gms.vision.face.FaceDetector;
-
-public class MainActivity extends AppCompatActivity {
+public class UploadFragment extends Fragment {
 
     private RequestQueue mQueue;
     private Bitmap imageBitmap,croppedBitmap;
@@ -116,30 +111,34 @@ public class MainActivity extends AppCompatActivity {
     private int expandWidth, expandHeight, faceWidth, faceHeight;
 
     StringBuilder stringBuilderSkills;
-    StringBuilder stringBuilderEducation ;
-    StringBuilder stringBuilderOther ;
+    StringBuilder stringBuilderEducation;
+    StringBuilder stringBuilderOther;
 
     private ActivityFabBinding binding;
+    private NavController navController;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //setHasOptionsMenu(true);
+        binding = ActivityFabBinding.inflate(getLayoutInflater(),container,false);
+        View view = binding.getRoot();
+        return view;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityFabBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        intent1 = new Intent(getApplicationContext(),ExtractedText.class);
+        mQueue = Volley.newRequestQueue(getActivity());
 
-        mQueue = Volley.newRequestQueue(this);
+        fabOpen = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
 
-        fabOpen = AnimationUtils.loadAnimation(this,R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(this,R.anim.fab_close);
-
-        rotateForward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
-        rotateBackward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
+        rotateForward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_backward);
 
         //setSupportActionBar(binding.include.toolbarMain);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -147,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
         //getSupportActionBar().setTitle("Hirkle");
         //getSupportActionBar().setIcon(getDrawable(R.drawable.hire_logo));
+
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         binding.fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Capture the resume",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Capture the resume",Toast.LENGTH_SHORT).show();
                 animateFab();
                 if (!checkCameraPermission()) {
                     requestCameraPermission();
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         binding.fabGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"Choose a resume",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"Choose a resume",Toast.LENGTH_SHORT).show();
                 animateFab();
 
                 if(!checkStoragePermission()){
@@ -190,15 +190,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //fab.setVisibility(FloatingActionButton.INVISIBLE);
                 binding.fab.setClickable(false);
-                Toast.makeText(MainActivity.this,"Extracting...",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Extracting...",Toast.LENGTH_LONG).show();
                 animateFab();
                 binding.progressBar.setVisibility(ProgressBar.VISIBLE);
                 ExtractThread extractThread = new ExtractThread();
                 new Thread(extractThread).start();
+                navController = Navigation.findNavController(v);
+
 
             }
         });
-
     }
 
     private void animateFab(){
@@ -235,20 +236,119 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void extractText() {
-        /*String addressRegex = "(Address|employeeAddress|ADDRESS):?";
-        String abc = " \n ";
-        final Pattern pattern = Pattern.compile(addressRegex+"(.+?)"+abc, Pattern.DOTALL);
-        final Matcher matcher = pattern.matcher("Age: 12. \n Email: yujune99@gmail.com. \n Address: No.49 Jalan\nCempaka Wangi 12, Taman Cempaka, 42700, Banting, Selangor. \n Hi");
-        matcher.find();
-        textViewExtractedText.setText(matcher.group(2));*/
-        String val="abc KEYWORD1 def KEYWORD1 ghi KEYWORD2 jkl KEYWORD2";
-        String REGEX="KEYWORD1((.(?!KEYWORD1))+?)KEYWORD2";
-        Pattern pattern = Pattern.compile(REGEX);
-        Matcher matcher = pattern.matcher(val);
-        if(matcher.find()){
-            System.out.println(matcher.group());
+    private void pickGallery() {
+        //intent to pick image from gallery
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        //set intent tyoe to image
+        intent.setType("image/*");
+        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
+
+    }
+
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(getActivity(), storagePermission, STORAGE_REQUEST_CODE);
+    }
+
+    private boolean checkStoragePermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(getActivity(), camaraPermission, CAMERA_REQUEST_CODE);
+    }
+
+    private boolean checkCameraPermission() {
+        boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
+        boolean result1 = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
+        return result && result1;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+
+            ContentValues values = new ContentValues();
+            Toast.makeText(getActivity(), "hi:", Toast.LENGTH_SHORT).show();
+            values.put(MediaStore.Images.Media.TITLE, "NewPic");
+            values.put(MediaStore.Images.Media.DESCRIPTION, "Image to Text");
+            imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if(requestCode==IMAGE_PICK_GALLERY_CODE){
+                CropImage.activity(data.getData())
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(getActivity(),UploadFragment.this);
+            }
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                //Bundle extras = data.getExtras();
+                //imageBitmap = (Bitmap) extras.get("data");
+                CropImage.activity(imageUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(getActivity(),UploadFragment.this);
+                //Toast.makeText(MainActivity.this,"Error 123:" ,Toast.LENGTH_SHORT).show();
+
+                //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
+                //imageViewResume.setImageBitmap(imageBitmap);
+            }
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode ==Activity.RESULT_OK) {
+                resultUri = result.getUri();//get image uri
+                binding.include.imageViewResume.setImageURI(resultUri);
+                binding.include.includeStepBar.textViewDot1.setBackgroundResource(R.drawable.circle_text_view_done);
+                binding.include.includeStepBar.textViewDot2.setBackgroundResource(R.drawable.circle_text_view_done);
+                binding.include.includeStepBar.textViewDot3.setBackgroundResource(R.drawable.circle_text_view_done);
+                binding.include.includeStepBar.textViewStep2.setBackgroundResource(R.drawable.circle_text_view_done);
+                imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewResume.getDrawable();
+                imageBitmap = imageBitmapDrawable.getBitmap();
+                //code here
+            }
+        } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            Toast.makeText(getActivity(), "Error :", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode){
+            case CAMERA_REQUEST_CODE:
+                if(grantResults.length>0){
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    Log.d("myTag","Camera:"+cameraAccepted+" Storage:"+writeStorageAccepted);
+                    if(cameraAccepted && writeStorageAccepted){
+                        dispatchTakePictureIntent();
+                    }else{
+                        Toast.makeText(getActivity(),"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+
+            case STORAGE_REQUEST_CODE:
+                if(grantResults.length>0){
+                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    Log.d("myTag"," Storage:"+writeStorageAccepted);
+                    if(writeStorageAccepted){
+                        pickGallery();
+                    }else{
+                        Toast.makeText(getActivity(),"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+
+        }
+
     }
 
     private void detectTextFromImage() {
@@ -265,10 +365,10 @@ public class MainActivity extends AppCompatActivity {
         tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
 
         FaceDetector faceDetector = new
-                FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(false)
+                FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false)
                 .build();
         if(!faceDetector.isOperational()){
-            new AlertDialog.Builder(getApplicationContext()).setMessage("Could not set up the face detector!").show();
+            new AlertDialog.Builder(getActivity().getApplicationContext()).setMessage("Could not set up the face detector!").show();
             return;
         }
 
@@ -304,28 +404,28 @@ public class MainActivity extends AppCompatActivity {
             faceWidth = (int)x2-(int)x1;
             faceHeight = (int)y2-(int)y1;
             croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1-expandWidth,(int)y1-expandHeight,faceWidth+(2*expandWidth),faceHeight+(2*expandHeight));
-            croppedFace = getImageUri(MainActivity.this,croppedBitmap);
+            croppedFace = getImageUri(getActivity(),croppedBitmap);
             //imageViewResume.setImageBitmap(croppedBitmap);
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
             //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
         }else{
-            runOnUiThread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    Toast.makeText(MainActivity.this, "No Face Detected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
                 }
             });
-            Resources resources = MainActivity.this.getResources();
+            Resources resources = getActivity().getResources();
             croppedFace = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(R.drawable.ic_person) + '/' + resources.getResourceTypeName(R.drawable.ic_person) + '/' + resources.getResourceEntryName(R.drawable.ic_person));
             //Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
             //intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
 
         }
 
-        TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+        TextRecognizer recognizer = new TextRecognizer.Builder(getActivity().getApplicationContext()).build();
 
         if (!recognizer.isOperational()) {
-            Toast.makeText(MainActivity.this, "Error :", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Error :", Toast.LENGTH_SHORT).show();
         } else {
             Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
             SparseArray<TextBlock> items = recognizer.detect(frame);
@@ -353,15 +453,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Uri getImageUri(Context context, Bitmap inImage) {
-        String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, timeStamp, null);
-        return Uri.parse(path);
-    }
-
-    // Post Request For JSONObject
     public void postData(final String extractedText) {
         employeeName ="";
         employeeLocation ="";
@@ -377,7 +468,7 @@ public class MainActivity extends AppCompatActivity {
         stringBuilderEducation = new StringBuilder();
         stringBuilderOther = new StringBuilder();
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         JSONObject object = new JSONObject();
 
         try {
@@ -475,48 +566,20 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
 
-                            /*Pattern phonePattern = Pattern.compile("((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}");
-                            Pattern emailPattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
-                            Matcher phoneMatcher = phonePattern.matcher(str);
-                            if (phoneMatcher.find()) {
-                                employeePhoneNum = phoneMatcher.group(0);
-                                //textViewExtractedText.append("Phone Number: "+employeePhoneNum+"\n");
-
-                            }
-
-                            Matcher emailMatcher = emailPattern.matcher(str);
-                            if (emailMatcher.find()) {
-                                employeeEmail = emailMatcher.group(0);
-                                //textViewExtractedText.append("Email: "+employeeEmail+"\n");
-                            }
-
-                            String addressRegex = "(Address|employeeAddress|ADDRESS):?";
-                            String addressFormat = "(NO|no|No|LOT|Lot|lot)?.?:?";
-                            String location = employeeLocation;
-                            Pattern addressPattern = Pattern.compile(addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+(location),Pattern.DOTALL);
-                            Matcher addressMatcher = addressPattern.matcher(str);
-                            if (addressMatcher.find()) {
-                                employeeAddress = addressMatcher.group(0);
-                                Log.d("Address: ",employeeAddress);
-                                //textViewExtractedText.append("Address :"+employeeAddress+"\n");
-                            }*/
-                            //textViewExtractedText.setText(matcher.group(2));
-                            //Bundle bundle = new Bundle();
-                            //bundle.putString("BundleText",sb.toString());
-
-                            intent1.putExtra("EXTRACTED_PHONE", employeePhoneNum);
-                            intent1.putExtra("EXTRACTED_EMAIL", employeeEmail);
-                            intent1.putExtra("EXTRACTED_NAME", employeeName);
-                            intent1.putExtra("EXTRACTED_ADDRESS", employeeAddress);
-                            intent1.putExtra("EXTRACTED_SKILLS",employeeSkills);
-                            intent1.putExtra("EXTRACTED_EDUCATION",employeeEducation);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("EXTRACTED_PHONE",employeePhoneNum);
+                            bundle.putString("EXTRACTED_EMAIL", employeeEmail);
+                            bundle.putString("EXTRACTED_NAME", employeeName);
+                            bundle.putString("EXTRACTED_ADDRESS", employeeAddress);
+                            bundle.putString("EXTRACTED_SKILLS",employeeSkills);
+                            bundle.putString("EXTRACTED_EDUCATION",employeeEducation);
                             //intent1.putExtra("EXTRACTED_OTHER",employeeOther);
-                            intent1.putExtra("EXTRACTED_AGE",Integer.parseInt(employeeAge.trim()));
-                            intent1.putExtra("EXTRACTED_FACE",croppedFace.toString());
-                            intent1.putExtra("RESUME",resultUri.toString());
+                            bundle.putInt("EXTRACTED_AGE",Integer.parseInt(employeeAge.trim()));
+                            bundle.putString("EXTRACTED_FACE",croppedFace.toString());
+                            bundle.putString("RESUME",resultUri.toString());
 
                             binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                            startActivity(intent1);
+                            navController.navigate(R.id.action_uploadFragment_to_extractedTextEditFragment,bundle);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -526,280 +589,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                Toast.makeText(getApplicationContext(),"Error getting response",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Error getting response",Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
 
     }
 
-    private void pickGallery() {
-        //intent to pick image from gallery
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        //set intent tyoe to image
-        intent.setType("image/*");
-        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
-
-    }
-
-    private void requestStoragePermission() {
-        ActivityCompat.requestPermissions(this, storagePermission, STORAGE_REQUEST_CODE);
-    }
-
-    private boolean checkStoragePermission() {
-        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result;
-    }
-
-    private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, camaraPermission, CAMERA_REQUEST_CODE);
-    }
-
-    private boolean checkCameraPermission() {
-        boolean result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == (PackageManager.PERMISSION_GRANTED);
-        boolean result1 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == (PackageManager.PERMISSION_GRANTED);
-        return result && result1;
-    }
-
-
-    /*private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-
-            File imageFile = null;
-
-            try {
-                imageFile = getImageFile();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-            if (imageFile != null) {
-                //ContentValues values = new ContentValues();
-                //values.put(MediaStore.Images.Media.TITLE,"NewPic");
-                //values.put(MediaStore.Images.Media.DESCRIPTION,"Image to Text");
-                //imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-                imageUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", imageFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-
-        }
-    }*/
-
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-
-            ContentValues values = new ContentValues();
-            Toast.makeText(MainActivity.this, "hi:", Toast.LENGTH_SHORT).show();
-            values.put(MediaStore.Images.Media.TITLE, "NewPic");
-            values.put(MediaStore.Images.Media.DESCRIPTION, "Image to Text");
-            imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-
-    }
-
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if(requestCode==IMAGE_PICK_GALLERY_CODE){
-                CropImage.activity(data.getData())
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(this);
-            }
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                //Bundle extras = data.getExtras();
-                //imageBitmap = (Bitmap) extras.get("data");
-                CropImage.activity(imageUri)
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(this);
-                //Toast.makeText(MainActivity.this,"Error 123:" ,Toast.LENGTH_SHORT).show();
-
-                //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
-                //imageViewResume.setImageBitmap(imageBitmap);
-            }
-        }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();//get image uri
-                binding.include.imageViewResume.setImageURI(resultUri);
-                imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewResume.getDrawable();
-                imageBitmap = imageBitmapDrawable.getBitmap();
-                //code here
-            }
-        } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-            Toast.makeText(MainActivity.this, "Error :", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    /*private void firebaseTextDetecter(){
-        final FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(imageBitmap);
-        FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
-        firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-            @Override
-            public void onSuccess(FirebaseVisionText firebaseVisionText) {
-
-                displayTextFromImage(firebaseVisionText);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.d("Error :", e.getMessage());
-            }
-        });
-    }*/
-
-
-
-
-    /*private void displayTextFromImage(FirebaseVisionText firebaseVisionText) {
-
-        List<FirebaseVisionText.Block> blockList = firebaseVisionText.getBlocks();
-        if (blockList.size() == 0) {
-            Toast.makeText(MainActivity.this, "No Text Founded in this image", Toast.LENGTH_SHORT).show();
-        } else {
-            for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()) {
-                String text = block.getText();
-                textViewExtractedText.setText(text);
-            }
-        }
-    }*/
-
-    private File getImageFile() throws Exception {
-
+    private Uri getImageUri(Context context, Bitmap inImage) {
         String timeStamp = new SimpleDateFormat("yyyMMdd_HHmmss").format(new Date());
-        String imageName = "jpg_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        File imageFile = File.createTempFile(imageName, ".jpg", storageDir);
-        currentImagePath = imageFile.getAbsolutePath();
-        return imageFile;
-
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode){
-            case CAMERA_REQUEST_CODE:
-                if(grantResults.length>0){
-                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    Log.d("myTag","Camera:"+cameraAccepted+" Storage:"+writeStorageAccepted);
-                    if(cameraAccepted && writeStorageAccepted){
-                        dispatchTakePictureIntent();
-                    }else{
-                        Toast.makeText(MainActivity.this,"Permission Denied!" ,Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
-
-            case STORAGE_REQUEST_CODE:
-                if(grantResults.length>0){
-                    boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    Log.d("myTag"," Storage:"+writeStorageAccepted);
-                    if(writeStorageAccepted){
-                        pickGallery();
-                    }else{
-                        Toast.makeText(MainActivity.this,"Permission Denied!" ,Toast.LENGTH_SHORT).show();
-                    }
-                }
-                break;
-
-        }
-
-    }
-
-    private void intermediateProgressbar(){
-        isCanceled = false;
-        // Initialize a new instance of progress dialog
-        final ProgressDialog pd = new ProgressDialog(MainActivity.this);
-
-        // Set progress dialog style horizontal
-        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
-        // Set the progress dialog title and message
-        pd.setTitle("Title of progress dialog.");
-        pd.setMessage("Loading.........");
-        // Set the progress dialog background color
-        pd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFD4D9D0")));
-
-        pd.setIndeterminate(false);
-                /*
-                    Set the progress dialog non cancelable
-                    It will disallow user's to cancel progress dialog by clicking outside of dialog
-                    But, user's can cancel the progress dialog by cancel button
-                 */
-        pd.setCancelable(false);
-
-        pd.setMax(100);
-
-        pd.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener(){
-            // Set a click listener for progress dialog cancel button
-            @Override
-            public void onClick(DialogInterface dialog, int which){
-                // dismiss the progress dialog
-                pd.dismiss();
-                // Tell the system about cancellation
-                isCanceled = true;
-            }
-        });
-
-        pd.show();
-
-        // Set the progress status zero on each button click
-        progressStatus = 0;
-
-        // Start the lengthy operation in a background thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(progressStatus < pd.getMax()){
-                    // If user's click the cancel button from progress dialog
-                    if(isCanceled)
-                    {
-                        // Stop the operation/loop
-                        break;
-                    }
-                    // Update the progress status
-                    progressStatus +=1;
-
-                    // Try to sleep the thread for 200 milliseconds
-                    try{
-                        Thread.sleep(200);
-                    }catch(InterruptedException e){
-                        e.printStackTrace();
-                    }
-
-                    // Update the progress bar
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Update the progress status
-                            pd.setProgress(progressStatus);
-                            //textViewProgress.setText(progressStatus+"");
-                            // If task execution completed
-                            if(progressStatus == pd.getMax()){
-                                // Dismiss/hide the progress dialog
-                                pd.dismiss();
-                                //textViewProgress.setText("Operation completed.");
-                            }
-                        }
-                    });
-                }
-            }
-        }).start(); // Start the operation
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, timeStamp, null);
+        return Uri.parse(path);
     }
 
     class ExtractThread implements Runnable{
@@ -811,6 +613,4 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 }
-

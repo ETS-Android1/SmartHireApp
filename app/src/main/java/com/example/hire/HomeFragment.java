@@ -20,6 +20,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +48,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     private ActivityFabForEmployeeListBinding binding;
 
+    NavController navController;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,7 +58,6 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         View view = binding.getRoot();
 
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
 
         //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
         //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Hire");
@@ -69,13 +73,15 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         mStorage = FirebaseStorage.getInstance();
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        //NavHostFragment navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host);
 
-        binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
+        /*binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                uploadResume();
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_uploadFragment);
+                //uploadResume();
             }
-        });
+        });*/
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 
@@ -87,8 +93,15 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                     employee.setKey(postSnapshot.getKey());
                     employees.add(employee);
                 }
+
                 myAdapter.addToeEmployeesFull(employees);
                 myAdapter.notifyDataSetChanged();
+                if(myAdapter.getItemCount()==0){
+                    binding.include.textViewNoItem.setVisibility(TextView.VISIBLE);
+                }else{
+                    binding.include.textViewNoItem.setVisibility(TextView.INVISIBLE);
+
+                }
 
                 //progressCircle.setVisibility(View.INVISIBLE);
             }
@@ -102,16 +115,27 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             }
         });
 
-        if(myAdapter.getItemCount()==0){
-            binding.include.textViewNoItem.setVisibility(TextView.VISIBLE);
-        }else{
-            binding.include.textViewNoItem.setVisibility(TextView.INVISIBLE);
-        }
-
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        navController = Navigation.findNavController(view);
+
+        binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //navController.navigate(R.id.action_homeFragment_to_uploadFragment);
+                Intent intent = new Intent(getActivity(),HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     public void uploadResume(){
+
         Intent intent = new Intent(getActivity(),MainActivity.class);
         startActivity(intent);
     }
@@ -128,19 +152,20 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         int employeeAge = selectedItem.getmAge();
         String employeeSkills = selectedItem.getmSkills();
         String employeeEducation = selectedItem.getmEducation();
+        String employeeAddress = selectedItem.getmAddress();
 
         String profilePhoto = selectedItem.getmImageUrl();
-        Intent intent = new Intent(getActivity(),EmployeeProfile.class);
-        intent.putExtra("EMPLOYEE_NAME",name);
-        intent.putExtra("EMPLOYEE_POSITION",employeePosition);
-        intent.putExtra("EMPLOYEE_PHONE",employeePhoneNum);
-        intent.putExtra("EMPLOYEE_EMAIL",employeeEmail);
-        intent.putExtra("EMPLOYEE_AGE",employeeAge);
-        intent.putExtra("EMPLOYEE_SKILLS",employeeSkills);
-        intent.putExtra("EMPLOYEE_EDUCATION",employeeEducation);
-        intent.putExtra("EMPLOYEE_PHOTO",profilePhoto);
-        startActivity(intent);
-
+        Bundle bundle = new Bundle();
+        bundle.putString("EMPLOYEE_NAME",name);
+        bundle.putString("EMPLOYEE_POSITION",employeePosition);
+        bundle.putString("EMPLOYEE_PHONE",employeePhoneNum);
+        bundle.putString("EMPLOYEE_EMAIL",employeeEmail);
+        bundle.putInt("EMPLOYEE_AGE",employeeAge);
+        bundle.putString("EMPLOYEE_SKILLS",employeeSkills);
+        bundle.putString("EMPLOYEE_EDUCATION",employeeEducation);
+        bundle.putString("EMPLOYEE_PHOTO",profilePhoto);
+        bundle.putString("EMPLOYEE_ADDRESS",employeeAddress);
+        navController.navigate(R.id.action_homeFragment_to_employeeProfile,bundle);
     }
 
     @Override
