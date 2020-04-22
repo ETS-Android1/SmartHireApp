@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".StartExtractActivity"></activity>
         <activity
             android:name=".BottomNavigationActivity"
             android:label="@string/title_activity_bottom_navigation">
@@ -28,35 +29,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".TestFireBase" />
-        <activity
-            android:name=".EmployeeProfile"
-            android:parentActivityName=".RecylerViewActivity" />
-        <activity android:name=".RecylerViewActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ExtractedText"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".ExtractedTextEdit"
-            android:parentActivityName=".ExtractedText" />
-        <activity
-            android:name=".MainActivity"
-            android:parentActivityName=".BottomNavigationActivity">
-            <meta-data
-                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-                android:value="ocr" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

@@ -1,46 +1,57 @@
-package com.example.hire;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.hire.frgaments;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import com.example.hire.databinding.ActivityEmployeeProfileBinding;
 import com.squareup.picasso.Picasso;
 
-public class EmployeeProfile extends AppCompatActivity {
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class EmployeeProfileFragment extends Fragment {
 
     private ActivityEmployeeProfileBinding binding;
+
     private String employeePhone,employeeName,employeePosition,employeeEmail,employeeAddress,employeeSkills,employeeEducation,employeeProfilePhoto;
     private int employeeAge;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityEmployeeProfileBinding.inflate(getLayoutInflater());
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+
+        binding = ActivityEmployeeProfileBinding.inflate(getLayoutInflater(),container,false);
         View view = binding.getRoot();
-        setContentView(view);
 
-        //setSupportActionBar(binding.toolbarProfile);
-        //getSupportActionBar().setTitle("Hire");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        return view;
+    }
 
-        Intent intent = getIntent();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        employeeName = intent.getStringExtra("EMPLOYEE_NAME");
-        employeePosition = intent.getStringExtra("EMPLOYEE_POSITION");
-        employeePhone = intent.getStringExtra("EMPLOYEE_PHONE");
-        employeeEmail= intent.getStringExtra("EMPLOYEE_EMAIL");
-        employeeAddress = intent.getStringExtra("EMPLOYEE_ADDRESS");
-        employeeAge = intent.getIntExtra("EMPLOYEE_AGE",0
-        );
-        employeeSkills = intent.getStringExtra("EMPLOYEE_SKILLS");
-        employeeEducation = intent.getStringExtra("EMPLOYEE_EDUCATION");
-        employeeProfilePhoto = intent.getStringExtra("EMPLOYEE_PHOTO");
+        Bundle bundle = getArguments();
+
+        employeeName = bundle.getString("EMPLOYEE_NAME");
+        employeePosition = bundle.getString("EMPLOYEE_POSITION");
+        employeePhone = bundle.getString("EMPLOYEE_PHONE");
+        employeeEmail= bundle.getString("EMPLOYEE_EMAIL");
+        employeeAddress = bundle.getString("EMPLOYEE_ADDRESS");
+        employeeAge = bundle.getInt("EMPLOYEE_AGE",0);
+        employeeSkills = bundle.getString("EMPLOYEE_SKILLS");
+        employeeEducation = bundle.getString("EMPLOYEE_EDUCATION");
+        employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
 
         Picasso.get()
                 .load(employeeProfilePhoto)
@@ -90,7 +101,6 @@ public class EmployeeProfile extends AppCompatActivity {
         startActivity(intent);
 
     }
-
 
 
 }

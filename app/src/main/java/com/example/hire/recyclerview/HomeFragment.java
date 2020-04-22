@@ -1,6 +1,9 @@
-package com.example.hire;
+package com.example.hire.recyclerview;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
 import android.widget.TextView;
@@ -22,10 +24,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hire.Employee;
+import com.example.hire.StartExtractActivity;
+import com.example.hire.recyclerview.MyAdapter;
+import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +51,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     private ValueEventListener mDBListener;
 
     private ActivityFabForEmployeeListBinding binding;
+    private ConnectivityManager connectivityManager;
 
     NavController navController;
 
@@ -56,8 +61,17 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         setHasOptionsMenu(true);
         binding = ActivityFabForEmployeeListBinding.inflate(getLayoutInflater(),container,false);
         View view = binding.getRoot();
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        navController = Navigation.findNavController(view);
         //getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right );
+
+        connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
@@ -72,10 +86,12 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
         myAdapter.setOnItemClickListener(this);
 
-        mStorage = FirebaseStorage.getInstance();
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED){
+            mStorage = FirebaseStorage.getInstance();
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
-        //NavHostFragment navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host);
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+            //NavHostFragment navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host);
 
         /*binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,61 +101,52 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             }
         });*/
 
-        mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
 
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                employees.clear();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Employee employee = postSnapshot.getValue(Employee.class);
-                    employee.setKey(postSnapshot.getKey());
-                    employees.add(employee);
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    employees.clear();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Employee employee = postSnapshot.getValue(Employee.class);
+                        employee.setKey(postSnapshot.getKey());
+                        employees.add(employee);
+                    }
+
+                    myAdapter.addToeEmployeesFull(employees);
+                    myAdapter.notifyDataSetChanged();
+                    if(myAdapter.getItemCount()==0){
+                        binding.include.textViewNoItem.setVisibility(TextView.VISIBLE);
+                    }else{
+                        binding.include.textViewNoItem.setVisibility(TextView.INVISIBLE);
+
+                    }
+
+                    //progressCircle.setVisibility(View.INVISIBLE);
                 }
 
-                myAdapter.addToeEmployeesFull(employees);
-                myAdapter.notifyDataSetChanged();
-                if(myAdapter.getItemCount()==0){
-                    binding.include.textViewNoItem.setVisibility(TextView.VISIBLE);
-                }else{
-                    binding.include.textViewNoItem.setVisibility(TextView.INVISIBLE);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    //progressCircle.setVisibility(View.INVISIBLE);
 
                 }
+            });
+        }else{
+            Toast.makeText(getActivity(),"No Internet",Toast.LENGTH_LONG).show();
+        }
 
-                //progressCircle.setVisibility(View.INVISIBLE);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                //progressCircle.setVisibility(View.INVISIBLE);
-
-            }
-        });
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        navController = Navigation.findNavController(view);
 
         binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //navController.navigate(R.id.action_homeFragment_to_uploadFragment);
-                Intent intent = new Intent(getActivity(),HomeActivity.class);
+                Intent intent = new Intent(getActivity(), StartExtractActivity.class);
                 startActivity(intent);
             }
         });
-    }
-
-    public void uploadResume(){
-
-        Intent intent = new Intent(getActivity(),MainActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -203,7 +210,9 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mDatabaseRef.removeEventListener(mDBListener);
+        if(mDBListener!=null){
+            mDatabaseRef.removeEventListener(mDBListener);
+        }
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.hire;
+package com.example.hire.frgaments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,6 +14,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,27 +23,20 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -49,23 +44,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabBinding;
-import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -75,7 +60,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,6 +91,10 @@ public class UploadFragment extends Fragment {
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private boolean isCanceled;
+    private boolean connected;
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo networkInfo;
+    private ExtractThread extractThread;
 
     private int expandWidth, expandHeight, faceWidth, faceHeight;
 
@@ -129,12 +117,17 @@ public class UploadFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        extractThread = new ExtractThread();
+
+        connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = connectivityManager.getActiveNetworkInfo();
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         mQueue = Volley.newRequestQueue(getActivity());
 
-        fabOpen = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_open);
+        fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
 
         rotateForward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_forward);
@@ -153,7 +146,17 @@ public class UploadFragment extends Fragment {
 
             public void onClick(View view) {
                 animateFab();
-                Log.d("FAB", ""+isOpen);
+                //Log.d("NETWORK", ""+networkInfo.isConnected());
+                if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+                    //we are connected to a network
+                    connected = true;
+                    Log.d("CONNECT", ""+connected);
+                }
+                else
+                    connected = false;
+                    Log.d("CONNECT", ""+connected);
+
             }
         });
 
@@ -189,15 +192,26 @@ public class UploadFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //fab.setVisibility(FloatingActionButton.INVISIBLE);
-                binding.fab.setClickable(false);
-                Toast.makeText(getActivity(),"Extracting...",Toast.LENGTH_LONG).show();
-                animateFab();
-                binding.progressBar.setVisibility(ProgressBar.VISIBLE);
-                ExtractThread extractThread = new ExtractThread();
-                new Thread(extractThread).start();
-                navController = Navigation.findNavController(v);
-
-
+                if(resultUri == null){
+                    Toast.makeText(getActivity(),"Please Upload your resume first",Toast.LENGTH_LONG).show();
+                }else{
+                    connected = false;
+                    if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                            connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+                        //we are connected to a network
+                        connected = true;
+                        binding.fab.setClickable(false);
+                        Toast.makeText(getActivity(),"Extracting...",Toast.LENGTH_LONG).show();
+                        animateFab();
+                        binding.progressBar.setVisibility(ProgressBar.VISIBLE);
+                        new Thread(extractThread).start();
+                        navController = Navigation.findNavController(v);
+                    }
+                    else{
+                        connected = false;
+                        Toast.makeText(getActivity(),"No Internet",Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
     }
@@ -368,8 +382,15 @@ public class UploadFragment extends Fragment {
                 FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false)
                 .build();
         if(!faceDetector.isOperational()){
-            new AlertDialog.Builder(getActivity().getApplicationContext()).setMessage("Could not set up the face detector!").show();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                   Toast.makeText(getActivity(),"Could not set up face detector",Toast.LENGTH_LONG).show();
+                }
+            });
             return;
+
+
         }
 
         Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
@@ -425,7 +446,14 @@ public class UploadFragment extends Fragment {
         TextRecognizer recognizer = new TextRecognizer.Builder(getActivity().getApplicationContext()).build();
 
         if (!recognizer.isOperational()) {
-            Toast.makeText(getActivity(), "Error :", Toast.LENGTH_SHORT).show();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), "Error setting up text recognizer", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return;
+
         } else {
             Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
             SparseArray<TextBlock> items = recognizer.detect(frame);
@@ -610,7 +638,7 @@ public class UploadFragment extends Fragment {
         public void run() {
             detectTextFromImage();
             binding.fab.setClickable(true);
-
+            binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 }

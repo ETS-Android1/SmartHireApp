@@ -1,4 +1,4 @@
-package com.example.hire;
+package com.example.hire.frgaments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -28,7 +28,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.hire.databinding.ActivityFabForExtactedBinding;
+import com.example.hire.BottomNavigationActivity;
+import com.example.hire.Employee;
 import com.example.hire.databinding.ActivityFabForExtactedEditBinding;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -349,7 +350,7 @@ public class ExtractedEditFragment extends Fragment {
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);
                                 Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(getActivity(),BottomNavigationActivity.class);
+                                Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
                                 startActivity(intent);
                             }
                             else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();

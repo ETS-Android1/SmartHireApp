@@ -5,16 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.hire.databinding.ActivityHomeBinding;
+import com.example.hire.databinding.StartExtractBinding;
 
-public class HomeActivity extends AppCompatActivity {
+public class StartExtractActivity extends AppCompatActivity {
 
-    private ActivityHomeBinding binding;
+    private StartExtractBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        binding = StartExtractBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 

@@ -1,4 +1,4 @@
-package com.example.hire;
+package com.example.hire.recyclerview;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.hire.R;
 
 public class MyHolder extends RecyclerView.ViewHolder {
 

@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.hire.HomeFragment"
+        android:name="com.example.hire.recyclerview.HomeFragment"
         android:label="fragment_blank"
         tools:layout="@layout/activity_fab_for_employee_list" >
         <action
@@ -20,21 +20,21 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.hire.ProfileFragment"
+        android:name="com.example.hire.frgaments.EmployerProfileFragment"
         android:label="activity_fab_for_extacted"
         tools:layout="@layout/fragment_profile">
     </fragment>
 
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.hire.HistoryFragment"
+        android:name="com.example.hire.frgaments.HistoryFragment"
         android:label="activity_fab_for_extacted"
         tools:layout="@layout/fragment_history">
     </fragment>
 
     <fragment
         android:id="@+id/employeeProfile"
-        android:name="com.example.hire.EmployeeProfileFragment"
+        android:name="com.example.hire.frgaments.EmployeeProfileFragment"
         android:label="fragment_blank"
         tools:layout="@layout/activity_employee_profile" >
     </fragment>

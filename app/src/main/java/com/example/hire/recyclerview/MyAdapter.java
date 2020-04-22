@@ -1,4 +1,4 @@
-package com.example.hire;
+package com.example.hire.recyclerview;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,11 +12,12 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hire.Employee;
+import com.example.hire.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
