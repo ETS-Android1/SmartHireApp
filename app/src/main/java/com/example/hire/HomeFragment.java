@@ -57,6 +57,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         binding = ActivityFabForEmployeeListBinding.inflate(getLayoutInflater(),container,false);
         View view = binding.getRoot();
 
+        //getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right );
+
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
