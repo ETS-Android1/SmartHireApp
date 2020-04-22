@@ -1,4 +1,4 @@
-package com.example.hire.recyclerview;
+package com.example.hire.database;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,12 +22,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.hire.Employee;
 import com.example.hire.StartExtractActivity;
+import com.example.hire.database.EmployeeDao;
+import com.example.hire.database.EmployeeViewModel;
 import com.example.hire.recyclerview.MyAdapter;
 import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
@@ -41,6 +47,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListener {
 
@@ -52,6 +59,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     private ActivityFabForEmployeeListBinding binding;
     private ConnectivityManager connectivityManager;
+    private EmployeeViewModel mEmployeeViewModel;
 
     NavController navController;
 
@@ -67,6 +75,16 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mEmployeeViewModel = new ViewModelProvider(this).get(EmployeeViewModel.class);
+
+        mEmployeeViewModel.getAllWords().observe(getViewLifecycleOwner(), new Observer<List<EmployeeEntity>>() {
+            @Override
+            public void onChanged(@Nullable final List<EmployeeEntity> words) {
+                // Update the cached copy of the words in the adapter.
+                adapter.setWords(words);
+            }
+        });
 
         navController = Navigation.findNavController(view);
         //getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right );
@@ -135,9 +153,6 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         }else{
             Toast.makeText(getActivity(),"No Internet",Toast.LENGTH_LONG).show();
         }
-
-
-
 
         binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
             @Override
