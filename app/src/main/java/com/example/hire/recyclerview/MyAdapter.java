@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hire.Employee;
 import com.example.hire.R;
+import com.example.hire.database.EmployeeEntity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,6 +38,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
 
     public void addToeEmployeesFull(List<Employee> employee){
         employeesFull = new ArrayList<>(employee);
+    }
+
+    public void setEmployees(List<Employee> employees){
+        this.employees = employees;
     }
 
     @NonNull

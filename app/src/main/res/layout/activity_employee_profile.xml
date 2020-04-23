@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:scrollbars="vertical"
-    tools:context=".ExtractedText">
+    android:background="@color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,6 +16,85 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/slateGrey"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageViewEmployeeProfile"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="15dp"
+                    android:background="#00FFFFFF"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="2dp"
+                    app:srcCompat="@drawable/ic_person" />
+
+                <TextView
+                    android:id="@+id/textViewProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Name"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewProfilePosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp"
+                    android:gravity="center"
+                    android:text="position"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="-40dp"
+                android:padding="10dp"
+                android:background="@drawable/circle_and_white_border">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabProfileCall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:background="@drawable/circle_and_white_border"
+                    app:backgroundTint="#4CAF50"
+                    app:fabSize="auto"
+                    app:srcCompat="@drawable/employee_call"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabProfileMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_marginLeft="10dp"
+                    app:backgroundTint="#EE9B21"
+                    app:srcCompat="@drawable/employee_msg" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabResume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_marginLeft="10dp"
+                    app:backgroundTint="@color/colorPrimary"
+                    app:srcCompat="@drawable/resume_fab" />
+
+            </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -75,7 +154,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewAddress" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewProfileAddress" />
 
                 <TextView
                     android:id="@+id/textViewLabelPhoneNumber"
@@ -99,18 +178,7 @@
                     app:layout_constraintStart_toEndOf="@+id/imageViewEmail"
                     app:layout_constraintTop_toTopOf="@+id/imageViewEmail" />
 
-                <TextView
-                    android:id="@+id/textViewProfileName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="Name"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/imageViewEmployeeProfile"
-                    app:layout_constraintStart_toStartOf="@+id/imageViewEmployeeProfile"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewEmployeeProfile" />
+
 
                 <TextView
                     android:id="@+id/textViewProfilePhoneNum"
@@ -173,7 +241,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/fabProfileCall" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/imageViewPhone"
@@ -242,53 +310,7 @@
                     app:layout_constraintStart_toEndOf="@+id/imageView"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAge" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabProfileCall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:clickable="true"
-                    app:backgroundTint="#4CAF50"
-                    app:fabSize="auto"
-                    app:layout_constraintEnd_toEndOf="@+id/imageViewEmployeeProfile"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewProfilePosition"
-                    app:srcCompat="@drawable/employee_call" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabProfileMsg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    app:backgroundTint="#EE9B21"
-                    app:layout_constraintBottom_toBottomOf="@+id/fabProfileCall"
-                    app:layout_constraintStart_toStartOf="@+id/imageViewEmployeeProfile"
-                    app:layout_constraintTop_toTopOf="@+id/fabProfileCall"
-                    app:srcCompat="@drawable/employee_msg" />
-
-                <TextView
-                    android:id="@+id/textViewProfilePosition"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="position"
-                    app:layout_constraintEnd_toEndOf="@+id/textViewProfileName"
-                    app:layout_constraintStart_toStartOf="@+id/textViewProfileName"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewProfileName" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imageViewEmployeeProfile"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="32dp"
-                    android:adjustViewBounds="false"
-                    android:background="#00FFFFFF"
-                    app:civ_border_color="#FF000000"
-                    app:civ_border_width="2dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.501"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_person" />
 
                 <!--<TextView
                     android:id="@+id/textViewLabelResume"

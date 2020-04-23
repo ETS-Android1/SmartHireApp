@@ -1,5 +1,8 @@
 package com.example.hire;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.firebase.database.Exclude;
 
 public class Employee {
@@ -16,6 +19,9 @@ public class Employee {
     private String mSkills;
     private String mEducation;
     private int mAge;
+
+    public Employee() {
+    }
 
     public int getmAge() {
         return mAge;
@@ -41,38 +47,7 @@ public class Employee {
         this.mEducation = mEducation;
     }
 
-    public Employee(){
-    }
-
-    public Employee(String mName, String mImageUrl) {
-        this.mName = mName;
-        this.mImageUrl = mImageUrl;
-    }
-
-    public Employee(String mName, String mPosition, String mImageUrl) {
-        this.mName = mName;
-        this.mPosition = mPosition;
-        this.mImageUrl = mImageUrl;
-    }
-
-    public Employee(String mName, String mImageUrl, String mAddress, String mPhoneNumber, String mEmail) {
-        this.mName = mName;
-        this.mImageUrl = mImageUrl;
-        this.mAddress = mAddress;
-        this.mPhoneNumber = mPhoneNumber;
-        this.mEmail = mEmail;
-    }
-
-    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail) {
-        this.mName = mName;
-        this.mImageUrl = mImageUrl;
-        this.resumeImageUrl = resumeImageUrl;
-        this.mAddress = mAddress;
-        this.mPhoneNumber = mPhoneNumber;
-        this.mEmail = mEmail;
-    }
-
-    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate, String mSkills,String mEducation,int mAge) {
+    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate, String mSkills, String mEducation, int mAge) {
         this.mName = mName;
         this.mImageUrl = mImageUrl;
         this.resumeImageUrl = resumeImageUrl;

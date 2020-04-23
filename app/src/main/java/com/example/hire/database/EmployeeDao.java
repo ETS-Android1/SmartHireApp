@@ -15,11 +15,11 @@ public interface EmployeeDao {
     // allowing the insert of the same word multiple times by passing a
     // conflict resolution strategy
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(EmployeeEntity employeeEntity);
+    void insert(EmployeeEntity employee);
 
     @Query("DELETE FROM employee_table")
     void deleteAll();
 
-    @Query("SELECT * from employee_table ORDER BY name ASC")
+    @Query("SELECT * from employee_table")
     LiveData<List<EmployeeEntity>> getAlphabetizedWords();
 }

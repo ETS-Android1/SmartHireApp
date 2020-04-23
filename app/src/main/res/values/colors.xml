@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimary">#1399C6</color>
     <color name="colorPrimaryDark">#202020</color>
-    <color name="colorAccent">#2196F3</color>
+    <color name="colorAccent">#1399C6</color>
     <color name="green">#3CB371</color>
     <color name="white">#FFFFFF</color>
+    <color name="darkSlateGrey">#2F4F4F</color>
+    <color name="slateGrey">#708090</color>
+    <color name="skyBlue">#87CEEB</color>
 </resources>

@@ -14,26 +14,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.hire.Employee;
 import com.example.hire.StartExtractActivity;
-import com.example.hire.database.EmployeeDao;
-import com.example.hire.database.EmployeeViewModel;
 import com.example.hire.recyclerview.MyAdapter;
 import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
@@ -47,7 +43,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListener {
 
@@ -73,18 +68,18 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)  {
         super.onViewCreated(view, savedInstanceState);
 
-        mEmployeeViewModel = new ViewModelProvider(this).get(EmployeeViewModel.class);
+        /*mEmployeeViewModel = new ViewModelProvider(this).get(EmployeeViewModel.class);
 
         mEmployeeViewModel.getAllWords().observe(getViewLifecycleOwner(), new Observer<List<EmployeeEntity>>() {
             @Override
-            public void onChanged(@Nullable final List<EmployeeEntity> words) {
+            public void onChanged(@Nullable final List<EmployeeEntity> employees) {
                 // Update the cached copy of the words in the adapter.
-                adapter.setWords(words);
+                myAdapter.setEmployees(employees);
             }
-        });
+        });*/
 
         navController = Navigation.findNavController(view);
         //getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right );
@@ -106,6 +101,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED){
+
+            binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
             mStorage = FirebaseStorage.getInstance();
 
             mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -158,8 +155,24 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             @Override
             public void onClick(View v) {
                 //navController.navigate(R.id.action_homeFragment_to_uploadFragment);
-                Intent intent = new Intent(getActivity(), StartExtractActivity.class);
-                startActivity(intent);
+                // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("Recruit Options")
+                        .setItems(R.array.recruit_options, (dialog, options) -> {
+                            if(options==0){
+                                Toast.makeText(getActivity(),"Manually Recruit",Toast.LENGTH_LONG).show();
+                            }else if(options ==1){
+                                Toast.makeText(getActivity(),"A.I. Recruit",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(getActivity(), StartExtractActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+
+// 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+                builder.create().show();
+                //Intent intent = new Intent(getActivity(), StartExtractActivity.class);
+                //startActivity(intent);
             }
         });
     }
@@ -177,8 +190,22 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         String employeeSkills = selectedItem.getmSkills();
         String employeeEducation = selectedItem.getmEducation();
         String employeeAddress = selectedItem.getmAddress();
-
         String profilePhoto = selectedItem.getmImageUrl();
+        String employeeResume = selectedItem.getResumeImageUrl();
+
+        /*Intent intent = new Intent(getActivity(), EmployeeProfile.class);
+        intent.putExtra("EMPLOYEE_NAME",name);
+        intent.putExtra("EMPLOYEE_POSITION",employeePosition);
+        intent.putExtra("EMPLOYEE_PHONE",employeePhoneNum);
+        intent.putExtra("EMPLOYEE_EMAIL",employeeEmail);
+        intent.putExtra("EMPLOYEE_AGE",employeeAge);
+        intent.putExtra("EMPLOYEE_SKILLS",employeeSkills);
+        intent.putExtra("EMPLOYEE_EDUCATION",employeeEducation);
+        intent.putExtra("EMPLOYEE_PHOTO",profilePhoto);
+        intent.putExtra("EMPLOYEE_ADDRESS",employeeAddress);
+        startActivity(intent);*/
+
+
         Bundle bundle = new Bundle();
         bundle.putString("EMPLOYEE_NAME",name);
         bundle.putString("EMPLOYEE_POSITION",employeePosition);
@@ -188,6 +215,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         bundle.putString("EMPLOYEE_SKILLS",employeeSkills);
         bundle.putString("EMPLOYEE_EDUCATION",employeeEducation);
         bundle.putString("EMPLOYEE_PHOTO",profilePhoto);
+        bundle.putString("EMPLOYEE_RESUME",employeeResume);
         bundle.putString("EMPLOYEE_ADDRESS",employeeAddress);
         navController.navigate(R.id.action_homeFragment_to_employeeProfile,bundle);
     }

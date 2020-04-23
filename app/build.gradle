@@ -84,6 +84,9 @@ dependencies {
 // Testing
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
 
+    //pop up image dialog
+    implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.2'
+
 
 }
 

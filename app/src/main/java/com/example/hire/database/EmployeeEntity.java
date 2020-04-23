@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 public class EmployeeEntity {
 
     @PrimaryKey(autoGenerate = true)
-    private String key;
+    private int key;
     private String name;
     private String position;
     private String profileImageUrl;
@@ -32,6 +32,14 @@ public class EmployeeEntity {
         this.skills = skills;
         this.education = education;
         this.age = age;
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
     }
 
     public String getName() {
