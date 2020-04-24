@@ -72,7 +72,7 @@ public class EmployeeProfileFragment extends Fragment {
         employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
         employeeResume = bundle.getString("EMPLOYEE_RESUME");
 
-        Picasso.get()
+        /*Picasso.get()
                 .load(employeeProfilePhoto)
                 .fit()
                 .centerCrop()
@@ -86,7 +86,9 @@ public class EmployeeProfileFragment extends Fragment {
                     public void onError(Exception e) {
                         Toast.makeText(getActivity(), "Error loading image", Toast.LENGTH_SHORT).show();
                     }
-                });
+                });*/
+
+        binding.imageViewEmployeeProfile.setImageURI(Uri.parse(employeeProfilePhoto));
 
         binding.textViewProfileName.setText(employeeName);
         binding.textViewProfilePosition.setText(employeePosition);
@@ -136,23 +138,8 @@ public class EmployeeProfileFragment extends Fragment {
         //imageDialog.setTitle("Resume");
         View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_resume, null);
         ImageView imageView = dialogLayout.findViewById(R.id.imageViewDialogResume);
-        //imageView.setImageURI(Uri.parse(employeeResume));
-        Picasso.get()
-                .load(employeeResume)
-                .error(R.drawable.error)
-                .fit()
-                .centerCrop()
-                .into(imageView);
-
+        imageView.setImageURI(Uri.parse(employeeProfilePhoto));
         imageDialog.setView(dialogLayout);
-
-        Picasso.get()
-                .load(employeeResume)
-                .error(R.drawable.error)
-                .fit()
-                .centerCrop()
-                .into(imageView);
-
         imageDialog.show();*/
 
 

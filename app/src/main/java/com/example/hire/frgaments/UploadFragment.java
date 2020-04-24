@@ -426,6 +426,7 @@ public class UploadFragment extends Fragment {
             faceHeight = (int)y2-(int)y1;
             croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1-expandWidth,(int)y1-expandHeight,faceWidth+(2*expandWidth),faceHeight+(2*expandHeight));
             croppedFace = getImageUri(getActivity(),croppedBitmap);
+            Log.d("FACE URL", ""+croppedFace);
             //imageViewResume.setImageBitmap(croppedBitmap);
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
@@ -589,8 +590,13 @@ public class UploadFragment extends Fragment {
                                     employeeEmail = result;
                                 }else if(result.matches(ageRegex) && employeeAge.isEmpty()){
                                     employeeAge = result;
+                                    Pattern p = Pattern.compile("\\d+");
+                                    Matcher m = p.matcher(employeeAge);
+                                    while(m.find()) {
+                                        employeeAge = m.group();
+                                    }
                                     employeeAge.substring(0,1);
-                                    Log.d("AGE:",employeeAge+employeeAge.substring(0,1));
+                                    Log.d("AGE",employeeAge+ "subString"+employeeAge.substring(0,1));
                                 }
                             }
 
@@ -638,7 +644,6 @@ public class UploadFragment extends Fragment {
         public void run() {
             detectTextFromImage();
             binding.fab.setClickable(true);
-            binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 }

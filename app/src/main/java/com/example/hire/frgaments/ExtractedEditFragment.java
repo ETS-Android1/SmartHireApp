@@ -283,8 +283,19 @@ public class ExtractedEditFragment extends Fragment {
     }
 
     private void uploadToDatabase() {
+        Toast.makeText(getActivity(),"Uploading to Database",Toast.LENGTH_SHORT).show();
         binding.progressBarExtractedEdit.setVisibility(ProgressBar.VISIBLE);
-        if (resultUri != null) {
+
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
+        Employee upload = new Employee(extractedName.trim(), resultUri.toString(),resumeUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim(),timeStamp,extractedSkills.trim(),extractedEducation.trim(),extractedAge);
+        String uploadId = mDatabaseRef.push().getKey();
+        mDatabaseRef.child(uploadId).setValue(upload);
+        //mDatabaseRef.push().setValue(upload);
+        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
+        binding.progressBarExtractedEdit.setVisibility(ProgressBar.INVISIBLE);
+        startActivity(intent);
+        /*if (resultUri != null) {
             final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(resultUri));
 
@@ -365,7 +376,7 @@ public class ExtractedEditFragment extends Fragment {
                     });
         } else {
             Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     private String getFileExtension(Uri uri) {
