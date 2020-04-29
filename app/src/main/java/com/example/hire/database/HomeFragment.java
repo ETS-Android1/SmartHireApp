@@ -53,7 +53,6 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     private ValueEventListener mDBListener;
 
     private ActivityFabForEmployeeListBinding binding;
-    private ConnectivityManager connectivityManager;
     private EmployeeViewModel mEmployeeViewModel;
 
     NavController navController;
@@ -71,6 +70,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)  {
         super.onViewCreated(view, savedInstanceState);
 
+        employees = new ArrayList<>();
+
         /*mEmployeeViewModel = new ViewModelProvider(this).get(EmployeeViewModel.class);
 
         mEmployeeViewModel.getAllWords().observe(getViewLifecycleOwner(), new Observer<List<EmployeeEntity>>() {
@@ -84,14 +85,10 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         navController = Navigation.findNavController(view);
         //getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right );
 
-        connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
         //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
         //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Hire");
-
-        employees = new ArrayList<>();
 
         myAdapter = new MyAdapter( getActivity(),employees);
 
@@ -99,8 +96,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
         myAdapter.setOnItemClickListener(this);
 
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED){
+        if(checkConnectivity()){
 
             binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
             mStorage = FirebaseStorage.getInstance();
@@ -161,6 +157,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 builder.setTitle("Recruit Options")
                         .setItems(R.array.recruit_options, (dialog, options) -> {
                             if(options==0){
+                                navController.navigate(R.id.action_homeFragment_to_manualForm);
                                 Toast.makeText(getActivity(),"Manually Recruit",Toast.LENGTH_LONG).show();
                             }else if(options ==1){
                                 Toast.makeText(getActivity(),"A.I. Recruit",Toast.LENGTH_LONG).show();
@@ -175,6 +172,16 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 //startActivity(intent);
             }
         });
+    }
+
+    public boolean checkConnectivity(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override

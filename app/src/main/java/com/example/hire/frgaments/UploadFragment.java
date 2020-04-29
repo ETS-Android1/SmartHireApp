@@ -506,8 +506,15 @@ public class UploadFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        /*http://192.168.0.187:9000/?properties={"ner.model":"/Users/ASUS/Desktop/stanford-corenlp-full-2018-10-05/ner-model.ser.gz,
+        edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz","annotators":"tokenize,ssplit,ner"}*/
+        String url = "http://192.168.0.187:9000/?properties=%7B" +
+                "%22ner.model%22%3A%22/Users/ASUS/Desktop/stanford-corenlp-full-2018-10-05/ner-model.ser.gz," +
+                "edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz%22%2C" +
+                "%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C%" +
+                "22ner.useSUTime%22%3Afalse%2C" +
+                "%22ner.applyNumericClassifiers%22%3Afalse%7D";
 
-        String url = "http://192.168.0.187:9000/?properties=%7B%22ner.model%22%3A%22/Users/ASUS/Desktop/stanford-corenlp-full-2018-10-05/ner-model.ser.gz,edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz%22%2C%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%7D";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,object,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -576,7 +583,11 @@ public class UploadFragment extends Fragment {
                             String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)?";
                             String location = employeeLocation;
                             String addressRegex = addressHeader + addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+location;
-                            String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+                            String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
+                                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])" +
+                                    "*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|" +
+                                    "[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:" +
+                                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
                             Pattern allPattern = Pattern.compile(phoneRegex+"|"+emailRegex+"|"+addressRegex+"|"+ageRegex);
                             Matcher allMatcher = allPattern.matcher(str);

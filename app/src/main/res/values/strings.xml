@@ -7,12 +7,41 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
+    <!--Manual Form-->
+    <string name="example_name">Eg: Jackson Wang</string>
+    <string name="example_phone">Eg: 1110235638</string>
+    <string name="example_email">Eg: jackson@gmail.com</string>
+    <string name="example_age">Eg: 21</string>
+    <string name="example_address">Eg: No.16 Jalan Danau Kota, Taman Danao 12, 53300, Kuala Lumpur</string>
+    <string name="example_skills">Eg: Java</string>
+    <string name="example_education">Eg: Tunku Abdul Rahman University College</string>
+    <string name="terms">I hereby agreed that all the information provided is real and authentic.</string>
+    <string name="one">1</string>
+    <string name="java">java</string>
+    <string name="beginer">beginer</string>
+    <string name="delete">delete</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string-array name="recruit_options">
         <item>Manually Form</item>
         <item>A.I. Resume Extraction</item>
+    </string-array>
+
+    <string-array name="level">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+
+    <string-array name="phone">
+        <item>+60</item>
+        <item>+61</item>
+        <item>+62</item>
+        <item>+63</item>
+        <item>+64</item>
+        <item>+65</item>
     </string-array>
 
 </resources>

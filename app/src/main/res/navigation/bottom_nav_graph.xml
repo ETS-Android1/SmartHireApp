@@ -16,6 +16,9 @@
             app:popExitAnim="@anim/slide_out_right"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"/>
+        <action
+            android:id="@+id/action_homeFragment_to_manualForm"
+            app:destination="@id/manualForm" />
     </fragment>
 
     <fragment
@@ -37,6 +40,20 @@
         android:name="com.example.hire.frgaments.EmployeeProfileFragment"
         android:label="fragment_blank"
         tools:layout="@layout/activity_employee_profile" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/manualForm"
+        android:name="com.example.hire.frgaments.ManualForm"
+        android:label="fragment_blank"
+        tools:layout="@layout/fragment_manual_form" >
+        <action
+            android:id="@+id/action_manualForm_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
     </fragment>
 
 </navigation>
