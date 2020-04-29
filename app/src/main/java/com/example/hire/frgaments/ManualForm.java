@@ -5,10 +5,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.example.hire.R;
 import com.example.hire.recylerviewSkills.Skills;
 import com.example.hire.databinding.FragmentManualFormBinding;
+import com.example.hire.recylerviewSkills.SkillsAdapter;
 
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ public class ManualForm extends Fragment implements AdapterView.OnItemSelectedLi
     private FragmentManualFormBinding binding;
     private RadioButton radioButton;
     private ArrayList<Skills> skills;
+    private SkillsAdapter skillsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +44,9 @@ public class ManualForm extends Fragment implements AdapterView.OnItemSelectedLi
         super.onViewCreated(view, savedInstanceState);
 
         skills = new ArrayList<>();
+        binding.recyclerViewSkills.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+        skillsAdapter = new SkillsAdapter(skills);
+        binding.recyclerViewSkills.setAdapter(skillsAdapter);
 
         ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(getActivity(),R.array.level,android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -52,9 +59,13 @@ public class ManualForm extends Fragment implements AdapterView.OnItemSelectedLi
         binding.spinnerPhone.setOnItemSelectedListener(this);
 
         binding.buttonAddManualSkills.setOnClickListener(v -> {
-            String selectedItem = binding.spinnerSkills.getSelectedItem().toString();
+            Skills newSkills = new Skills(binding.editTextManualSkills.getText().toString(),binding.spinnerSkills.getSelectedItem().toString());
+            skills.add(newSkills);
+            skillsAdapter.notifyDataSetChanged();
+            //String selectedItem = binding.spinnerSkills.getSelectedItem().toString();
             binding.editTextManualSkills.getText().clear();
-            Toast.makeText(getActivity(),selectedItem,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(),selectedItem,Toast.LENGTH_SHORT).show();
+
         });
 
         binding.buttonAddManualEducation.setOnClickListener( v -> {

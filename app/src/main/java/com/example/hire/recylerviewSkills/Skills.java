@@ -8,20 +8,24 @@ public class Skills {
     public Skills() {
     }
 
-    private void setSkill(String skill){
+    public Skills(String skill, String level) {
         this.skill = skill;
+        this.level = level;
     }
 
-    private String getSkill(){
+    public String getSkill() {
         return skill;
     }
 
-    public void setLevel(String level) {
-        this.level = level;
+    public void setSkill(String skill) {
+        this.skill = skill;
     }
 
     public String getLevel() {
         return level;
     }
 
+    public void setLevel(String level) {
+        this.level = level;
+    }
 }

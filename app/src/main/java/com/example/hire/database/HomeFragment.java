@@ -90,7 +90,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
         //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Hire");
 
-        myAdapter = new MyAdapter( getActivity(),employees);
+        myAdapter = new MyAdapter(getActivity(),employees);
 
         binding.include.recyclerView.setAdapter(myAdapter);
 

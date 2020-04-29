@@ -1,10 +1,13 @@
 package com.example.hire.recylerviewSkills;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,24 +20,29 @@ public class SkillsAdapter extends RecyclerView.Adapter<SkillsAdapter.SkillsHold
 
     private List<Skills> skills;
 
+    public SkillsAdapter(List<Skills> skills) {
+        this.skills = skills;
+    }
+
     @NonNull
     @Override
     public SkillsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_design,parent,false);
-        return new SkillsAdapter.SkillsHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.skills_view_design,parent,false);
+        return new SkillsHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SkillsHolder holder, int position) {
         Skills currentSkills = skills.get(position);
-        holder.textViewHolderSkillsPosition.setText(currentSkills.toString());
-        holder.textViewHolderSkillsSkills.setText(currentSkills);
+        holder.textViewHolderSkillsPosition.setText(Integer.toString(position+1));
+        holder.textViewHolderSkillsSkills.setText(currentSkills.getSkill());
+        holder.textViewHolderSkillsLevel.setText(currentSkills.getLevel());
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return skills.size();
     }
 
     public class SkillsHolder extends RecyclerView.ViewHolder{
