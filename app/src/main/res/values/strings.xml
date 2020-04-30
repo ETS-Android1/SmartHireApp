@@ -25,6 +25,23 @@
     <string name="snackbar_delete">Successfully Cleared</string>
     <string name="undo">Undo</string>
     <string name="undo_success">Undo Successfully</string>
+    <string name="name_empty_error">Name cannot be empty</string>
+    <string name="email_empty_error">Email cannot be empty</string>
+    <string name="phone_empty_error">Phone No. cannot be empty</string>
+    <string name="age_empty_error">Age cannot be empty</string>
+    <string name="address_empty_error">Address cannot be empty</string>
+    <string name="numeric_phone_error">Phone No. must be numeric</string>
+    <string name="numeric_age_error">Age must be numeric</string>
+    <string name="email_format_error">Invalid email format</string>
+    <string name="gender_error">Please select your gender</string>
+    <string name="unchecked_TandC">Please agree your terms and conditions</string>
+    <string name="error_input">Please provide the valid input</string>
+    <string name="ask_resume">Do you have a resume?</string>
+    <string name="upload_now">Upload now</string>
+    <string name="upload_success">Uploaded Succesfully</string>
+    <string name="upload_error">Uploaded Fail</string>
+    <string name="no_skills">No skills</string>
+    <string name="no_education">No educations</string>
 
     <!--Upload Fragment-->
     <string name="info">The process may take up to 20 second or more if your uploaded resume has too much of information to be processed.
@@ -51,6 +68,11 @@
         <item>+63</item>
         <item>+64</item>
         <item>+65</item>
+    </string-array>
+
+    <string-array name="take_photo_options">
+        <item>Camera</item>
+        <item>Gallery</item>
     </string-array>
 
 </resources>

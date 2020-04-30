@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.hire.BottomNavigationActivity;
 import com.example.hire.Employee;
+import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForExtactedEditBinding;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,7 +55,7 @@ public class ExtractedEditFragment extends Fragment {
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int STORAGE_REQUEST_CODE = 400;
     private static final int IMAGE_PICK_GALLERY_CODE = 1000;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private BitmapDrawable imageBitmapDrawable;
     private Bitmap imageBitmap, tempBitmap;
@@ -63,9 +64,7 @@ public class ExtractedEditFragment extends Fragment {
     String storagePermission[];
 
     byte[] b;
-    Uri resultUri,resumeUri;
-
-    Uri imageUri;
+    private Uri resultUri,resumeUri,imageUri;
 
     //google firebase database
     private StorageReference mStorageRef;
@@ -141,35 +140,39 @@ public class ExtractedEditFragment extends Fragment {
         binding.include.fabEditPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] colors = {"Camera", "Gallery"};
+                setUpAlertDialog();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Pick your options");
-                builder.setItems(colors, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int option) {
-                        if (option == 0){
-                            Toast.makeText(getActivity(), "Camera", Toast.LENGTH_SHORT).show();
-                            if (!checkCameraPermission()) {
-                                requestCameraPermission();
-                            } else {
-                                dispatchTakePictureIntent();
-                            }
-                        }else{
-                            Toast.makeText(getActivity(), "Gallery", Toast.LENGTH_SHORT).show();
-                            if(!checkStoragePermission()){
-                                requestStoragePermission();
-                            }else{
-                                pickGallery();
-                            }
-                        }
-                        // the user clicked on colors[which]
-                    }
-                });
-                builder.show();
             }
         });
 
+    }
+
+    private void setUpAlertDialog(){
+        //String[] options = {"Camera", "Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Pick your options");
+        builder.setItems(getResources().getStringArray(R.array.take_photo_options), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int option) {
+                if (option == 0){
+                    Toast.makeText(getActivity(), "Camera", Toast.LENGTH_SHORT).show();
+                    if (!checkCameraPermission()) {
+                        requestCameraPermission();
+                    } else {
+                        dispatchTakePictureIntent();
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "Gallery", Toast.LENGTH_SHORT).show();
+                    if(!checkStoragePermission()){
+                        requestStoragePermission();
+                    }else{
+                        pickGallery();
+                    }
+                }
+                // the user clicked on colors[which]
+            }
+        });
+        builder.show();
     }
 
     private boolean checkCameraPermission() {
@@ -187,7 +190,7 @@ public class ExtractedEditFragment extends Fragment {
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 
             ContentValues values = new ContentValues();
-            Toast.makeText(getActivity(), "hi:", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Say cheese!", Toast.LENGTH_SHORT).show();
             values.put(MediaStore.Images.Media.TITLE, "NewPic");
             values.put(MediaStore.Images.Media.DESCRIPTION, "Image to Text");
             imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -249,37 +252,40 @@ public class ExtractedEditFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode==IMAGE_PICK_GALLERY_CODE){
-                CropImage.activity(data.getData())
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(getActivity(),ExtractedEditFragment.this);
-            }
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                //Bundle extras = data.getExtras();
-                //imageBitmap = (Bitmap) extras.get("data");
-                CropImage.activity(imageUri)
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(getActivity(),ExtractedEditFragment.this);
-                //Toast.makeText(MainActivity.this,"Error 123:" ,Toast.LENGTH_SHORT).show();
+            switch (requestCode){
+                case IMAGE_PICK_GALLERY_CODE:
+                    CropImage.activity(data.getData())
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(getActivity(),ExtractedEditFragment.this);
+                    break;
+                case REQUEST_IMAGE_CAPTURE:
+                    //Bundle extras = data.getExtras();
+                    //imageBitmap = (Bitmap) extras.get("data");
+                    CropImage.activity(imageUri)
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .start(getActivity(),ExtractedEditFragment.this);
+                    //Toast.makeText(MainActivity.this,"Error 123:" ,Toast.LENGTH_SHORT).show();
 
-                //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
-                //imageViewResume.setImageBitmap(imageBitmap);
+                    //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
+                    //imageViewResume.setImageBitmap(imageBitmap);
+                    break;
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    resultUri = result.getUri();//get image uri
+                    binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
+                    Log.d("Image",""+resultUri);
+                    imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewExtractedImageEdit.getDrawable();
+                    imageBitmap = imageBitmapDrawable.getBitmap();
+                    break;
+
+                case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:
+                    Toast.makeText(getActivity(), "Error getting crop image", Toast.LENGTH_SHORT).show();
+                    break;
+
+                default:
+                    Toast.makeText(getActivity(), "Error getting result", Toast.LENGTH_SHORT).show();
             }
         }
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == Activity.RESULT_OK) {
-                resultUri = result.getUri();//get image uri
-                binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
-                Log.d("Image",""+resultUri);
-                imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewExtractedImageEdit.getDrawable();
-                imageBitmap = imageBitmapDrawable.getBitmap();
-
-            }
-        } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-            Toast.makeText(getActivity(), "Error :", Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     private void uploadToDatabase() {

@@ -28,4 +28,9 @@ public class Skills {
     public void setLevel(String level) {
         this.level = level;
     }
+
+    @Override
+    public String toString() {
+        return skill + " - "+ level +"\n";
+    }
 }
