@@ -37,6 +37,10 @@ public class SkillsAdapter extends RecyclerView.Adapter<SkillsAdapter.SkillsHold
         holder.textViewHolderSkillsPosition.setText(Integer.toString(position+1));
         holder.textViewHolderSkillsSkills.setText(currentSkills.getSkill());
         holder.textViewHolderSkillsLevel.setText(currentSkills.getLevel());
+        holder.buttonHolderSkillsDelete.setOnClickListener(v -> {
+            skills.remove(currentSkills);
+            notifyDataSetChanged();
+        });
 
     }
 
@@ -56,6 +60,7 @@ public class SkillsAdapter extends RecyclerView.Adapter<SkillsAdapter.SkillsHold
             textViewHolderSkillsPosition = itemView.findViewById(R.id.textViewHolderSkillsPosition);
             textViewHolderSkillsSkills = itemView.findViewById(R.id.textViewHolderSkillsSkills);
             textViewHolderSkillsLevel = itemView.findViewById(R.id.textViewHolderSkillsLevel);
+            buttonHolderSkillsDelete = itemView.findViewById(R.id.buttonHolderSkillsDelete);
 
         }
     }

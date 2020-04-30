@@ -20,6 +20,15 @@
     <string name="java">java</string>
     <string name="beginer">beginer</string>
     <string name="delete">delete</string>
+    <string name="TARUC">Tunku Abdul Rahman University College</string>
+    <string name="clearAll">Clear All</string>
+    <string name="snackbar_delete">Successfully Cleared</string>
+    <string name="undo">Undo</string>
+    <string name="undo_success">Undo Successfully</string>
+
+    <!--Upload Fragment-->
+    <string name="info">The process may take up to 20 second or more if your uploaded resume has too much of information to be processed.
+    Please be patient while waiting for the result.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
