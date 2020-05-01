@@ -429,7 +429,7 @@ public class ManualForm extends Fragment {
         }else{
             employeeEducation = getString(R.string.no_education);
         }
-        
+
         name = binding.editTextManualName.getText().toString();
         phone = binding.editTextManualPhoneNum.getText().toString();
         email = binding.editTextManualEmail.getText().toString();

@@ -60,13 +60,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         myHolder.mName.setText(employeeCurrent.getmName()); // here i is the position
         myHolder.mPosition.setText(employeeCurrent.getmPosition());
         myHolder.textViewRecruitedDate.setText("Recruited on: "+employeeCurrent.getRecruitedDate());
-        myHolder.mImageView.setImageURI(Uri.parse(employeeCurrent.getmImageUrl()));
-        /*Picasso.get()
+        //myHolder.mImageView.setImageURI(Uri.parse(employeeCurrent.getmImageUrl()));
+        Picasso.get()
                 .load(employeeCurrent.getmImageUrl())
                 .fit()
                 .centerCrop()
                 .into(myHolder.mImageView);
-        Log.d("IMAGE: ", "onBindViewHolder:  "+ employeeCurrent.getmImageUrl());*/
+        //Log.d("IMAGE: ", "onBindViewHolder:  "+ employeeCurrent.getmImageUrl());
         //myHolder.mImageView.setImageResource(employees.get(i).getImg()); //here we use image resource because we will use images in our resource folder which is drawable
 
     }

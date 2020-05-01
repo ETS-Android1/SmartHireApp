@@ -279,13 +279,13 @@
                         android:id="@+id/buttonManualDone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="8dp"
                         android:background="@color/colorPrimary"
                         android:text="Done"
                         android:textColor="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/checkBoxManualTerms" />
+                        app:layout_constraintTop_toBottomOf="@+id/progressBarManual" />
 
                     <Button
                         android:id="@+id/buttonAddManualEducation"
@@ -431,20 +431,20 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/buttonManualUploadResume"
                         app:layout_constraintTop_toTopOf="@+id/buttonManualUploadResume" />
-                    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+                    <ProgressBar
+                        android:id="@+id/progressBarManual"
+                        style="?android:attr/progressBarStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                        <ProgressBar
-                            android:id="@+id/progressBarManual"
-                            style="?android:attr/progressBarStyle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_gravity="center"
-                            android:visibility="invisible"/>
-                    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_gravity="bottom"
+                        android:layout_marginTop="8dp"
+                        android:visibility="invisible"
+                        app:layout_constraintTop_toBottomOf="@+id/checkBoxManualTerms" />
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 

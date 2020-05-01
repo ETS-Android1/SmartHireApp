@@ -26,7 +26,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:gravity="center"
+        android:gravity="start|left"
         android:text="@string/TARUC"
         app:layout_constraintBottom_toBottomOf="@+id/textViewRecyclerEduPosition"
         app:layout_constraintEnd_toStartOf="@+id/buttonRecylerEduDelete"

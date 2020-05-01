@@ -64,7 +64,7 @@ public class ExtractedEditFragment extends Fragment {
     String storagePermission[];
 
     byte[] b;
-    private Uri resultUri,resumeUri,imageUri;
+    private Uri resultUri, resumeUri, imageUri;
 
     //google firebase database
     private StorageReference mStorageRef;
@@ -73,16 +73,16 @@ public class ExtractedEditFragment extends Fragment {
 
     private ActivityFabForExtactedEditBinding binding;
 
-    private Uri photoDownloadUri,resumeDownloadUri;
+    private Uri photoDownloadUri, resumeDownloadUri;
 
-    private String extractedPhoneNumber,extractedEmail,extractedName,extractedAddress,extractedSkills,extractedEducation,extractedFace,resume;
+    private String extractedPhoneNumber, extractedEmail, extractedName, extractedAddress, extractedSkills, extractedEducation, extractedFace, resume;
     private int extractedAge;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //setHasOptionsMenu(true);
-        binding = ActivityFabForExtactedEditBinding.inflate(getLayoutInflater(),container,false);
+        binding = ActivityFabForExtactedEditBinding.inflate(getLayoutInflater(), container, false);
         View view = binding.getRoot();
 
         //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
@@ -107,7 +107,7 @@ public class ExtractedEditFragment extends Fragment {
         extractedEmail = bundle.getString("EXTRACTED_EMAIL");
         extractedName = bundle.getString("EXTRACTED_NAME");
         extractedAddress = bundle.getString("EXTRACTED_ADDRESS");
-        extractedAge = bundle.getInt("EXTRACTED_AGE",0);
+        extractedAge = bundle.getInt("EXTRACTED_AGE", 0);
         extractedSkills = bundle.getString("EXTRACTED_SKILLS");
         extractedEducation = bundle.getString("EXTRACTED_EDUCATION");
         extractedFace = bundle.getString("EXTRACTED_FACE");
@@ -131,8 +131,12 @@ public class ExtractedEditFragment extends Fragment {
                     //mProgressBar.setVisibility(ProgressBar.VISIBLE);
                     Toast.makeText(getActivity(), "Upload in progress", Toast.LENGTH_SHORT).show();
                 } else {
-                    uploadToDatabase();
 
+                    if (isNumeric(binding.include.editTextExtractedAge.getText().toString())) {
+                        uploadToDatabase();
+                    } else {
+                        binding.include.editTextExtractedAge.setError(getString(R.string.numeric_age_error));
+                    }
                 }
             }
         });
@@ -147,25 +151,37 @@ public class ExtractedEditFragment extends Fragment {
 
     }
 
-    private void setUpAlertDialog(){
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int number = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+    private void setUpAlertDialog() {
         //String[] options = {"Camera", "Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Pick your options");
         builder.setItems(getResources().getStringArray(R.array.take_photo_options), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int option) {
-                if (option == 0){
+                if (option == 0) {
                     Toast.makeText(getActivity(), "Camera", Toast.LENGTH_SHORT).show();
                     if (!checkCameraPermission()) {
                         requestCameraPermission();
                     } else {
                         dispatchTakePictureIntent();
                     }
-                }else{
+                } else {
                     Toast.makeText(getActivity(), "Gallery", Toast.LENGTH_SHORT).show();
-                    if(!checkStoragePermission()){
+                    if (!checkStoragePermission()) {
                         requestStoragePermission();
-                    }else{
+                    } else {
                         pickGallery();
                     }
                 }
@@ -214,33 +230,33 @@ public class ExtractedEditFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK);
         //set intent tyoe to image
         intent.setType("image/*");
-        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
+        startActivityForResult(intent, IMAGE_PICK_GALLERY_CODE);
 
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode){
+        switch (requestCode) {
             case CAMERA_REQUEST_CODE:
-                if(grantResults.length>0){
+                if (grantResults.length > 0) {
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    Log.d("myTag","Camera:"+cameraAccepted+" Storage:"+writeStorageAccepted);
-                    if(cameraAccepted && writeStorageAccepted){
+                    Log.d("myTag", "Camera:" + cameraAccepted + " Storage:" + writeStorageAccepted);
+                    if (cameraAccepted && writeStorageAccepted) {
                         dispatchTakePictureIntent();
-                    }else{
-                        Toast.makeText(getActivity(),"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
 
             case STORAGE_REQUEST_CODE:
-                if(grantResults.length>0){
+                if (grantResults.length > 0) {
                     boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    Log.d("myTag"," Storage:"+writeStorageAccepted);
-                    if(writeStorageAccepted){
+                    Log.d("myTag", " Storage:" + writeStorageAccepted);
+                    if (writeStorageAccepted) {
                         pickGallery();
-                    }else{
-                        Toast.makeText(getActivity(),"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -252,18 +268,18 @@ public class ExtractedEditFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode){
+            switch (requestCode) {
                 case IMAGE_PICK_GALLERY_CODE:
                     CropImage.activity(data.getData())
                             .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(getActivity(),ExtractedEditFragment.this);
+                            .start(getActivity(), ExtractedEditFragment.this);
                     break;
                 case REQUEST_IMAGE_CAPTURE:
                     //Bundle extras = data.getExtras();
                     //imageBitmap = (Bitmap) extras.get("data");
                     CropImage.activity(imageUri)
                             .setGuidelines(CropImageView.Guidelines.ON)
-                            .start(getActivity(),ExtractedEditFragment.this);
+                            .start(getActivity(), ExtractedEditFragment.this);
                     //Toast.makeText(MainActivity.this,"Error 123:" ,Toast.LENGTH_SHORT).show();
 
                     //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
@@ -273,7 +289,7 @@ public class ExtractedEditFragment extends Fragment {
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     resultUri = result.getUri();//get image uri
                     binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
-                    Log.d("Image",""+resultUri);
+                    Log.d("Image", "" + resultUri);
                     imageBitmapDrawable = (BitmapDrawable) binding.include.imageViewExtractedImageEdit.getDrawable();
                     imageBitmap = imageBitmapDrawable.getBitmap();
                     break;
@@ -289,10 +305,10 @@ public class ExtractedEditFragment extends Fragment {
     }
 
     private void uploadToDatabase() {
-        Toast.makeText(getActivity(),"Uploading to Database",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Uploading to Database", Toast.LENGTH_SHORT).show();
         binding.progressBarExtractedEdit.setVisibility(ProgressBar.VISIBLE);
 
-        String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
+        /*String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
         Employee upload = new Employee(extractedName.trim(), resultUri.toString(),resumeUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim(),timeStamp,extractedSkills.trim(),extractedEducation.trim(),extractedAge);
         String uploadId = mDatabaseRef.push().getKey();
         mDatabaseRef.child(uploadId).setValue(upload);
@@ -300,8 +316,8 @@ public class ExtractedEditFragment extends Fragment {
         Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
         binding.progressBarExtractedEdit.setVisibility(ProgressBar.INVISIBLE);
-        startActivity(intent);
-        /*if (resultUri != null) {
+        startActivity(intent);*/
+        if (resultUri != null) {
             final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(resultUri));
 
@@ -310,9 +326,11 @@ public class ExtractedEditFragment extends Fragment {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                             if (!task.isSuccessful()) {
-                                throw task.getException(); }
+                                throw task.getException();
+                            }
                             return fileReference.getDownloadUrl();
-                        } })
+                        }
+                    })
                     .addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
@@ -320,8 +338,8 @@ public class ExtractedEditFragment extends Fragment {
 
                                 photoDownloadUri = task.getResult();
 
-                            }
-                            else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     })
@@ -344,9 +362,11 @@ public class ExtractedEditFragment extends Fragment {
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                             if (!task.isSuccessful()) {
-                                throw task.getException(); }
+                                throw task.getException();
+                            }
                             return fileReference.getDownloadUrl();
-                        } })
+                        }
+                    })
                     .addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
                         public void onComplete(@NonNull Task<Uri> task) {
@@ -362,15 +382,15 @@ public class ExtractedEditFragment extends Fragment {
 
                                 resumeDownloadUri = task.getResult();
                                 String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
-                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(),resumeDownloadUri.toString(),extractedAddress.trim(),extractedPhoneNumber.trim(),extractedEmail.trim(),timeStamp,extractedSkills.trim(),extractedEducation.trim(),extractedAge);
+                                Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(), resumeDownloadUri.toString(), extractedAddress.trim(), extractedPhoneNumber.trim(), extractedEmail.trim(), timeStamp, extractedSkills.trim(), extractedEducation.trim(), extractedAge);
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);
                                 Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
                                 startActivity(intent);
-                            }
-                            else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     })
@@ -382,7 +402,7 @@ public class ExtractedEditFragment extends Fragment {
                     });
         } else {
             Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
-        }*/
+        }
     }
 
     private String getFileExtension(Uri uri) {

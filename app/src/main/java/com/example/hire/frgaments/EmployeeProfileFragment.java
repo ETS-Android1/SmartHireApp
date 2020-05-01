@@ -37,7 +37,7 @@ public class EmployeeProfileFragment extends Fragment {
     private ActivityEmployeeProfileBinding binding;
     private ConnectivityManager connectivityManager;
 
-    private String employeePhone,employeeName,employeePosition,employeeEmail,employeeAddress,employeeSkills,employeeEducation,employeeProfilePhoto,employeeResume;
+    private String employeePhone, employeeName, employeePosition, employeeEmail, employeeAddress, employeeSkills, employeeEducation, employeeProfilePhoto, employeeResume;
     private int employeeAge;
 
     @Override
@@ -45,7 +45,7 @@ public class EmployeeProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        binding = ActivityEmployeeProfileBinding.inflate(getLayoutInflater(),container,false);
+        binding = ActivityEmployeeProfileBinding.inflate(getLayoutInflater(), container, false);
 
         View view = binding.getRoot();
 
@@ -56,7 +56,7 @@ public class EmployeeProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
 
         Bundle bundle = getArguments();
@@ -64,15 +64,15 @@ public class EmployeeProfileFragment extends Fragment {
         employeeName = bundle.getString("EMPLOYEE_NAME");
         employeePosition = bundle.getString("EMPLOYEE_POSITION");
         employeePhone = bundle.getString("EMPLOYEE_PHONE");
-        employeeEmail= bundle.getString("EMPLOYEE_EMAIL");
+        employeeEmail = bundle.getString("EMPLOYEE_EMAIL");
         employeeAddress = bundle.getString("EMPLOYEE_ADDRESS");
-        employeeAge = bundle.getInt("EMPLOYEE_AGE",0);
+        employeeAge = bundle.getInt("EMPLOYEE_AGE", 0);
         employeeSkills = bundle.getString("EMPLOYEE_SKILLS");
         employeeEducation = bundle.getString("EMPLOYEE_EDUCATION");
         employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
         employeeResume = bundle.getString("EMPLOYEE_RESUME");
 
-        /*Picasso.get()
+        Picasso.get()
                 .load(employeeProfilePhoto)
                 .fit()
                 .centerCrop()
@@ -86,9 +86,9 @@ public class EmployeeProfileFragment extends Fragment {
                     public void onError(Exception e) {
                         Toast.makeText(getActivity(), "Error loading image", Toast.LENGTH_SHORT).show();
                     }
-                });*/
+                });
 
-        binding.imageViewEmployeeProfile.setImageURI(Uri.parse(employeeProfilePhoto));
+        //binding.imageViewEmployeeProfile.setImageURI(Uri.parse(employeeProfilePhoto));
 
         binding.textViewProfileName.setText(employeeName);
         binding.textViewProfilePosition.setText(employeePosition);
@@ -123,8 +123,8 @@ public class EmployeeProfileFragment extends Fragment {
 
     }
 
-    private void inflateDialogResume(){
-        Toast.makeText(getActivity(),"Loading resume",Toast.LENGTH_SHORT).show();
+    private void inflateDialogResume() {
+        Toast.makeText(getActivity(), "Loading resume", Toast.LENGTH_SHORT).show();
         final ImagePopup imagePopup = new ImagePopup(getActivity());
         //imagePopup.setWindowHeight(800);
         imagePopup.setFullScreen(true);
@@ -145,18 +145,18 @@ public class EmployeeProfileFragment extends Fragment {
 
     }
 
-    private void callIntent(){
+    private void callIntent() {
         Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:"+employeePhone));
+        intent.setData(Uri.parse("tel:" + employeePhone));
         startActivity(intent);
 
     }
 
-    private void messageIntent(){
+    private void messageIntent() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_EMAIL,employeeEmail);
-        intent.putExtra(Intent.EXTRA_TEXT,"Hi, "+employeeName+". ");
+        intent.putExtra(Intent.EXTRA_EMAIL, employeeEmail);
+        intent.putExtra(Intent.EXTRA_TEXT, "Hi, " + employeeName + ". ");
         intent.setType("text/plain");
         startActivity(intent);
 
