@@ -637,13 +637,13 @@ public class ManualForm extends Fragment {
                     resultUri = result.getUri();//get image uri
                     if (profileOrResume == 1) {
                         profileUri = resultUri;
-                        binding.imageViewManualProfile.setImageURI(resultUri);
+                        binding.imageViewManualProfile.setImageURI(profileUri);
                     } else {
                         resumeUri = resultUri;
                         binding.textViewManualUploadResumeMsg.setVisibility(TextView.VISIBLE);
                         Toast.makeText(getActivity(), getString(R.string.upload_success), Toast.LENGTH_SHORT).show();
                     }
-                    Log.d("Image", "" + resultUri);
+                    //Log.d("Image", "" + profileUri);
                     break;
 
                 case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:

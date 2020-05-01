@@ -43,6 +43,18 @@
     <string name="no_skills">No skills</string>
     <string name="no_education">No educations</string>
 
+    <!--Extracted Edit Fragemnt-->
+    <string name="no_name_found">No name found</string>
+    <string name="no_phone_found">No phone found</string>
+    <string name="no_email_found">No email found</string>
+    <string name="no_age_found">No age found</string>
+    <string name="no_address_found">No address found</string>
+    <string name="no_skills_found">No skills found</string>
+    <string name="no_education_found">No education found</string>
+
+    <!--Home Fragment/ Employee List-->
+
+
     <!--Upload Fragment-->
     <string name="info">The process may take up to 20 second or more if your uploaded resume has too much of information to be processed.
     Please be patient while waiting for the result.</string>

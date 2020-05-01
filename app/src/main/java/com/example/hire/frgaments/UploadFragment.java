@@ -612,6 +612,8 @@ public class UploadFragment extends Fragment {
                                 }
                             }
 
+                            checkExtractedIsEmpty();
+
                             Bundle bundle = new Bundle();
                             bundle.putString("EXTRACTED_PHONE",employeePhoneNum);
                             bundle.putString("EXTRACTED_EMAIL", employeeEmail);
@@ -640,6 +642,22 @@ public class UploadFragment extends Fragment {
         });
         requestQueue.add(jsonObjectRequest);
 
+    }
+
+    private void checkExtractedIsEmpty() {
+        if(employeeName.isEmpty()){
+            employeeName = getString(R.string.no_name_found);
+        }else if(employeePhoneNum.isEmpty()){
+            employeePhoneNum =  getString(R.string.no_phone_found);
+        }else if(employeeEmail.isEmpty()){
+            employeeEmail = getString(R.string.no_email_found);
+        }else if(employeeAddress.isEmpty()){
+            employeeAddress = getString(R.string.no_address_found);
+        }else if (employeeSkills.isEmpty()){
+            employeeSkills = getString(R.string.no_skills_found);
+        }else if (employeeEducation.isEmpty()){
+            employeeEducation = getString(R.string.no_education_found);
+        }
     }
 
     private Uri getImageUri(Context context, Bitmap inImage) {

@@ -2,8 +2,11 @@ package com.example.hire.database;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,17 +26,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hire.Employee;
 import com.example.hire.StartExtractActivity;
 import com.example.hire.recyclerview.MyAdapter;
 import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
+import com.example.hire.recyclerview.SwipeToDeleteCallback;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,6 +51,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListener {
 
@@ -72,6 +82,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
         employees = new ArrayList<>();
 
+        navController = Navigation.findNavController(view);
+
         /*mEmployeeViewModel = new ViewModelProvider(this).get(EmployeeViewModel.class);
 
         mEmployeeViewModel.getAllWords().observe(getViewLifecycleOwner(), new Observer<List<EmployeeEntity>>() {
@@ -82,19 +94,11 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             }
         });*/
 
-        navController = Navigation.findNavController(view);
         //getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right );
 
-        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
-        //((AppCompatActivity)getActivity()).setSupportActionBar(binding.include.toolbarHomePage);
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Hire");
-
-        myAdapter = new MyAdapter(getActivity(),employees);
-
-        binding.include.recyclerView.setAdapter(myAdapter);
-
-        myAdapter.setOnItemClickListener(this);
+        //set up recycler view
+        setUpEmployeeRecyclerView();
+        setUpSwipeRecyclerView();
 
         if(checkConnectivity()){
 
@@ -174,6 +178,65 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         });
     }
 
+    public void setUpEmployeeRecyclerView(){
+
+        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+        myAdapter = new MyAdapter(getActivity(),employees);
+
+        binding.include.recyclerView.setAdapter(myAdapter);
+
+        myAdapter.setOnItemClickListener(this);
+
+        //set up swipe to delete functions
+        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
+
+        //itemTouchHelper.attachToRecyclerView(binding.include.recyclerView);
+
+
+    }
+
+    public void setUpSwipeRecyclerView(){
+
+        ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                switch (direction){
+                    case ItemTouchHelper.RIGHT:
+                        onCallEmployeeClick(viewHolder.getAdapterPosition());
+                        myAdapter.notifyDataSetChanged();
+                        break;
+                    case ItemTouchHelper.LEFT:
+                        onDeleteClick(viewHolder.getAdapterPosition());
+                        Toast.makeText(getActivity(),getString(R.string.delete),Toast.LENGTH_SHORT).show();
+                        myAdapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(getContext(), R.color.red))
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(getContext(),R.color.green))
+                        .addSwipeLeftActionIcon(R.drawable.delete)
+                        .addSwipeRightActionIcon(R.drawable.employee_call)
+                        .create()
+                        .decorate();
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(binding.include.recyclerView);
+
+    }
+
     public boolean checkConnectivity(){
         ConnectivityManager connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -228,12 +291,15 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     }
 
     @Override
-    public void onWhatEverClick(int position) {
-
+    public void onCallEmployeeClick(int position) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + employees.get(position).getmPhoneNumber()));
+        startActivity(intent);
     }
 
     @Override
     public void onDeleteClick(int position) {
+
         Employee selectedItem = employees.get(position);
         final String selectedKey = selectedItem.getKey();
 
@@ -255,7 +321,25 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             }
         });
 
+        //showUndoSnackbar();
+
     }
+
+    /*private void showUndoSnackbar() {
+        Snackbar snackbar = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.snackbar_delete, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.undo, v -> {
+                    Snackbar snackbarUndo = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.undo_success, Snackbar.LENGTH_SHORT);
+                    snackbarUndo.show();
+                    undoDelete(getView());
+                });
+        snackbar.show();
+    }*/
+
+    /*private void undoDelete(View view) {
+        mListItems.add(mRecentlyDeletedItemPosition,
+                mRecentlyDeletedItem);
+        notifyItemInserted(mRecentlyDeletedItemPosition);
+    }*/
 
     @Override
     public void onDestroy() {

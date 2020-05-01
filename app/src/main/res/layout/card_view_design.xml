@@ -5,19 +5,19 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     app:cardCornerRadius="10dp"
-    app:cardElevation="3dp"
+    app:cardElevation="0dp"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="16dp">
+        android:padding="12dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageViewPerson"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             app:srcCompat="@drawable/extracted_name" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_below="@+id/textViewName"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/imageViewPerson"
             android:layout_toRightOf="@id/imageViewPerson"
             android:text="position"
@@ -54,7 +54,7 @@
             android:layout_below="@+id/textViewPosition"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="11dp"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/imageViewPerson"
             android:layout_toRightOf="@+id/imageViewPerson"
             android:text="Date Recruited"

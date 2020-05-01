@@ -87,6 +87,9 @@ dependencies {
     //pop up image dialog
     implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.2'
 
+    //Swipe recycler view
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.2'
+
 
 }
 

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hire.Employee;
 import com.example.hire.R;
 import com.example.hire.database.EmployeeEntity;
+import com.example.hire.database.HomeFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
                 if (position != RecyclerView.NO_POSITION) {
                     switch (item.getItemId()) {
                         case 1:
-                            mListener.onWhatEverClick(position);
+                            mListener.onCallEmployeeClick(position);
                             return true;
                         case 2:
                             mListener.onDeleteClick(position);
@@ -132,11 +133,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         }
     }
 
+    public void deleteItem(int position) {
+        //employees.remove(position);
+        //notifyDataSetChanged();
+        mListener.onDeleteClick(position);
+    }
+
     public interface OnItemClickListener {
 
         void onItemClick(int position);
 
-        void onWhatEverClick(int position);
+        void onCallEmployeeClick(int position);
 
         void onDeleteClick(int position);
     }
