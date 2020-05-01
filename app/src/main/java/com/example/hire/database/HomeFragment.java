@@ -302,24 +302,29 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
         Employee selectedItem = employees.get(position);
         final String selectedKey = selectedItem.getKey();
+        if(selectedItem.getmImageUrl().equals("noProfile")||selectedItem.getResumeImageUrl().equals("noResume")){
+            mDatabaseRef.child(selectedKey).removeValue();
+        }else{
+            StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
+            final StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
 
-        StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
-        final StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
+            Log.d("ERROR", "onDeleteClick: "+imageRef);
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    imageResumeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mDatabaseRef.child(selectedKey).removeValue();
+                            Toast.makeText(getActivity(), "Employee deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-        Log.d("ERROR", "onDeleteClick: "+imageRef);
-        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                imageResumeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        mDatabaseRef.child(selectedKey).removeValue();
-                        Toast.makeText(getActivity(), "Employee deleted", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                }
+            });
+        }
 
-            }
-        });
+
 
         //showUndoSnackbar();
 

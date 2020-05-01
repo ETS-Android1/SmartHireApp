@@ -75,6 +75,7 @@ public class ManualForm extends Fragment {
     private boolean isCheckBoxChecked;
 
     private String undoName, undoPhone, undoEmail, undoAge, undoAddress;
+    private String employeeSkills = "", employeeEducation = "", name, phone, email, age, gender, address;
     private ArrayList<Skills> undoSkills;
     private ArrayList<Education> undoEducations;
 
@@ -412,8 +413,6 @@ public class ManualForm extends Fragment {
     private void postDataToDatabase() {
         binding.progressBarManual.setVisibility(ProgressBar.VISIBLE);
 
-        String employeeSkills = "", employeeEducation = "", name, phone, email, age, gender, address;
-
         if(skills.size()>0){
             for (int i = 0; i < skills.size(); i++) {
                 employeeSkills += i + 1 + " " + skills.get(i).toString();
@@ -431,7 +430,7 @@ public class ManualForm extends Fragment {
         }
 
         name = binding.editTextManualName.getText().toString();
-        phone = binding.editTextManualPhoneNum.getText().toString();
+        phone = binding.spinnerPhone.getSelectedItem().toString() + binding.editTextManualPhoneNum.getText().toString();
         email = binding.editTextManualEmail.getText().toString();
         age = binding.editTextManualAge.getText().toString();
         address = binding.editTextManualAddress.getText().toString();
@@ -467,15 +466,14 @@ public class ManualForm extends Fragment {
                         }
                     });
         } else {
-            Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+            photoDownloadUri = Uri.parse("noProfile");
+            //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
 
         if (resumeUri != null) {
             final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(resumeUri));
 
-            String finalEmployeeEducation = employeeEducation;
-            String finalEmployeeSkills = employeeSkills;
             fileReference.putFile(resumeUri).continueWithTask(
                     new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
@@ -498,15 +496,7 @@ public class ManualForm extends Fragment {
                                 }, 200);
 
                                 resumeDownloadUri = task.getResult();
-                                String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
-                                Employee upload = new Employee(name, photoDownloadUri.toString(),resumeDownloadUri.toString(),address,phone,email,timeStamp, finalEmployeeSkills,
-                                        finalEmployeeEducation,Integer.parseInt(age));
-                                String uploadId = mDatabaseRef.push().getKey();
-                                mDatabaseRef.child(uploadId).setValue(upload);
-                                //mDatabaseRef.push().setValue(upload);
-                                Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
-                                startActivity(intent);
+                                saveToDatabase(name, address, phone, email, employeeSkills, employeeEducation, age);
                             }
                             else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -519,8 +509,22 @@ public class ManualForm extends Fragment {
                         }
                     });
         } else {
-            Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+            resumeDownloadUri = Uri.parse("noResume");
+            saveToDatabase(name, address, phone, email, employeeEducation, employeeSkills, age);
+            //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void saveToDatabase(String name, String address, String phone, String email, String finalEmployeeSkills, String finalEmployeeEducation, String age) {
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
+        Employee upload = new Employee(name, photoDownloadUri.toString(),resumeDownloadUri.toString(),address,phone,email,timeStamp, finalEmployeeSkills,
+                finalEmployeeEducation,Integer.parseInt(age));
+        String uploadId = mDatabaseRef.push().getKey();
+        mDatabaseRef.child(uploadId).setValue(upload);
+        //mDatabaseRef.push().setValue(upload);
+        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
+        startActivity(intent);
     }
 
     private String getFileExtension(Uri uri) {

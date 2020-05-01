@@ -171,14 +171,14 @@ public class ExtractedEditFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int option) {
                 if (option == 0) {
-                    Toast.makeText(getActivity(), "Camera", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Say Cheese", Toast.LENGTH_SHORT).show();
                     if (!checkCameraPermission()) {
                         requestCameraPermission();
                     } else {
                         dispatchTakePictureIntent();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Gallery", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Pick a photo", Toast.LENGTH_SHORT).show();
                     if (!checkStoragePermission()) {
                         requestStoragePermission();
                     } else {
@@ -350,7 +350,8 @@ public class ExtractedEditFragment extends Fragment {
                         }
                     });
         } else {
-            Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+            photoDownloadUri = Uri.parse("noProfile");
+            //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
 
         if (resumeUri != null) {
@@ -401,7 +402,8 @@ public class ExtractedEditFragment extends Fragment {
                         }
                     });
         } else {
-            Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+            resumeDownloadUri = Uri.parse("noResume");
+            //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
 

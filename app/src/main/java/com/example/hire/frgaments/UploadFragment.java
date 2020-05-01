@@ -577,7 +577,7 @@ public class UploadFragment extends Fragment {
                             employeeOther = stringBuilderOther.toString();
 
                             String str = extractedText;
-                            String phoneRegex = "((60+))?\\d{2,3}-? ?\\d{3,4} ?\\d{4,5}";
+                            String phoneRegex = "(\\(60\\+\\))?^(01\\d{1}-? ?\\d{3,4} ?\\d{4})";
                             String ageHeader = "((Age|age):?)?";
                             String ageRegex = ageHeader +"\\d{2} ?(years)? (old)?";
                             String addressHeader = "((Address|address|ADDRESS):?)?";

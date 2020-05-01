@@ -72,21 +72,27 @@ public class EmployeeProfileFragment extends Fragment {
         employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
         employeeResume = bundle.getString("EMPLOYEE_RESUME");
 
-        Picasso.get()
-                .load(employeeProfilePhoto)
-                .fit()
-                .centerCrop()
-                .into(binding.imageViewEmployeeProfile, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        //Toast.makeText(getActivity(), "Image Loaded Successfully", Toast.LENGTH_SHORT).show();
-                    }
+        if(employeeProfilePhoto.equals("noResume")){
+            binding.imageViewEmployeeProfile.setImageResource(R.drawable.ic_person);
 
-                    @Override
-                    public void onError(Exception e) {
-                        Toast.makeText(getActivity(), "Error loading image", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        }else{
+            Picasso.get()
+                    .load(employeeProfilePhoto)
+                    .fit()
+                    .centerCrop()
+                    .into(binding.imageViewEmployeeProfile, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            //Toast.makeText(getActivity(), "Image Loaded Successfully", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(getActivity(), "Error loading image", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
 
         //binding.imageViewEmployeeProfile.setImageURI(Uri.parse(employeeProfilePhoto));
 
@@ -131,7 +137,11 @@ public class EmployeeProfileFragment extends Fragment {
         imagePopup.setBackgroundColor(Color.WHITE);
         //imagePopup.setWindowWidth(650);
         imagePopup.setImageOnClickClose(true);
-        imagePopup.initiatePopupWithPicasso(employeeResume);
+        if(employeeResume!=" "){
+            imagePopup.initiatePopupWithPicasso(employeeResume);
+        }else{
+            imagePopup.initiatePopup(getResources().getDrawable(R.drawable.error));
+        }
         imagePopup.viewPopup();
         /*AlertDialog.Builder imageDialog = new AlertDialog.Builder(getActivity());
         //ImageView showImage = new ImageView(getActivity());
