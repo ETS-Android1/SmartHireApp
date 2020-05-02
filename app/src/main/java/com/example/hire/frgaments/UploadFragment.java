@@ -577,14 +577,23 @@ public class UploadFragment extends Fragment {
                             employeeOther = stringBuilderOther.toString();
 
                             String str = extractedText;
-                            //(?!\d) is a negative lookahead, means the following regex cannot be a number.
-                            String phoneRegex = "((\\(60\\+\\))?^(01\\d{1}-? ?\\d{3,4} ?\\d{4}))(?!\\d)";
+
+
+                            //old phone regex :String phoneRegex = "((\\(60\\+\\))?^(01\\d{1}-? ?\\d{3,4} ?\\d{4}))(?!\\d)";
+                            //Phone regex use (?!\d) is a negative lookahead, means the following regex cannot be a number. It will match
+                            //from (+60)1.. and 011 ...
+                            String phoneRegex = "((((\\()?\\+60(\\))?) ?(1\\d{1}-? ?\\d{3,4} ?\\d{3,4}))|(01\\d{1}-? ?\\d{3,4} ?\\d{3,4}))(?!\\d)";
+
+                            // age has the regex from 10 years old to 59 years old and (?<![\\d]) is a negative lookbehind which the preceding
+                            //elements cannot be digit.
                             String ageHeader = "((Age|age):?)? ?";
-                            String ageRegex = ageHeader +"\\d{2} ?(years)? (old)?";
-                            String addressHeader = "((Address|address|ADDRESS):?)?";
-                            String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)?";
+                            String ageRegex = ageHeader +"(?<![\\d])[1-5][0-9] ?(years)? (old)?";
+
+                            String addressHeader = "((Address|address|ADDRESS):?)? ?";
+                            String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)? ?";
                             String location = employeeLocation;
                             String addressRegex = addressHeader + addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+location;
+
                             String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
                                     "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])" +
                                     "*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|" +
