@@ -72,7 +72,7 @@ public class EmployeeProfileFragment extends Fragment {
         employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
         employeeResume = bundle.getString("EMPLOYEE_RESUME");
 
-        if(employeeProfilePhoto.equals("noResume")){
+        if(employeeProfilePhoto.equals("noProfile")){
             binding.imageViewEmployeeProfile.setImageResource(R.drawable.ic_person);
 
         }else{

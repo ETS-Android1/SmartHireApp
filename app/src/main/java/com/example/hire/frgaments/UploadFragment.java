@@ -68,9 +68,9 @@ import java.util.regex.Pattern;
 public class UploadFragment extends Fragment {
 
     private RequestQueue mQueue;
-    private Bitmap imageBitmap,croppedBitmap;
+    private Bitmap imageBitmap, croppedBitmap;
     private BitmapDrawable imageBitmapDrawable;
-    private float x1,x2,y1,y2;
+    private float x1, x2, y1, y2;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     String currentImagePath = null;
     Uri imageUri;
@@ -80,9 +80,9 @@ public class UploadFragment extends Fragment {
     String camaraPermission[];
     String storagePermission[];
 
-    private String employeePhoneNum,employeeEmail,employeeAddress,employeeName,employeeLocation,employeeEducation,employeeAge,employeeSkills,employeeOther,employeeOrganization;
-    private String extractedTextFromImage="";
-    Uri croppedFace,resultUri;
+    private String employeePhoneNum, employeeEmail, employeeAddress, employeeName, employeeLocation, employeeEducation, employeeAge, employeeSkills, employeeOther, employeeOrganization;
+    private String extractedTextFromImage = "";
+    Uri croppedFace, resultUri;
 
     Intent intent1;
 
@@ -110,7 +110,7 @@ public class UploadFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //setHasOptionsMenu(true);
-        binding = ActivityFabBinding.inflate(getLayoutInflater(),container,false);
+        binding = ActivityFabBinding.inflate(getLayoutInflater(), container, false);
         View view = binding.getRoot();
         return view;
     }
@@ -121,7 +121,7 @@ public class UploadFragment extends Fragment {
 
         extractThread = new ExtractThread();
 
-        connectivityManager = (ConnectivityManager)getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         networkInfo = connectivityManager.getActiveNetworkInfo();
         camaraPermission = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -129,10 +129,10 @@ public class UploadFragment extends Fragment {
         mQueue = Volley.newRequestQueue(getActivity());
 
         fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(getActivity(),R.anim.fab_close);
+        fabClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
 
-        rotateForward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_forward);
-        rotateBackward = AnimationUtils.loadAnimation(getActivity(),R.anim.rotate_backward);
+        rotateForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
 
         //setSupportActionBar(binding.include.toolbarMain);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -148,15 +148,14 @@ public class UploadFragment extends Fragment {
             public void onClick(View view) {
                 animateFab();
                 //Log.d("NETWORK", ""+networkInfo.isConnected());
-                if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                         connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
                     //we are connected to a network
                     connected = true;
-                    Log.d("CONNECT", ""+connected);
-                }
-                else
+                    Log.d("CONNECT", "" + connected);
+                } else
                     connected = false;
-                    Log.d("CONNECT", ""+connected);
+                Log.d("CONNECT", "" + connected);
 
             }
         });
@@ -164,7 +163,7 @@ public class UploadFragment extends Fragment {
         binding.fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"Capture the resume",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Capture the resume", Toast.LENGTH_SHORT).show();
                 animateFab();
                 if (!checkCameraPermission()) {
                     requestCameraPermission();
@@ -177,12 +176,12 @@ public class UploadFragment extends Fragment {
         binding.fabGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(),"Choose a resume",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Choose a resume", Toast.LENGTH_SHORT).show();
                 animateFab();
 
-                if(!checkStoragePermission()){
+                if (!checkStoragePermission()) {
                     requestStoragePermission();
-                }else{
+                } else {
                     pickGallery();
                 }
             }
@@ -193,32 +192,31 @@ public class UploadFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //fab.setVisibility(FloatingActionButton.INVISIBLE);
-                if(resultUri == null){
-                    Toast.makeText(getActivity(),"Please Upload your resume first",Toast.LENGTH_LONG).show();
-                }else{
+                if (resultUri == null) {
+                    Toast.makeText(getActivity(), "Please Upload your resume first", Toast.LENGTH_LONG).show();
+                } else {
                     connected = false;
-                    if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                    if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                             connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
                         //we are connected to a network
                         connected = true;
                         binding.fab.setClickable(false);
-                        Toast.makeText(getActivity(),"Extracting...",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Extracting...", Toast.LENGTH_LONG).show();
                         animateFab();
                         binding.progressBar.setVisibility(ProgressBar.VISIBLE);
                         new Thread(extractThread).start();
                         navController = Navigation.findNavController(v);
-                    }
-                    else{
+                    } else {
                         connected = false;
-                        Toast.makeText(getActivity(),"No Internet",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_LONG).show();
                     }
                 }
             }
         });
     }
 
-    private void animateFab(){
-        if (isOpen){
+    private void animateFab() {
+        if (isOpen) {
             binding.fab.startAnimation(rotateBackward);
             binding.fabCamera.startAnimation(fabClose);
             //textViewCamera.setVisibility(View.GONE);
@@ -230,8 +228,8 @@ public class UploadFragment extends Fragment {
             binding.fabCamera.setClickable(false);
             binding.fabGallery.setClickable(false);
             binding.fabExtract.setClickable(false);
-            isOpen=false;
-        }else{
+            isOpen = false;
+        } else {
             binding.fab.startAnimation(rotateForward);
             binding.fabCamera.startAnimation(fabOpen);
             //textViewCamera.setVisibility(View.VISIBLE);
@@ -247,7 +245,7 @@ public class UploadFragment extends Fragment {
             binding.fabCamera.setClickable(true);
             binding.fabGallery.setClickable(true);
             binding.fabExtract.setClickable(true);
-            isOpen=true;
+            isOpen = true;
         }
     }
 
@@ -256,7 +254,7 @@ public class UploadFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK);
         //set intent tyoe to image
         intent.setType("image/*");
-        startActivityForResult(intent,IMAGE_PICK_GALLERY_CODE);
+        startActivityForResult(intent, IMAGE_PICK_GALLERY_CODE);
 
     }
 
@@ -298,17 +296,17 @@ public class UploadFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode==IMAGE_PICK_GALLERY_CODE){
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
                 CropImage.activity(data.getData())
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(getActivity(),UploadFragment.this);
+                        .start(getActivity(), UploadFragment.this);
             }
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 //Bundle extras = data.getExtras();
                 //imageBitmap = (Bitmap) extras.get("data");
                 CropImage.activity(imageUri)
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(getActivity(),UploadFragment.this);
+                        .start(getActivity(), UploadFragment.this);
                 //Toast.makeText(MainActivity.this,"Error 123:" ,Toast.LENGTH_SHORT).show();
 
                 //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
@@ -317,7 +315,7 @@ public class UploadFragment extends Fragment {
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode ==Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 resultUri = result.getUri();//get image uri
                 binding.include.imageViewResume.setImageURI(resultUri);
                 binding.include.includeStepBar.textViewDot1.setBackgroundResource(R.drawable.circle_text_view_done);
@@ -336,28 +334,28 @@ public class UploadFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode){
+        switch (requestCode) {
             case CAMERA_REQUEST_CODE:
-                if(grantResults.length>0){
+                if (grantResults.length > 0) {
                     boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    Log.d("myTag","Camera:"+cameraAccepted+" Storage:"+writeStorageAccepted);
-                    if(cameraAccepted && writeStorageAccepted){
+                    Log.d("myTag", "Camera:" + cameraAccepted + " Storage:" + writeStorageAccepted);
+                    if (cameraAccepted && writeStorageAccepted) {
                         dispatchTakePictureIntent();
-                    }else{
-                        Toast.makeText(getActivity(),"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
 
             case STORAGE_REQUEST_CODE:
-                if(grantResults.length>0){
+                if (grantResults.length > 0) {
                     boolean writeStorageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    Log.d("myTag"," Storage:"+writeStorageAccepted);
-                    if(writeStorageAccepted){
+                    Log.d("myTag", " Storage:" + writeStorageAccepted);
+                    if (writeStorageAccepted) {
                         pickGallery();
-                    }else{
-                        Toast.makeText(getActivity(),"Permission Denied!" ,Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -368,7 +366,7 @@ public class UploadFragment extends Fragment {
 
     private void detectTextFromImage() {
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable=true;
+        options.inMutable = true;
 
         /*Paint myRectPaint = new Paint();
         myRectPaint.setStrokeWidth(5);
@@ -382,11 +380,11 @@ public class UploadFragment extends Fragment {
         FaceDetector faceDetector = new
                 FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false)
                 .build();
-        if(!faceDetector.isOperational()){
+        if (!faceDetector.isOperational()) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                   Toast.makeText(getActivity(),"Could not set up face detector",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Could not set up face detector", Toast.LENGTH_LONG).show();
                 }
             });
             return;
@@ -396,24 +394,24 @@ public class UploadFragment extends Fragment {
 
         Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
         SparseArray<Face> faces = faceDetector.detect(frame1);
-        Log.d("FACE", "Face Size : "+faces.size());
-        System.out.println("Face Size : "+faces.size());
-        Log.d("FACE", "tempBitmap.getWidth() : "+tempBitmap.getWidth());
-        Log.d("FACE", "tempBitmap.getHeight() : "+tempBitmap.getHeight());
+        Log.d("FACE", "Face Size : " + faces.size());
+        System.out.println("Face Size : " + faces.size());
+        Log.d("FACE", "tempBitmap.getWidth() : " + tempBitmap.getWidth());
+        Log.d("FACE", "tempBitmap.getHeight() : " + tempBitmap.getHeight());
 
-        if(faces.size()!=0){
-            for(int i=0; i<faces.size(); i++) {
+        if (faces.size() != 0) {
+            for (int i = 0; i < faces.size(); i++) {
                 Face thisFace = faces.valueAt(i);
                 x1 = thisFace.getPosition().x;
-                Log.d("FACE", "x1 : "+x1);
+                Log.d("FACE", "x1 : " + x1);
                 y1 = thisFace.getPosition().y;
-                Log.d("FACE", "y1 : "+y1);
+                Log.d("FACE", "y1 : " + y1);
                 x2 = x1 + thisFace.getWidth();
-                expandWidth = (int)(thisFace.getWidth()*0.25);
-                Log.d("FACE", "x2 : "+x2);
+                expandWidth = (int) (thisFace.getWidth() * 0.25);
+                Log.d("FACE", "x2 : " + x2);
                 y2 = y1 + thisFace.getHeight();
-                expandHeight = (int)(thisFace.getHeight()*0.30);
-                Log.d("FACE", "y2 : "+y2);
+                expandHeight = (int) (thisFace.getHeight() * 0.30);
+                Log.d("FACE", "y2 : " + y2);
                 //tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
 
             }
@@ -423,23 +421,24 @@ public class UploadFragment extends Fragment {
 
             //Canvas canvas = new Canvas (tempBitmap);
             //imageViewResume.draw(canvas);
-            faceWidth = (int)x2-(int)x1;
-            faceHeight = (int)y2-(int)y1;
-            croppedBitmap = Bitmap.createBitmap(tempBitmap,(int)x1-expandWidth,(int)y1-expandHeight,faceWidth+(2*expandWidth),faceHeight+(2*expandHeight));
-            croppedFace = getImageUri(getActivity(),croppedBitmap);
-            Log.d("FACE URL", ""+croppedFace);
+            faceWidth = (int) x2 - (int) x1;
+            faceHeight = (int) y2 - (int) y1;
+            croppedBitmap = Bitmap.createBitmap(tempBitmap, (int) x1 - expandWidth, (int) y1 - expandHeight, faceWidth + (2 * expandWidth), faceHeight + (2 * expandHeight));
+            croppedFace = getImageUri(getActivity(), croppedBitmap);
+            Log.d("FACE URL", "" + croppedFace);
             //imageViewResume.setImageBitmap(croppedBitmap);
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
             //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
-        }else{
+        } else {
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
                 }
             });
-            Resources resources = getActivity().getResources();
-            croppedFace = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(R.drawable.ic_person) + '/' + resources.getResourceTypeName(R.drawable.ic_person) + '/' + resources.getResourceEntryName(R.drawable.ic_person));
+            //Resources resources = getActivity().getResources();
+            //croppedFace = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(R.drawable.ic_person) + '/' + resources.getResourceTypeName(R.drawable.ic_person) + '/' + resources.getResourceEntryName(R.drawable.ic_person));
+            croppedFace = Uri.parse("noProfile");
             //Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
             //intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
 
@@ -460,20 +459,20 @@ public class UploadFragment extends Fragment {
             Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
             SparseArray<TextBlock> items = recognizer.detect(frame);
             StringBuilder sb = new StringBuilder();
-            Log.d("TESTING", "detectTextFromImage: "+ items.size());
+            Log.d("TESTING", "detectTextFromImage: " + items.size());
             for (int i = 0; i < items.size(); i++) {
                 TextBlock myItems = items.valueAt(i);
                 sb.append(myItems.getValue());
                 sb.append("  ");
-                Log.d("BOUNDING","Block "+i +" : " +myItems.getValue()+ "Top: "+myItems.getBoundingBox().top+"Bottom :"+myItems.getBoundingBox().bottom);
+                Log.d("BOUNDING", "Block " + i + " : " + myItems.getValue() + "Top: " + myItems.getBoundingBox().top + "Bottom :" + myItems.getBoundingBox().bottom);
             }
             /*Intent intent1 = new Intent(this,ExtractedText.class);
             Bundle bundle = new Bundle();
             bundle.putString("BundleText",sb.toString());
             intent1.putExtra("EXTRACTED_TEXT",bundle);
             startActivity(intent1);*/
-            extractedTextFromImage = sb.toString().replaceAll("\n"," ");
-            String newExtractedText = extractedTextFromImage.replaceAll(" \\ ",".\n ");
+            extractedTextFromImage = sb.toString().replaceAll("\n", " ");
+            String newExtractedText = extractedTextFromImage.replaceAll(" \\ ", ".\n ");
             //extractedTextFromImage.substring(0,1000);
             //textViewExtractedText.setText(extractedTextFromImage);
             postData(newExtractedText);
@@ -484,16 +483,16 @@ public class UploadFragment extends Fragment {
     }
 
     public void postData(final String extractedText) {
-        employeeName ="";
-        employeeLocation ="";
-        employeeOrganization="";
-        employeeEmail="";
-        employeePhoneNum="";
-        employeeAddress ="";
-        employeeSkills="";
-        employeeEducation="";
-        employeeOther="";
-        employeeAge="";
+        employeeName = "";
+        employeeLocation = "";
+        employeeOrganization = "";
+        employeeEmail = "";
+        employeePhoneNum = "";
+        employeeAddress = "";
+        employeeSkills = "";
+        employeeEducation = "";
+        employeeOther = "";
+        employeeAge = "0";
         stringBuilderSkills = new StringBuilder();
         stringBuilderEducation = new StringBuilder();
         stringBuilderOther = new StringBuilder();
@@ -502,7 +501,7 @@ public class UploadFragment extends Fragment {
         JSONObject object = new JSONObject();
 
         try {
-            object.put("parameters",extractedText);
+            object.put("parameters", extractedText);
             //object.getString("parameters");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -516,51 +515,55 @@ public class UploadFragment extends Fragment {
                 "22ner.useSUTime%22%3Afalse%2C" +
                 "%22ner.applyNumericClassifiers%22%3Afalse%7D";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,object,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
 
                         try {
                             JSONArray ary = response.getJSONArray("sentences");
-                            for(int i=0;i<ary.length();i++){
+                            for (int i = 0; i < ary.length(); i++) {
 
                                 JSONObject obj1 = ary.getJSONObject(i);
                                 JSONArray testarray = obj1.getJSONArray("entitymentions");
                                 System.out.println(testarray);
 
-                                JSONArray ary2 =  obj1.getJSONArray("entitymentions");
+                                JSONArray ary2 = obj1.getJSONArray("entitymentions");
 
                                 //textViewExtractedText.setText("--- Result ---\n\n");
 
-                                for(int y=0;y<ary2.length();y++){
+                                for (int y = 0; y < ary2.length(); y++) {
                                     JSONObject obj2 = ary2.getJSONObject(y);
                                     String namedEntity = obj2.getString("ner");
                                     String namedEntityResult = obj2.getString("text");
-                                    if(namedEntity.equals("PERSON") && employeeName.isEmpty()){
+                                    if (namedEntity.equals("PERSON") && employeeName.isEmpty()) {
                                         employeeName = namedEntityResult;
                                         Log.d("NAMEFOUND : ", namedEntityResult);
-                                    }else if((namedEntity.equals("LOCATION") || namedEntity.equals("CITY") ||namedEntity.equals("COUNTRY"))&& employeeLocation.isEmpty()){
+                                    } else if ((namedEntity.equals("LOCATION") || namedEntity.equals("CITY") || namedEntity.equals("COUNTRY")) && employeeLocation.isEmpty()) {
                                         employeeLocation = namedEntityResult;
                                         Log.d("LOCATIONFOUND", namedEntityResult);
-                                    }else if (namedEntity.equals("ORGANIZATION")){
+                                    } else if (namedEntity.equals("ORGANIZATION")) {
                                         employeeOrganization = namedEntityResult;
-                                    }else if (namedEntity.equals("SKILL")){
+                                    } else if (namedEntity.equals("SKILL")) {
                                         //employeeSkills = namedEntityResult;
-                                        if (employeeSkills.isEmpty()){
+                                        if (employeeSkills.isEmpty()) {
                                             employeeSkills = namedEntityResult;
                                             stringBuilderSkills.append(employeeSkills);
-                                        }else{
+                                        } else {
                                             employeeSkills = namedEntityResult;
                                             stringBuilderSkills.append(" , " + employeeSkills);
                                         }
 
-                                    }else if(namedEntity.equals("EDUCATION")){
-                                        employeeEducation = namedEntityResult;
-                                        if(stringBuilderEducation.indexOf(employeeEducation)==-1){
-                                            stringBuilderEducation.append(employeeEducation+"\n");
+                                    } else if (namedEntity.equals("EDUCATION")) {
+                                        if(employeeEducation.isEmpty()){
+                                            employeeEducation = namedEntityResult;
+                                            stringBuilderEducation.append(employeeEducation);
+                                        }else {
+                                            employeeEducation = namedEntityResult;
+                                            if (stringBuilderEducation.indexOf(employeeEducation) == -1) {
+                                                stringBuilderEducation.append( "\n"+ employeeEducation);
+                                            }
                                         }
-
                                     }
                                     /*else if(namedEntity.equals("COURSE")||namedEntity.equals("SUBJECT")||namedEntity.equals("CERTIFICATE")){
                                         employeeOther = namedEntityResult;
@@ -568,7 +571,7 @@ public class UploadFragment extends Fragment {
 
                                     }*/
                                     //textViewExtractedText.append(namedEntity+" : "+namedEntityResult+"\n");
-                                    Log.d("NER", namedEntity+" : "+namedEntityResult+"\n");
+                                    Log.d("NER", namedEntity + " : " + namedEntityResult + "\n");
                                 }
                             }
 
@@ -578,21 +581,43 @@ public class UploadFragment extends Fragment {
 
                             String str = extractedText;
 
-
                             //old phone regex :String phoneRegex = "((\\(60\\+\\))?^(01\\d{1}-? ?\\d{3,4} ?\\d{4}))(?!\\d)";
-                            //Phone regex use (?!\d) is a negative lookahead, means the following regex cannot be a number. It will match
-                            //from (+60)1.. and 011 ...
-                            String phoneRegex = "((((\\()?\\+60(\\))?) ?(1\\d{1}-? ?\\d{3,4} ?\\d{3,4}))|(01\\d{1}-? ?\\d{3,4} ?\\d{3,4}))(?!\\d)";
+                            //Phone regex use (?!\\d) is a negative lookahead, means the following regex cannot be a number.
+                            // (?<![\\d]) is a negative lookbehind which the preceding elements cannot be digit.
+                            // It will match from (+60)1.. or 011 ...
+                            String phoneRegex = "(?<![\\d])((((\\()?\\+60(\\))?) ?(1\\d{1}-? ?\\d{3,4} ?\\d{3,4}))|(01\\d{1}-? ?\\d{3,4} ?\\d{3,4}))(?!\\d)";
 
                             // age has the regex from 10 years old to 59 years old and (?<![\\d]) is a negative lookbehind which the preceding
                             //elements cannot be digit.
-                            String ageHeader = "((Age|age):?)? ?";
-                            String ageRegex = ageHeader +"(?<![\\d])[1-5][0-9] ?(years)? (old)?";
+                            String ageHeader = "(Age|age):? ?";
+                            String ageNo = "(?<![\\d])[1-5][0-9](?!\\d)";
+                            String ageFormat = " ?years old";
+                            String ageRegex = ageHeader + ageNo +
+                                    "|" +
+                                    ageNo + ageFormat +
+                                    "|" +
+                                    "[.\n] ?"+ageNo + " ?[.\n]";
 
+                            //Old address: String addressRegex = addressHeader + addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+location;
+                            //Address use ".+?" which is the lazy matching which matching as few characters as possible between addressFormat and
+                            //location. If location not found, then, it will match the nearest addressNo and postCode.
+                            // "." will match any character except newline.
                             String addressHeader = "((Address|address|ADDRESS):?)? ?";
                             String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)? ?";
+                            String addressNo = "(\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},?";
+                            String postCode = "(?<![\\d])[0-9]{5}(?!\\d)";
                             String location = employeeLocation;
-                            String addressRegex = addressHeader + addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+location;
+                            String addressRegex = addressHeader + addressFormat +
+                                    "(" + addressFormat + ".+?" + postCode + ".+?" + location + ")" +
+                                    "|" +
+                                    "(" + addressNo + ".+?" + postCode + ".+?" + location + ")" +
+                                    "|" +
+                                    addressNo + ".+?" + postCode;
+
+                            /*String addressRegex =
+                                    "(" + ".+?" + postCode + ".+?" + location + ")" +
+                                            "|" +
+                                            addressNo + ".+?" + postCode;*/
 
                             String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
                                     "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])" +
@@ -600,44 +625,44 @@ public class UploadFragment extends Fragment {
                                     "[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:" +
                                     "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
-                            Pattern allPattern = Pattern.compile(phoneRegex+"|"+emailRegex+"|"+addressRegex+"|"+ageRegex);
+                            Pattern allPattern = Pattern.compile(phoneRegex + "|" + emailRegex + "|" + addressRegex + "|" + ageRegex);
                             Matcher allMatcher = allPattern.matcher(str);
-                            while(allMatcher.find()){
+                            while (allMatcher.find()) {
                                 String result = allMatcher.group(0);
-                                if (result.matches(phoneRegex) && employeePhoneNum.isEmpty()){
+                                if (result.matches(phoneRegex) && employeePhoneNum.isEmpty()) {
                                     employeePhoneNum = result;
-                                }else if(result.matches(addressRegex)&& employeeAddress.isEmpty()){
+                                } else if (result.matches(addressRegex) && employeeAddress.isEmpty()) {
                                     employeeAddress = result;
-                                }else if(result.matches(emailRegex) && employeeEmail.isEmpty()){
+                                } else if (result.matches(emailRegex) && employeeEmail.isEmpty()) {
                                     employeeEmail = result;
-                                }else if(result.matches(ageRegex) && employeeAge.isEmpty()){
+                                } else if (result.matches(ageRegex) && employeeAge.isEmpty()) {
                                     employeeAge = result;
                                     Pattern p = Pattern.compile("\\d+");
                                     Matcher m = p.matcher(employeeAge);
-                                    while(m.find()) {
+                                    while (m.find()) {
                                         employeeAge = m.group();
                                     }
-                                    employeeAge.substring(0,1);
-                                    Log.d("AGE",employeeAge+ "subString"+employeeAge.substring(0,1));
+                                    //employeeAge.substring(0, 1);
+                                    //Log.d("AGE", employeeAge + "subString" + employeeAge.substring(0, 1));
                                 }
                             }
 
                             checkExtractedIsEmpty();
 
                             Bundle bundle = new Bundle();
-                            bundle.putString("EXTRACTED_PHONE",employeePhoneNum);
+                            bundle.putString("EXTRACTED_PHONE", employeePhoneNum);
                             bundle.putString("EXTRACTED_EMAIL", employeeEmail);
                             bundle.putString("EXTRACTED_NAME", employeeName);
                             bundle.putString("EXTRACTED_ADDRESS", employeeAddress);
-                            bundle.putString("EXTRACTED_SKILLS",employeeSkills);
-                            bundle.putString("EXTRACTED_EDUCATION",employeeEducation);
+                            bundle.putString("EXTRACTED_SKILLS", employeeSkills);
+                            bundle.putString("EXTRACTED_EDUCATION", employeeEducation);
                             //intent1.putExtra("EXTRACTED_OTHER",employeeOther);
-                            bundle.putInt("EXTRACTED_AGE",Integer.parseInt(employeeAge.trim()));
-                            bundle.putString("EXTRACTED_FACE",croppedFace.toString());
-                            bundle.putString("RESUME",resultUri.toString());
+                            bundle.putInt("EXTRACTED_AGE", Integer.parseInt(employeeAge.trim()));
+                            bundle.putString("EXTRACTED_FACE", croppedFace.toString());
+                            bundle.putString("RESUME", resultUri.toString());
 
                             binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                            navController.navigate(R.id.action_uploadFragment_to_extractedTextEditFragment,bundle);
+                            navController.navigate(R.id.action_uploadFragment_to_extractedTextEditFragment, bundle);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -647,7 +672,7 @@ public class UploadFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                Toast.makeText(getActivity(),"Error getting response",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error getting response", Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -655,17 +680,17 @@ public class UploadFragment extends Fragment {
     }
 
     private void checkExtractedIsEmpty() {
-        if(employeeName.isEmpty()){
+        if (employeeName.isEmpty()) {
             employeeName = getString(R.string.no_name_found);
-        }else if(employeePhoneNum.isEmpty()){
-            employeePhoneNum =  getString(R.string.no_phone_found);
-        }else if(employeeEmail.isEmpty()){
+        } else if (employeePhoneNum.isEmpty()) {
+            employeePhoneNum = getString(R.string.no_phone_found);
+        } else if (employeeEmail.isEmpty()) {
             employeeEmail = getString(R.string.no_email_found);
-        }else if(employeeAddress.isEmpty()){
+        } else if (employeeAddress.isEmpty()) {
             employeeAddress = getString(R.string.no_address_found);
-        }else if (employeeSkills.isEmpty()){
+        } else if (employeeSkills.isEmpty()) {
             employeeSkills = getString(R.string.no_skills_found);
-        }else if (employeeEducation.isEmpty()){
+        } else if (employeeEducation.isEmpty()) {
             employeeEducation = getString(R.string.no_education_found);
         }
     }
@@ -678,7 +703,7 @@ public class UploadFragment extends Fragment {
         return Uri.parse(path);
     }
 
-    class ExtractThread implements Runnable{
+    class ExtractThread implements Runnable {
 
         @Override
         public void run() {

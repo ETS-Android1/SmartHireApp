@@ -213,7 +213,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                         break;
                     case ItemTouchHelper.LEFT:
                         onDeleteClick(viewHolder.getAdapterPosition());
-                        Toast.makeText(getActivity(),getString(R.string.delete),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(),getString(R.string.delete),Toast.LENGTH_SHORT).show();
                         myAdapter.notifyDataSetChanged();
                         break;
                 }
@@ -249,7 +249,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(getActivity(), "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
         Employee selectedItem = employees.get(position);
         String selectedKey = selectedItem.getKey();
         String name = selectedItem.getmName();

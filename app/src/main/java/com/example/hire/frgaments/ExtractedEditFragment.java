@@ -122,7 +122,17 @@ public class ExtractedEditFragment extends Fragment {
         binding.include.editTextExtractedAge.setText(Integer.toString(extractedAge));
         binding.include.editTextSkills.setText(extractedSkills);
         binding.include.editTextEducation.setText(extractedEducation);
-        binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
+
+        if(extractedFace.equals("noProfile")){
+
+            binding.include.imageViewExtractedImageEdit.setImageResource(R.drawable.ic_person);
+
+        }else{
+
+            binding.include.imageViewExtractedImageEdit.setImageURI(resultUri);
+
+        }
+
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,7 +327,7 @@ public class ExtractedEditFragment extends Fragment {
         Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
         binding.progressBarExtractedEdit.setVisibility(ProgressBar.INVISIBLE);
         startActivity(intent);*/
-        if (resultUri != null) {
+        if (resultUri != null && !(extractedFace.equals("noProfile"))) {
             final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(resultUri));
 
@@ -339,7 +349,7 @@ public class ExtractedEditFragment extends Fragment {
                                 photoDownloadUri = task.getResult();
 
                             } else {
-                                Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Profile photo upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     })
