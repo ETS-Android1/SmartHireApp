@@ -16,4 +16,4 @@ The artificial intelligence algorithms used are Optical Characters Optimization 
 - Stanford CoreNLP
 
 ## Sample User Interface
-![home page](url)
+![home page](https://github.com/yujune/Hire-Sample-UI/blob/master/Home.JPG)
