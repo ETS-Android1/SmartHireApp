@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/background_extracted_text">
+
+    <TextView
+        android:id="@+id/textViewTitleHomeCustomDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="25dp"
+        android:gravity="center"
+        android:text="@string/recruit_option"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:padding="8dp"
+        android:background="@color/darkSlateGrey"/>
+
+    <LinearLayout
+        android:layout_below="@+id/textViewTitleHomeCustomDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/buttonHomeCustomDialogAI"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/ai_logo"
+                android:drawableTint="@color/colorPrimaryDark"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewHomeCustomDialogAI"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/ai_recruit"
+                android:textColor="@color/colorPrimaryDark"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/buttonHomeCustomDialogAI"
+                app:layout_constraintStart_toStartOf="@+id/buttonHomeCustomDialogAI"
+                app:layout_constraintTop_toBottomOf="@+id/buttonHomeCustomDialogAI" />
+
+            <Button
+                android:id="@+id/buttonHomeCustomDialogManual"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_below="@+id/buttonHomeCustomDialogAI"
+                android:layout_marginStart="32dp"
+                android:background="@drawable/manual_form"
+                android:backgroundTint="@color/darkSlateGrey"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonHomeCustomDialogAI"
+                app:layout_constraintStart_toEndOf="@+id/buttonHomeCustomDialogAI"
+                app:layout_constraintTop_toTopOf="@+id/buttonHomeCustomDialogAI" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/manual"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewHomeCustomDialogAI"
+                app:layout_constraintEnd_toEndOf="@+id/buttonHomeCustomDialogManual"
+                app:layout_constraintStart_toStartOf="@+id/buttonHomeCustomDialogManual"
+                app:layout_constraintTop_toBottomOf="@+id/buttonHomeCustomDialogManual" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+

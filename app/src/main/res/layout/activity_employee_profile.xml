@@ -15,23 +15,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/grey"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/darkSlateGrey"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="250dp"
+                android:background="@color/darkSlateGrey">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageViewEmployeeProfile"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="16dp"
                     android:background="#00FFFFFF"
                     app:civ_border_color="@color/white"
                     app:civ_border_width="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_person" />
 
                 <TextView
@@ -43,19 +45,35 @@
                     android:text="Name"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewEmployeeProfile" />
 
                 <TextView
                     android:id="@+id/textViewProfilePosition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="50dp"
                     android:gravity="center"
                     android:text="position"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@+id/textViewProfileName"
+                    app:layout_constraintStart_toStartOf="@+id/textViewProfileName"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewProfileName" />
+
+                <ImageView
+                    android:id="@+id/imageViewVerified"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_text_view"
+                    android:backgroundTint="@color/white"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageViewEmployeeProfile"
+                    app:layout_constraintEnd_toEndOf="@+id/imageViewEmployeeProfile"
+                    app:srcCompat="@drawable/verified_user" />
 
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -64,14 +82,14 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="-40dp"
                 android:padding="10dp"
-                android:background="@drawable/circle_and_white_border">
+                android:background="@drawable/profile_circle_and_white_border">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabProfileCall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:background="@drawable/circle_and_white_border"
+                    android:background="@drawable/profile_circle_and_white_border"
                     app:backgroundTint="#4CAF50"
                     app:fabSize="auto"
                     app:srcCompat="@drawable/employee_call"/>
@@ -99,76 +117,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical"
-                tools:context=".ExtractedText">
-
-                <TextView
-                    android:id="@+id/textViewProfileSkills"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginRight="24dp"
-                    android:text="TextView"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewLabelSkills" />
-
-                <TextView
-                    android:id="@+id/textViewLabelEducation3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@color/darkSlateGrey"
-                    android:padding="6dp"
-                    android:text="Education"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewProfileSkills" />
-
-                <TextView
-                    android:id="@+id/textViewProfileEducation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginRight="24dp"
-                    android:text="TextView"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewLabelEducation3" />
-
-                <TextView
-                    android:id="@+id/textViewLabelSkills"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@color/darkSlateGrey"
-                    android:padding="6dp"
-                    android:text="Skills"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewProfileAddress" />
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/background_extracted_text">
 
                 <TextView
                     android:id="@+id/textViewLabelPhoneNumber"
@@ -235,10 +187,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginEnd="24dp"
-                    android:layout_marginRight="24dp"
+                    android:layout_marginBottom="24dp"
                     android:text="TextView"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageViewAddress"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAddress" />
@@ -248,14 +200,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@color/darkSlateGrey"
-                    android:padding="6dp"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
                     android:text="Personal Info"
-                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -330,7 +281,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAge" />
 
 
-
                 <!--<TextView
                     android:id="@+id/textViewLabelResume"
                     android:layout_width="wrap_content"
@@ -344,6 +294,94 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/floatingActionButton" />-->
 
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/background_extracted_text">
+
+                <TextView
+                    android:id="@+id/textViewLabelSkills"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:text="Skills"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewProfileSkills"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="TextView"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewLabelSkills" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/background_extracted_text">
+
+                <TextView
+                    android:id="@+id/textViewLabelEducation3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:padding="6dp"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:text="Education"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewProfileEducation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="TextView"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewLabelEducation3" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

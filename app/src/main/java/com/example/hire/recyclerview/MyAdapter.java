@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hire.Employee;
@@ -74,6 +75,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
                     .into(myHolder.mImageView);
         }
 
+        ViewCompat.setTransitionName(myHolder.mImageView, i + "_image");
+
+
         //Log.d("IMAGE: ", "onBindViewHolder:  "+ employeeCurrent.getmImageUrl());
         //myHolder.mImageView.setImageResource(employees.get(i).getImg()); //here we use image resource because we will use images in our resource folder which is drawable
 
@@ -99,14 +103,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
+
+
         }
+
 
         @Override
         public void onClick(View v) {
+
             if (mListener != null) {
                 int position = getAdapterPosition();
+                //ViewCompat.setTransitionName(v.findViewById(R.id.imageViewPerson), position + "_image");
                 if (position != RecyclerView.NO_POSITION) {
-                    mListener.onItemClick(position);
+                    mListener.onItemClick(v,position);
                 }
             }
         }
@@ -114,6 +123,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
+            //menu.setHeaderIcon(R.drawable.ai_logo);
             MenuItem phoneCall = menu.add(Menu.NONE, 1, 1, "Call");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
 
@@ -148,7 +158,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
 
     public interface OnItemClickListener {
 
-        void onItemClick(int position);
+        void onItemClick(View v,int position);
 
         void onCallEmployeeClick(int position);
 

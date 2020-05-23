@@ -34,6 +34,18 @@ import com.squareup.picasso.Picasso;
  */
 public class EmployeeProfileFragment extends Fragment {
 
+    private static final String ARG_KITTEN_NUMBER = "argKittenNumber";
+
+    public static EmployeeProfileFragment newInstance(int kittenNumber) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_KITTEN_NUMBER, kittenNumber);
+
+        EmployeeProfileFragment fragment = new EmployeeProfileFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     private ActivityEmployeeProfileBinding binding;
     private ConnectivityManager connectivityManager;
 
@@ -55,6 +67,11 @@ public class EmployeeProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Bundle args = getArguments();
+        //int kittenNumber = args.containsKey(ARG_KITTEN_NUMBER) ? args.getInt(ARG_KITTEN_NUMBER) : 1;
+
+
 
         connectivityManager = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 

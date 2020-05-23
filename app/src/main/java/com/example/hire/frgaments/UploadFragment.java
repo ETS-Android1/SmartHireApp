@@ -3,13 +3,10 @@ package com.example.hire.frgaments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -28,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -105,6 +101,8 @@ public class UploadFragment extends Fragment {
 
     private ActivityFabBinding binding;
     private NavController navController;
+
+    private boolean isFaceCropped;
 
     @Nullable
     @Override
@@ -251,7 +249,7 @@ public class UploadFragment extends Fragment {
 
     private void pickGallery() {
         //intent to pick image from gallery
-        Intent intent = new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         //set intent tyoe to image
         intent.setType("image/*");
         startActivityForResult(intent, IMAGE_PICK_GALLERY_CODE);
@@ -365,84 +363,6 @@ public class UploadFragment extends Fragment {
     }
 
     private void detectTextFromImage() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable = true;
-
-        /*Paint myRectPaint = new Paint();
-        myRectPaint.setStrokeWidth(5);
-        myRectPaint.setColor(Color.RED);
-        myRectPaint.setStyle(Paint.Style.STROKE);*/
-
-        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
-        Canvas tempCanvas = new Canvas(tempBitmap);
-        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
-
-        FaceDetector faceDetector = new
-                FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false)
-                .build();
-        if (!faceDetector.isOperational()) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getActivity(), "Could not set up face detector", Toast.LENGTH_LONG).show();
-                }
-            });
-            return;
-
-
-        }
-
-        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
-        SparseArray<Face> faces = faceDetector.detect(frame1);
-        Log.d("FACE", "Face Size : " + faces.size());
-        System.out.println("Face Size : " + faces.size());
-        Log.d("FACE", "tempBitmap.getWidth() : " + tempBitmap.getWidth());
-        Log.d("FACE", "tempBitmap.getHeight() : " + tempBitmap.getHeight());
-
-        if (faces.size() != 0) {
-            for (int i = 0; i < faces.size(); i++) {
-                Face thisFace = faces.valueAt(i);
-                x1 = thisFace.getPosition().x;
-                Log.d("FACE", "x1 : " + x1);
-                y1 = thisFace.getPosition().y;
-                Log.d("FACE", "y1 : " + y1);
-                x2 = x1 + thisFace.getWidth();
-                expandWidth = (int) (thisFace.getWidth() * 0.25);
-                Log.d("FACE", "x2 : " + x2);
-                y2 = y1 + thisFace.getHeight();
-                expandHeight = (int) (thisFace.getHeight() * 0.30);
-                Log.d("FACE", "y2 : " + y2);
-                //tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-
-            }
-            //tempCanvas.drawBitmap();
-
-            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
-
-            //Canvas canvas = new Canvas (tempBitmap);
-            //imageViewResume.draw(canvas);
-            faceWidth = (int) x2 - (int) x1;
-            faceHeight = (int) y2 - (int) y1;
-            croppedBitmap = Bitmap.createBitmap(tempBitmap, (int) x1 - expandWidth, (int) y1 - expandHeight, faceWidth + (2 * expandWidth), faceHeight + (2 * expandHeight));
-            croppedFace = getImageUri(getActivity(), croppedBitmap);
-            Log.d("FACE URL", "" + croppedFace);
-            //imageViewResume.setImageBitmap(croppedBitmap);
-            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
-            //Rect dst = new Rect(0, 0, 200, 200);
-            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
-        } else {
-            getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
-                }
-            });
-            //Resources resources = getActivity().getResources();
-            //croppedFace = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(R.drawable.ic_person) + '/' + resources.getResourceTypeName(R.drawable.ic_person) + '/' + resources.getResourceEntryName(R.drawable.ic_person));
-            croppedFace = Uri.parse("noProfile");
-            //Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
-            //intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
-
-        }
 
         TextRecognizer recognizer = new TextRecognizer.Builder(getActivity().getApplicationContext()).build();
 
@@ -476,10 +396,93 @@ public class UploadFragment extends Fragment {
             //extractedTextFromImage.substring(0,1000);
             //textViewExtractedText.setText(extractedTextFromImage);
             postData(newExtractedText);
+        }
+    }
 
+    private boolean detectFace() {
 
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;
+
+        /*Paint myRectPaint = new Paint();
+        myRectPaint.setStrokeWidth(5);
+        myRectPaint.setColor(Color.RED);
+        myRectPaint.setStyle(Paint.Style.STROKE);*/
+
+        Bitmap tempBitmap = Bitmap.createBitmap(imageBitmap.getWidth(), imageBitmap.getHeight(), Bitmap.Config.RGB_565);
+        Canvas tempCanvas = new Canvas(tempBitmap);
+        tempCanvas.drawBitmap(imageBitmap, 0, 0, null);
+
+        FaceDetector faceDetector = new
+                FaceDetector.Builder(getActivity().getApplicationContext()).setTrackingEnabled(false)
+                .build();
+        if (!faceDetector.isOperational()) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), "Could not set up face detector", Toast.LENGTH_LONG).show();
+                }
+            });
+            return true;
         }
 
+        Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
+        SparseArray<Face> faces = faceDetector.detect(frame1);
+        Log.d("FACE", "Face Size : " + faces.size());
+        System.out.println("Face Size : " + faces.size());
+        Log.d("FACE", "tempBitmap.getWidth() : " + tempBitmap.getWidth());
+        Log.d("FACE", "tempBitmap.getHeight() : " + tempBitmap.getHeight());
+
+        if (faces.size() != 0) {
+            for (int i = 0; i < faces.size(); i++) {
+                Face thisFace = faces.valueAt(i);
+                x1 = thisFace.getPosition().x;
+                Log.d("FACE", "x1 : " + x1);
+                y1 = thisFace.getPosition().y;
+                Log.d("FACE", "y1 : " + y1);
+                x2 = x1 + thisFace.getWidth();
+                expandWidth = (int) (thisFace.getWidth() * 0.25);
+                Log.d("FACE", "x2 : " + x2);
+                y2 = y1 + thisFace.getHeight();
+                expandHeight = (int) (thisFace.getHeight() * 0.30);
+                Log.d("FACE", "y2 : " + y2);
+                //tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+            }
+            //tempCanvas.drawBitmap();
+
+            //imageViewResume.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
+
+            //Canvas canvas = new Canvas (tempBitmap);
+            //imageViewResume.draw(canvas);
+            faceWidth = (int) x2 - (int) x1;
+            faceHeight = (int) y2 - (int) y1;
+
+            isFaceCropped = true;
+
+            croppedBitmap = Bitmap.createBitmap(tempBitmap, (int) x1 - expandWidth, (int) y1 - expandHeight, faceWidth + (2 * expandWidth), faceHeight + (2 * expandHeight));
+
+            Log.d("FACE URL", "" + croppedFace);
+            //imageViewResume.setImageBitmap(croppedBitmap);
+            //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
+            //Rect dst = new Rect(0, 0, 200, 200);
+            //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
+        } else {
+
+            isFaceCropped = false;
+
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
+                }
+            });
+            //Resources resources = getActivity().getResources();
+            //croppedFace = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + resources.getResourcePackageName(R.drawable.ic_person) + '/' + resources.getResourceTypeName(R.drawable.ic_person) + '/' + resources.getResourceEntryName(R.drawable.ic_person));
+            croppedFace = Uri.parse("noProfile");
+            //Bitmap noFaceBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_person);
+            //intent1.putExtra("EXTRACTED_FACE",noFaceBitmap);
+
+        }
+        return false;
     }
 
     public void postData(final String extractedText) {
@@ -599,7 +602,7 @@ public class UploadFragment extends Fragment {
                                     "[.\n] ?"+ageNo + " ?[.\n]";
 
                             //Old address: String addressRegex = addressHeader + addressFormat+"((\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},.+?)"+location;
-                            //Address use ".+?" which is the lazy matching which matching as few characters as possible between addressFormat and
+                            //Address use ".+?" which is the lazy matching which matching as few characters as possible between \n and postCode and
                             //location. If location not found, then, it will match the nearest addressNo and postCode.
                             // "." will match any character except newline.
                             String addressHeader = "((Address|address|ADDRESS):?)? ?";
@@ -607,17 +610,17 @@ public class UploadFragment extends Fragment {
                             String addressNo = "(\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},?";
                             String postCode = "(?<![\\d])[0-9]{5}(?!\\d)";
                             String location = employeeLocation;
-                            String addressRegex = addressHeader + addressFormat +
+                            /*String addressRegex = addressHeader + addressFormat +
                                     "(" + addressFormat + ".+?" + postCode + ".+?" + location + ")" +
                                     "|" +
                                     "(" + addressNo + ".+?" + postCode + ".+?" + location + ")" +
                                     "|" +
-                                    addressNo + ".+?" + postCode;
+                                    addressNo + ".+?" + postCode;*/
 
-                            /*String addressRegex =
+                            String addressRegex =
                                     "(" + ".+?" + postCode + ".+?" + location + ")" +
                                             "|" +
-                                            addressNo + ".+?" + postCode;*/
+                                            addressNo + ".+?" + postCode;
 
                             String emailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
                                     "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])" +
@@ -648,6 +651,10 @@ public class UploadFragment extends Fragment {
                             }
 
                             checkExtractedIsEmpty();
+
+                            if(isFaceCropped){
+                                croppedFace = getImageUri(getActivity(), croppedBitmap);
+                            }
 
                             Bundle bundle = new Bundle();
                             bundle.putString("EXTRACTED_PHONE", employeePhoneNum);
@@ -680,17 +687,28 @@ public class UploadFragment extends Fragment {
     }
 
     private void checkExtractedIsEmpty() {
+
         if (employeeName.isEmpty()) {
             employeeName = getString(R.string.no_name_found);
-        } else if (employeePhoneNum.isEmpty()) {
+        }
+
+        if (employeePhoneNum.isEmpty()) {
             employeePhoneNum = getString(R.string.no_phone_found);
-        } else if (employeeEmail.isEmpty()) {
+        }
+
+        if (employeeEmail.isEmpty()) {
             employeeEmail = getString(R.string.no_email_found);
-        } else if (employeeAddress.isEmpty()) {
+        }
+
+        if (employeeAddress.isEmpty()) {
             employeeAddress = getString(R.string.no_address_found);
-        } else if (employeeSkills.isEmpty()) {
+        }
+
+        if (employeeSkills.isEmpty()) {
             employeeSkills = getString(R.string.no_skills_found);
-        } else if (employeeEducation.isEmpty()) {
+        }
+
+        if (employeeEducation.isEmpty()) {
             employeeEducation = getString(R.string.no_education_found);
         }
     }
@@ -707,6 +725,7 @@ public class UploadFragment extends Fragment {
 
         @Override
         public void run() {
+            if (detectFace()) return;
             detectTextFromImage();
             binding.fab.setClickable(true);
         }

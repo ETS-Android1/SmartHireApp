@@ -149,6 +149,7 @@
         android:layout_marginTop="8dp"
         android:text="Your Progress"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

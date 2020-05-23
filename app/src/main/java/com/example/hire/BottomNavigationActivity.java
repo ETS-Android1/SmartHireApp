@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.hire.database.HomeFragment;
 import com.example.hire.databinding.ActivityBottomNavigationBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,7 +32,6 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
         NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bottomNav,navController);
-
 
 
         //binding.bottomNav.setOnNavigationItemSelectedListener(navListener);

@@ -1,25 +1,36 @@
 package com.example.hire.database;
 
+import android.app.ActivityOptions;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import androidx.transition.Fade;
+
+import android.transition.Transition;
 import android.util.Log;
+import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +44,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.TransitionInflater;
 
+import com.example.hire.CustomItemAnimation;
+import com.example.hire.DetailsTransition;
 import com.example.hire.Employee;
 import com.example.hire.StartExtractActivity;
+import com.example.hire.databinding.CardViewDesignBinding;
+import com.example.hire.frgaments.EmployeeProfileFragment;
 import com.example.hire.recyclerview.MyAdapter;
 import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
@@ -154,9 +170,31 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                final AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                View mView = getLayoutInflater().inflate(R.layout.home_custom_dialog,null);
+                Button dialogAIButton = mView.findViewById(R.id.buttonHomeCustomDialogAI);
+                Button dialogManualButton = mView.findViewById(R.id.buttonHomeCustomDialogManual);
+                alert.setView(mView);
+                final AlertDialog alertDialog = alert.create();
+                alertDialog.setCanceledOnTouchOutside(true);
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialogAIButton.setOnClickListener(v1 -> {
+                    Toast.makeText(getActivity(),"A.I. Recruit",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getActivity(), StartExtractActivity.class);
+                    startActivity(intent);
+                    alertDialog.dismiss();
+                });
+
+                dialogManualButton.setOnClickListener(v12 -> {
+                    navController.navigate(R.id.action_homeFragment_to_manualForm);
+                    Toast.makeText(getActivity(),"Manually Recruit",Toast.LENGTH_LONG).show();
+                    alertDialog.dismiss();
+                });
+                alertDialog.show();
                 //navController.navigate(R.id.action_homeFragment_to_uploadFragment);
                 // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                /*AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                 builder.setTitle("Recruit Options")
                         .setItems(R.array.recruit_options, (dialog, options) -> {
@@ -171,7 +209,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                         });
 
 // 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
-                builder.create().show();
+                builder.create().show();*/
                 //Intent intent = new Intent(getActivity(), StartExtractActivity.class);
                 //startActivity(intent);
             }
@@ -185,6 +223,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         myAdapter = new MyAdapter(getActivity(),employees);
 
         binding.include.recyclerView.setAdapter(myAdapter);
+
+        binding.include.recyclerView.setItemAnimator(new CustomItemAnimation());
 
         myAdapter.setOnItemClickListener(this);
 
@@ -248,7 +288,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(View v,int position) {
         //Toast.makeText(getActivity(), "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
         Employee selectedItem = employees.get(position);
         String selectedKey = selectedItem.getKey();
@@ -275,6 +315,24 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         intent.putExtra("EMPLOYEE_ADDRESS",employeeAddress);
         startActivity(intent);*/
 
+        /*EmployeeProfileFragment employeeProfileFragment = EmployeeProfileFragment.newInstance(position);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            employeeProfileFragment.setSharedElementEnterTransition(new DetailsTransition());
+            employeeProfileFragment.setEnterTransition(new Fade());
+            setExitTransition(new Fade());
+            employeeProfileFragment.setSharedElementReturnTransition(new DetailsTransition());
+        }
+
+
+
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .addSharedElement(v.findViewById(R.id.imageViewPerson), position+"_image")
+                .replace(R.id.nav_host_fragment, employeeProfileFragment)
+                .addToBackStack(null)
+                .commit();*/
+
 
         Bundle bundle = new Bundle();
         bundle.putString("EMPLOYEE_NAME",name);
@@ -287,6 +345,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         bundle.putString("EMPLOYEE_PHOTO",profilePhoto);
         bundle.putString("EMPLOYEE_RESUME",employeeResume);
         bundle.putString("EMPLOYEE_ADDRESS",employeeAddress);
+
         navController.navigate(R.id.action_homeFragment_to_employeeProfile,bundle);
     }
 

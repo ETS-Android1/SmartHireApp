@@ -21,11 +21,15 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/grey">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/background_extracted_text">
 
 
                     <TextView
@@ -161,144 +165,6 @@
                         app:layout_constraintTop_toTopOf="@+id/textViewManualAge" />
 
                     <TextView
-                        android:id="@+id/textViewManualSkills"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@color/darkSlateGrey"
-                        android:padding="5dp"
-                        android:text="Skills"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/editTextManualAddress" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewSkills"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@color/white"
-                        android:scrollbars="vertical"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/editTextManualSkills"
-                        app:layout_constraintTop_toBottomOf="@+id/buttonAddManualSkills" />
-
-                    <EditText
-                        android:id="@+id/editTextManualSkills"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginRight="24dp"
-                        android:ems="10"
-                        android:hint="@string/example_skills"
-                        android:inputType="textPersonName"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toStartOf="@+id/spinnerSkills"
-                        app:layout_constraintStart_toStartOf="@+id/textViewManualSkills"
-                        app:layout_constraintTop_toBottomOf="@+id/textViewManualSkills" />
-
-                    <Spinner
-                        android:id="@+id/spinnerSkills"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:scrollbarSize="10dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/editTextManualSkills"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/editTextManualSkills" />
-
-                    <Button
-                        android:id="@+id/buttonAddManualSkills"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/colorPrimary"
-                        android:text="Add"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        app:layout_constraintStart_toStartOf="@+id/editTextManualSkills"
-                        app:layout_constraintTop_toBottomOf="@+id/editTextManualSkills" />
-
-                    <TextView
-                        android:id="@+id/textViewManualEducation"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@color/darkSlateGrey"
-                        android:padding="5dp"
-                        android:text="Education"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/recyclerViewSkills"
-                        app:layout_constraintTop_toBottomOf="@+id/recyclerViewSkills" />
-
-                    <EditText
-                        android:id="@+id/editTextManualEducation"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:ems="10"
-                        android:hint="@string/example_education"
-                        android:inputType="textPersonName"
-                        android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/textViewManualEducation"
-                        app:layout_constraintTop_toBottomOf="@+id/textViewManualEducation" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewEducation"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@color/white"
-                        android:scrollbars="vertical"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/editTextManualEducation"
-                        app:layout_constraintTop_toBottomOf="@+id/buttonAddManualEducation" />
-
-                    <Button
-                        android:id="@+id/buttonManualDone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/colorPrimary"
-                        android:text="Done"
-                        android:textColor="@color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/progressBarManual" />
-
-                    <Button
-                        android:id="@+id/buttonAddManualEducation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@color/colorPrimary"
-                        android:text="ADD"
-                        android:textColor="@color/white"
-                        app:layout_constraintStart_toStartOf="@+id/editTextManualEducation"
-                        app:layout_constraintTop_toBottomOf="@+id/editTextManualEducation" />
-
-                    <TextView
                         android:id="@+id/textViewManualAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -359,19 +225,7 @@
 
                     </RadioGroup>
 
-                    <CheckBox
-                        android:id="@+id/checkBoxManualTerms"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="32dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:text="@string/terms"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/buttonManualUploadResume" />
+
 
                     <ImageView
                         android:id="@+id/imageViewManualProfile"
@@ -394,22 +248,177 @@
                         app:layout_constraintEnd_toEndOf="@+id/imageViewManualProfile"
                         app:srcCompat="@drawable/fab_edit" />
 
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/background_extracted_text">
+
+                    <TextView
+                        android:id="@+id/textViewManualSkills"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/darkSlateGrey"
+                        android:padding="5dp"
+                        android:text="Skills"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewSkills"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@color/white"
+                        android:scrollbars="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/editTextManualSkills"
+                        app:layout_constraintTop_toBottomOf="@+id/buttonAddManualSkills" />
+
+                    <EditText
+                        android:id="@+id/editTextManualSkills"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginRight="24dp"
+                        android:ems="10"
+                        android:hint="@string/example_skills"
+                        android:inputType="textPersonName"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toStartOf="@+id/spinnerSkills"
+                        app:layout_constraintStart_toStartOf="@+id/textViewManualSkills"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewManualSkills" />
+
+                    <Spinner
+                        android:id="@+id/spinnerSkills"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:scrollbarSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/editTextManualSkills"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/editTextManualSkills" />
+
+                    <Button
+                        android:id="@+id/buttonAddManualSkills"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/background_extracted_text"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Add"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toStartOf="@+id/editTextManualSkills"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextManualSkills" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/background_extracted_text">
+
+                    <TextView
+                        android:id="@+id/textViewManualEducation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/darkSlateGrey"
+                        android:padding="5dp"
+                        android:text="Education"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/editTextManualEducation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:ems="10"
+                        android:hint="@string/example_education"
+                        android:inputType="textPersonName"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/textViewManualEducation"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewManualEducation" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewEducation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@color/white"
+                        android:scrollbars="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/editTextManualEducation"
+                        app:layout_constraintTop_toBottomOf="@+id/buttonAddManualEducation" />
+
+                    <Button
+                        android:id="@+id/buttonAddManualEducation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/background_extracted_text"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="ADD"
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="@+id/editTextManualEducation"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextManualEducation" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@color/white">
+
                     <TextView
                         android:id="@+id/textViewManualAskResume"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/ask_resume"
                         android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="@+id/recyclerViewEducation"
-                        app:layout_constraintTop_toBottomOf="@+id/recyclerViewEducation" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
                         android:id="@+id/buttonManualUploadResume"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="@color/colorPrimary"
+                        android:background="@drawable/background_extracted_text"
+                        android:backgroundTint="@color/colorPrimary"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:text="@string/upload_now"
@@ -432,6 +441,26 @@
                         app:layout_constraintStart_toEndOf="@+id/buttonManualUploadResume"
                         app:layout_constraintTop_toTopOf="@+id/buttonManualUploadResume" />
 
+                    <CheckBox
+                        android:id="@+id/checkBoxManualTerms"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="24dp"
+                        android:text="@string/terms"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/buttonManualUploadResume" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
                     <ProgressBar
                         android:id="@+id/progressBarManual"
                         style="?android:attr/progressBarStyle"
@@ -440,12 +469,29 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="bottom"
-                        android:layout_marginTop="8dp"
                         android:visibility="invisible"
-                        app:layout_constraintTop_toBottomOf="@+id/checkBoxManualTerms" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
+                    <Button
+                        android:id="@+id/buttonManualDone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/background_extracted_text"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:text="Done"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/progressBarManual" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             </LinearLayout>
 
         </ScrollView>

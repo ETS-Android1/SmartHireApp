@@ -53,6 +53,9 @@
     <string name="no_education_found">No education found</string>
 
     <!--Home Fragment/ Employee List-->
+    <string name="recruit_option">Recruit Options</string>
+    <string name="ai_recruit">A.I.</string>
+    <string name="manual">Manual Form</string>
 
 
     <!--Upload Fragment-->

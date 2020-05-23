@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ExtractedText">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,7 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/grey">
 
             <include
                 android:id="@+id/includeStepBar"
@@ -31,6 +31,58 @@
                 android:layout_height="match_parent"
                 android:scrollbars="vertical"
                 tools:context=".ExtractedText">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageViewExtractedImageEdit"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:adjustViewBounds="false"
+                    android:background="#00FFFFFF"
+                    app:civ_border_color="#FF000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_person" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabEditPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:fabSize="mini"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageViewExtractedImageEdit"
+                    app:layout_constraintEnd_toEndOf="@+id/imageViewExtractedImageEdit"
+                    app:srcCompat="@drawable/fab_edit_24" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="@color/white"
+                android:background="@drawable/background_extracted_text">
+
+                <TextView
+                    android:id="@+id/textViewExtractedTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Extracted Info"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/textViewLabelAge2"
@@ -55,85 +107,48 @@
                     app:srcCompat="@drawable/extracted_age" />
 
                 <TextView
-                    android:id="@+id/textViewLabelEducation2"
+                    android:id="@+id/textViewLabelName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Education"
-                    android:textSize="18sp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="Name:"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/editTextSkills"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextSkills" />
+                    app:layout_constraintStart_toEndOf="@+id/imageViewName"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewName" />
 
                 <TextView
-                    android:id="@+id/textViewLabelSkills2"
+                    android:id="@+id/textViewLabelPhoneNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="32dp"
-                    android:text="Skills"
-                    android:textSize="18sp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="Phone Number:"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextExtractedAddress" />
-
-    <TextView
-        android:id="@+id/textViewLabelName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Name:"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageViewName"
-        app:layout_constraintTop_toTopOf="@+id/imageViewName" />
-
-    <TextView
-        android:id="@+id/textViewLabelPhoneNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Phone Number:"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageViewPhone"
-        app:layout_constraintTop_toTopOf="@+id/imageViewPhone" />
-
-    <TextView
-        android:id="@+id/textViewLabelEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Email:"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageViewEmail"
-        app:layout_constraintTop_toTopOf="@+id/imageViewEmail" />
+                    app:layout_constraintStart_toEndOf="@+id/imageViewPhone"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewPhone" />
 
                 <TextView
-        android:id="@+id/textViewLabelAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Address"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageViewAddress"
-        app:layout_constraintTop_toTopOf="@+id/imageViewAddress" />
-
-                <TextView
-                    android:id="@+id/textViewExtractedTitle"
+                    android:id="@+id/textViewLabelEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginTop="24dp"
-                    android:text="Extracted Info"
-                    android:textSize="18sp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="Email:"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageViewExtractedImageEdit" />
+                    app:layout_constraintStart_toEndOf="@+id/imageViewEmail"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewEmail" />
+
+                <TextView
+                    android:id="@+id/textViewLabelAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="Address"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewAddress"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewAddress" />
 
                 <ImageView
                     android:id="@+id/imageViewName"
@@ -146,25 +161,25 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewExtractedTitle"
                     app:srcCompat="@drawable/extracted_name" />
 
-    <ImageView
-        android:id="@+id/imageViewPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageViewName"
-        app:layout_constraintStart_toStartOf="@+id/imageViewName"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewName"
-        app:srcCompat="@drawable/extracted_phone" />
+                <ImageView
+                    android:id="@+id/imageViewPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintEnd_toEndOf="@+id/imageViewName"
+                    app:layout_constraintStart_toStartOf="@+id/imageViewName"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewName"
+                    app:srcCompat="@drawable/extracted_phone" />
 
-    <ImageView
-        android:id="@+id/imageViewEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="@+id/imageViewPhone"
-        app:layout_constraintStart_toStartOf="@+id/imageViewPhone"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewPhone"
-        app:srcCompat="@drawable/extracted_email" />
+                <ImageView
+                    android:id="@+id/imageViewEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintEnd_toEndOf="@+id/imageViewPhone"
+                    app:layout_constraintStart_toStartOf="@+id/imageViewPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewPhone"
+                    app:srcCompat="@drawable/extracted_email" />
 
                 <ImageView
                     android:id="@+id/imageViewAddress"
@@ -177,15 +192,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/imageViewAge"
                     app:srcCompat="@drawable/extracted_location" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabEditPhoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    app:fabSize="mini"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageViewExtractedImageEdit"
-                    app:layout_constraintEnd_toEndOf="@+id/imageViewExtractedImageEdit"
-                    app:srcCompat="@drawable/fab_edit_24" />
 
                 <EditText
                     android:id="@+id/editTextExtractedName"
@@ -217,63 +223,22 @@
                     app:layout_constraintStart_toEndOf="@+id/imageViewEmail"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelEmail" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imageViewExtractedImageEdit"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="24dp"
-                    android:adjustViewBounds="false"
-                    android:background="#00FFFFFF"
-                    app:civ_border_color="#FF000000"
-                    app:civ_border_width="2dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_person" />
-
                 <EditText
                     android:id="@+id/editTextExtractedAddress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="24dp"
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="textMultiLine"
                     android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/imageViewAddress"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAddress" />
-
-                <EditText
-                    android:id="@+id/editTextSkills"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textViewLabelSkills2"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewLabelSkills2" />
-
-                <EditText
-                    android:id="@+id/editTextEducation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textViewLabelEducation2"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewLabelEducation2" />
 
                 <EditText
                     android:id="@+id/editTextExtractedPhone"
@@ -304,8 +269,86 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageViewAge"
                     app:layout_constraintTop_toBottomOf="@+id/textViewLabelAge2" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/background_extracted_text"
+                    app:layout_constraintTop_toBottomOf="parent">
+
+                    <TextView
+                        android:id="@+id/textViewLabelSkills2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Skills"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <EditText
+                        android:id="@+id/editTextSkills"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="24dp"
+                        android:ems="10"
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/textViewLabelSkills2"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewLabelSkills2" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/background_extracted_text"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="20dp">
+
+                    <TextView
+                        android:id="@+id/textViewLabelEducation2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Education"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <EditText
+                        android:id="@+id/editTextEducation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="24dp"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/textViewLabelEducation2"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewLabelEducation2" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
     </ScrollView>
 
