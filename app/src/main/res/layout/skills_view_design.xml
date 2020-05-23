@@ -37,11 +37,11 @@
 
     <TextView
         android:id="@+id/textViewHolderSkillsLevel"
-        android:layout_width="0dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
-        android:text="@string/beginer"
+        android:text="intermediate"
+        android:textAlignment="textStart"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/textViewHolderSkillsSkills"
         app:layout_constraintEnd_toStartOf="@+id/buttonHolderSkillsDelete"
