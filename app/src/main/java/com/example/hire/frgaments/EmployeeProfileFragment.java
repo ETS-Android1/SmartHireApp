@@ -49,7 +49,8 @@ public class EmployeeProfileFragment extends Fragment {
     private ActivityEmployeeProfileBinding binding;
     private ConnectivityManager connectivityManager;
 
-    private String employeePhone, employeeName, employeePosition, employeeEmail, employeeAddress, employeeSkills, employeeEducation, employeeProfilePhoto, employeeResume;
+    private String employeePhone, employeeName, employeePosition, employeeEmail, employeeAddress, employeeSkills, employeeEducation, employeeProfilePhoto,
+            employeeResume,verify;
     private int employeeAge;
 
     @Override
@@ -88,6 +89,16 @@ public class EmployeeProfileFragment extends Fragment {
         employeeEducation = bundle.getString("EMPLOYEE_EDUCATION");
         employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
         employeeResume = bundle.getString("EMPLOYEE_RESUME");
+        verify = bundle.getString("EMPLOYEE_VERIFY");
+
+        if(verify.equals("verified")){
+            
+            binding.buttonProfileVerify.setText(getString(R.string.verified));
+            binding.buttonProfileVerify.setClickable(false);
+            binding.imageViewVerified.setVisibility(ImageView.VISIBLE);
+
+        }
+
 
         if(employeeProfilePhoto.equals("noProfile")){
             binding.imageViewEmployeeProfile.setImageResource(R.drawable.ic_person);
@@ -143,7 +154,21 @@ public class EmployeeProfileFragment extends Fragment {
             }
         });
 
+        binding.buttonProfileVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyEmployee();
+            }
+        });
 
+
+    }
+
+    private void verifyEmployee(){
+
+        binding.buttonProfileVerify.setText(getString(R.string.verified));
+        binding.buttonProfileVerify.setClickable(false);
+        binding.imageViewVerified.setVisibility(ImageView.VISIBLE);
     }
 
     private void inflateDialogResume() {

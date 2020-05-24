@@ -42,6 +42,33 @@
     <string name="upload_error">Uploaded Fail</string>
     <string name="no_skills">No skills</string>
     <string name="no_education">No educations</string>
+    <string name="position">Position:</string>
+    <string name="example_position">Eg: HR</string>
+    <string name="empty_position">Position cannot be empty</string>
+
+    <string-array name="level">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+
+    <string-array name="phone">
+        <item>+60</item>
+        <item>+61</item>
+        <item>+62</item>
+        <item>+63</item>
+        <item>+64</item>
+        <item>+65</item>
+    </string-array>
+
+    <string-array name="position">
+        <item>Employee</item>
+        <item>Intern</item>
+        <item>Manager</item>
+        <item>Executive</item>
+        <item>Others</item>
+    </string-array>
+
 
     <!--Extracted Edit Fragemnt-->
     <string name="no_name_found">No name found</string>
@@ -62,27 +89,16 @@
     <string name="info">The process may take up to 20 second or more if your uploaded resume has too much of information to be processed.
     Please be patient while waiting for the result.</string>
 
+    <!-- Profile Fragment -->
+    <string name="verified">verified account</string>
+    <string name="unverified">click to verify</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string-array name="recruit_options">
         <item>Manually Form</item>
         <item>A.I. Resume Extraction</item>
-    </string-array>
-
-    <string-array name="level">
-        <item>Beginner</item>
-        <item>Intermediate</item>
-        <item>Advanced</item>
-    </string-array>
-
-    <string-array name="phone">
-        <item>+60</item>
-        <item>+61</item>
-        <item>+62</item>
-        <item>+63</item>
-        <item>+64</item>
-        <item>+65</item>
     </string-array>
 
     <string-array name="take_photo_options">

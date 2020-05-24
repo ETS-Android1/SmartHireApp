@@ -18,6 +18,7 @@ public class Employee {
     private String recruitedDate;
     private String mSkills;
     private String mEducation;
+    private String verify;
     private int mAge;
 
     public Employee() {
@@ -59,6 +60,30 @@ public class Employee {
         this.mEducation = mEducation;
         this.mPosition = "Employee";
         this.mAge = mAge;
+        this.verify = "unverified";
+    }
+
+    public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate, String mSkills, String mEducation, int mAge, String mPosition) {
+        this.mName = mName;
+        this.mImageUrl = mImageUrl;
+        this.resumeImageUrl = resumeImageUrl;
+        this.mAddress = mAddress;
+        this.mPhoneNumber = mPhoneNumber;
+        this.mEmail = mEmail;
+        this.recruitedDate = recruitedDate;
+        this.mSkills = mSkills;
+        this.mEducation = mEducation;
+        this.mPosition = mPosition;
+        this.mAge = mAge;
+        this.verify = "unverified";
+    }
+
+    public String getVerify(){
+        return verify;
+    }
+
+    public void setVerify(String verify){
+        this.verify = verify;
     }
 
     public String getRecruitedDate() {

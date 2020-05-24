@@ -302,6 +302,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         String employeeAddress = selectedItem.getmAddress();
         String profilePhoto = selectedItem.getmImageUrl();
         String employeeResume = selectedItem.getResumeImageUrl();
+        String verify = selectedItem.getVerify();
 
         /*Intent intent = new Intent(getActivity(), EmployeeProfile.class);
         intent.putExtra("EMPLOYEE_NAME",name);
@@ -345,6 +346,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         bundle.putString("EMPLOYEE_PHOTO",profilePhoto);
         bundle.putString("EMPLOYEE_RESUME",employeeResume);
         bundle.putString("EMPLOYEE_ADDRESS",employeeAddress);
+        bundle.putString("EMPLOYEE_VERIFY",verify);
 
         navController.navigate(R.id.action_homeFragment_to_employeeProfile,bundle);
     }

@@ -28,7 +28,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -71,11 +73,11 @@ public class ManualForm extends Fragment {
     private SkillsAdapter skillsAdapter;
     private EducationAdapter educationAdapter;
 
-    private int radioId = 0, undoRadioId = 0, profileOrResume = 0;
+    private int radioId = 0, undoRadioId = 0, profileOrResume = 0,spinnerSelectedPostion=0,spinnerSelectedSkills=0,spinnerSelectedPhone=0;
     private boolean isCheckBoxChecked;
 
     private String undoName, undoPhone, undoEmail, undoAge, undoAddress;
-    private String employeeSkills = "", employeeEducation = "", name, phone, email, age, gender, address;
+    private String employeeSkills = "", employeeEducation = "", name, phone, email, age, position, address;
     private ArrayList<Skills> undoSkills;
     private ArrayList<Education> undoEducations;
 
@@ -123,6 +125,9 @@ public class ManualForm extends Fragment {
         //set up phone spinner
         setUpPhoneSpinner();
 
+        //set up position spinner
+        setUpPositionSpinner();
+
         //set up level spinner
         setUpLevelSpinner();
 
@@ -157,6 +162,23 @@ public class ManualForm extends Fragment {
                 }
             } else {
                 Toast.makeText(getActivity(), getString(R.string.error_input), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        binding.spinnerPosition.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if(position == 4){
+                    binding.editTextManualPosition.setVisibility(EditText.VISIBLE);
+                }else{
+                    binding.editTextManualPosition.setVisibility(EditText.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -243,6 +265,12 @@ public class ManualForm extends Fragment {
         //binding.spinnerPhone.setOnItemSelectedListener(this);
     }
 
+    public void setUpPositionSpinner(){
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.position, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerPosition.setAdapter(adapter);
+    }
+
     public void setUpLevelSpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.level, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -267,7 +295,10 @@ public class ManualForm extends Fragment {
         isCheckBoxChecked = binding.checkBoxManualTerms.isChecked();
         undoProfileUri = profileUri;
         undoResumeUri = resumeUri;
-
+        spinnerSelectedPhone = binding.spinnerPhone.getSelectedItemPosition();
+        spinnerSelectedPostion = binding.spinnerPosition.getSelectedItemPosition();
+        spinnerSelectedSkills = binding.spinnerSkills.getSelectedItemPosition();
+        position = binding.editTextManualPosition.getText().toString();
     }
 
     public void undo(View view) {
@@ -295,6 +326,14 @@ public class ManualForm extends Fragment {
             binding.textViewManualUploadResumeMsg.setVisibility(TextView.VISIBLE);
         }
 
+        binding.spinnerSkills.setSelection(spinnerSelectedSkills);
+        binding.spinnerPhone.setSelection(spinnerSelectedPhone);
+        binding.spinnerPosition.setSelection(spinnerSelectedPostion);
+        if(spinnerSelectedPostion == 4){
+            binding.editTextManualPosition.setVisibility(EditText.VISIBLE);
+            binding.editTextManualPosition.setText(position);
+        }
+
     }
 
     public void clearAll() {
@@ -303,6 +342,8 @@ public class ManualForm extends Fragment {
         binding.editTextManualEmail.getText().clear();
         binding.editTextManualAge.getText().clear();
         binding.radioGroupGender.clearCheck();
+        binding.editTextManualPosition.getText().clear();
+        binding.editTextManualPosition.setVisibility(EditText.INVISIBLE);
         //binding.radioFemale.setChecked(false);
         //binding.radioMale.setChecked(false);
         binding.editTextManualAddress.getText().clear();
@@ -317,6 +358,9 @@ public class ManualForm extends Fragment {
         resumeUri = null;
         binding.imageViewManualProfile.setImageDrawable(getResources().getDrawable(R.drawable.resume_upload));
         binding.textViewManualUploadResumeMsg.setVisibility(TextView.INVISIBLE);
+        binding.spinnerPosition.setSelection(0);
+        binding.spinnerPhone.setSelection(0);
+        binding.spinnerSkills.setSelection(0);
     }
 
     public boolean isEveryInputFilled() {
@@ -363,6 +407,13 @@ public class ManualForm extends Fragment {
                 binding.editTextManualPhoneNum.setError(getString(R.string.numeric_phone_error));
                 validInput = false;
 
+            }
+        }
+
+        if(binding.spinnerPosition.getSelectedItem().toString().equals("Others")){
+            if(binding.editTextManualPosition.getText().toString().isEmpty()){
+                binding.editTextManualPosition.setError(getString(R.string.empty_position));
+                validInput = false;
             }
         }
 
@@ -429,11 +480,18 @@ public class ManualForm extends Fragment {
             employeeEducation = getString(R.string.no_education);
         }
 
+        if(binding.spinnerPosition.getSelectedItemPosition()==4){
+            position = binding.editTextManualPosition.getText().toString();
+        }else{
+            position = binding.spinnerPosition.getSelectedItem().toString();
+        }
+
         name = binding.editTextManualName.getText().toString();
         phone = binding.spinnerPhone.getSelectedItem().toString() + binding.editTextManualPhoneNum.getText().toString();
         email = binding.editTextManualEmail.getText().toString();
         age = binding.editTextManualAge.getText().toString();
         address = binding.editTextManualAddress.getText().toString();
+
 
         if (profileUri != null) {
             final StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
@@ -496,7 +554,7 @@ public class ManualForm extends Fragment {
                                 }, 200);
 
                                 resumeDownloadUri = task.getResult();
-                                saveToDatabase(name, address, phone, email, employeeSkills, employeeEducation, age);
+                                saveToDatabase(name, address, phone, email, employeeSkills, employeeEducation, age, position);
                             }
                             else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -510,15 +568,15 @@ public class ManualForm extends Fragment {
                     });
         } else {
             resumeDownloadUri = Uri.parse("noResume");
-            saveToDatabase(name, address, phone, email, employeeEducation, employeeSkills, age);
+            saveToDatabase(name, address, phone, email, employeeEducation, employeeSkills, age,position);
             //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void saveToDatabase(String name, String address, String phone, String email, String finalEmployeeSkills, String finalEmployeeEducation, String age) {
+    private void saveToDatabase(String name, String address, String phone, String email, String finalEmployeeSkills, String finalEmployeeEducation, String age, String position) {
         String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
         Employee upload = new Employee(name, photoDownloadUri.toString(),resumeDownloadUri.toString(),address,phone,email,timeStamp, finalEmployeeSkills,
-                finalEmployeeEducation,Integer.parseInt(age));
+                finalEmployeeEducation,Integer.parseInt(age),position);
         String uploadId = mDatabaseRef.push().getKey();
         mDatabaseRef.child(uploadId).setValue(upload);
         //mDatabaseRef.push().setValue(upload);

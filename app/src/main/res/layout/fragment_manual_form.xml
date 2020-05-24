@@ -59,6 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=" Name : "
+                        android:textColor="@color/colorPrimaryDark"
                         app:layout_constraintBottom_toBottomOf="@+id/editTextManualName"
                         app:layout_constraintStart_toStartOf="@+id/textViewManualPersonalInfo"
                         app:layout_constraintTop_toTopOf="@+id/editTextManualName" />
@@ -85,6 +86,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="Phone : "
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textColorHint="#FFFFFF"
                         app:layout_constraintEnd_toEndOf="@+id/textViewManualName"
                         app:layout_constraintStart_toStartOf="@+id/textViewManualName"
                         app:layout_constraintTop_toBottomOf="@+id/textViewManualName" />
@@ -93,10 +96,7 @@
                         android:id="@+id/editTextManualPhoneNum"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
                         android:ems="10"
                         android:hint="@string/example_phone"
                         android:inputType="phone"
@@ -122,6 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="Email : "
+                        android:textColor="@color/colorPrimaryDark"
                         app:layout_constraintEnd_toEndOf="@+id/textView5"
                         app:layout_constraintStart_toStartOf="@+id/textView5"
                         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -149,6 +150,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="Age : "
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textColorHint="#FFFFFF"
                         app:layout_constraintEnd_toEndOf="@+id/textViewManualEmail"
                         app:layout_constraintStart_toStartOf="@+id/textViewManualEmail"
                         app:layout_constraintTop_toBottomOf="@+id/textViewManualEmail" />
@@ -173,7 +176,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Address :"
-                        app:layout_constraintStart_toStartOf="@+id/textViewManualAge"
+                        android:textColor="@color/colorPrimaryDark"
+                        app:layout_constraintStart_toStartOf="@+id/textViewManualGender"
                         app:layout_constraintTop_toTopOf="@+id/editTextManualAddress" />
 
                     <EditText
@@ -181,18 +185,18 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
                         android:ems="10"
                         android:gravity="start|top"
                         android:hint="@string/example_address"
                         android:inputType="textMultiLine"
                         android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textViewManualAddress"
-                        app:layout_constraintTop_toBottomOf="@+id/textViewManualGender" />
+                        app:layout_constraintTop_toBottomOf="@+id/editTextManualPosition" />
 
                     <TextView
                         android:id="@+id/textViewManualGender"
@@ -200,6 +204,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="Gender :"
+                        android:textColor="@color/colorPrimaryDark"
                         app:layout_constraintStart_toStartOf="@+id/textViewManualAge"
                         app:layout_constraintTop_toBottomOf="@+id/textViewManualAge" />
 
@@ -229,6 +234,15 @@
                     </RadioGroup>
 
 
+                    <TextView
+                        android:id="@+id/textViewManualPosition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/position"
+                        android:textColor="@color/colorPrimaryDark"
+                        app:layout_constraintStart_toStartOf="@+id/textViewManualGender"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewManualGender" />
 
                     <ImageView
                         android:id="@+id/imageViewManualProfile"
@@ -250,6 +264,32 @@
                         app:layout_constraintBottom_toBottomOf="@+id/imageViewManualProfile"
                         app:layout_constraintEnd_toEndOf="@+id/imageViewManualProfile"
                         app:srcCompat="@drawable/fab_edit" />
+
+                    <EditText
+                        android:id="@+id/editTextManualPosition"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:hint="@string/example_position"
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp"
+                        android:visibility="invisible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/spinnerPosition"
+                        app:layout_constraintTop_toBottomOf="@+id/textViewManualGender" />
+
+                    <Spinner
+                        android:id="@+id/spinnerPosition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/textViewManualPosition"
+                        app:layout_constraintStart_toEndOf="@+id/textViewManualPosition"
+                        app:layout_constraintTop_toTopOf="@+id/textViewManualPosition" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -416,6 +456,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/ask_resume"
+                        android:textColor="@color/colorPrimaryDark"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

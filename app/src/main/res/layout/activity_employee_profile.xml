@@ -66,6 +66,7 @@
                     android:background="@drawable/circle_text_view"
                     android:backgroundTint="@color/white"
                     android:padding="5dp"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@+id/imageViewEmployeeProfile"
                     app:layout_constraintEnd_toEndOf="@+id/imageViewEmployeeProfile"
                     app:srcCompat="@drawable/verified_user" />
@@ -74,6 +75,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
+                android:id="@+id/profile3button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -112,13 +114,28 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/buttonProfileVerify"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_extracted_text"
+                android:backgroundTint="@color/colorPrimary"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/unverified"
+                android:textColor="@color/white" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:elevation="10dp"
+                android:background="@drawable/background_extracted_text"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/background_extracted_text">
+                >
 
                 <TextView
                     android:id="@+id/textViewLabelPhoneNumber"
@@ -301,6 +318,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:elevation="10dp"
                 android:background="@drawable/background_extracted_text">
 
                 <TextView
@@ -341,10 +359,11 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
+                android:elevation="10dp"
                 android:background="@drawable/background_extracted_text">
 
                 <TextView
