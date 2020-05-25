@@ -86,6 +86,11 @@
     <string name="confirmation_delete">Are you sure to delete all the employees?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="search">Search</string>
+    <string name="delete_all">Delete All</string>
+    <string name="deleting">Deleting...</string>
+    <string name="deleted">deleted</string>
+    <string name="all_deleted_sucess">Success Deleted All</string>
 
 
     <!--Upload Fragment-->
@@ -98,6 +103,8 @@
 
     <!-- Saved Employee Fragment -->
     <string name="no_saved_employee">No Saved Employee</string>
+    <string name="unsaved_all">Unsaved All</string>
+    <string name="empty">Empty</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

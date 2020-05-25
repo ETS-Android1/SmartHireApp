@@ -20,6 +20,7 @@ public class Employee {
     private String mEducation;
     private String verify;
     private int mAge;
+    private String bookMark;
 
     public Employee() {
     }
@@ -61,6 +62,7 @@ public class Employee {
         this.mPosition = "Employee";
         this.mAge = mAge;
         this.verify = "unverified";
+        this.bookMark = "unbookmarked";
     }
 
     public Employee(String mName, String mImageUrl, String resumeImageUrl, String mAddress, String mPhoneNumber, String mEmail, String recruitedDate, String mSkills, String mEducation, int mAge, String mPosition) {
@@ -76,6 +78,15 @@ public class Employee {
         this.mPosition = mPosition;
         this.mAge = mAge;
         this.verify = "unverified";
+        this.bookMark = "unbookmarked";
+    }
+
+    public String getBookMark(){
+        return bookMark;
+    }
+
+    public void setBookMark(String bookMark){
+        this.bookMark = bookMark;
     }
 
     public String getVerify(){

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.transition.Fade;
 
+import android.os.Handler;
 import android.transition.Transition;
 import android.util.Log;
 import android.util.Pair;
@@ -32,6 +33,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -215,6 +217,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 //startActivity(intent);
             }
         });
+
+
     }
 
     public void setUpEmployeeRecyclerView(){
@@ -253,7 +257,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                         myAdapter.notifyDataSetChanged();
                         break;
                     case ItemTouchHelper.LEFT:
-                        onDeleteClick(viewHolder.getAdapterPosition());
+                        showDeleteConfirmationDialogForSingleDelete(viewHolder.getAdapterPosition());
                         //Toast.makeText(getActivity(),getString(R.string.delete),Toast.LENGTH_SHORT).show();
                         myAdapter.notifyDataSetChanged();
                         break;
@@ -350,8 +354,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         bundle.putString("EMPLOYEE_VERIFY",verify);
         bundle.putString("EMPLOYEE_KEY",selectedKey);
 
-
         navController.navigate(R.id.action_homeFragment_to_employeeProfile,bundle);
+
     }
 
     @Override
@@ -363,6 +367,17 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     @Override
     public void onDeleteClick(int position) {
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
+            }
+        }, 200);
+
+        //binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
+        Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_SHORT).show();
 
         Employee selectedItem = employees.get(position);
         final String selectedKey = selectedItem.getKey();
@@ -380,7 +395,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                         @Override
                         public void onSuccess(Void aVoid) {
                             mDatabaseRef.child(selectedKey).removeValue();
-                            Toast.makeText(getActivity(), "Employee deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(),selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT).show();
+                            binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
                         }
                     });
 
@@ -388,9 +404,49 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             });
         }
 
-
-
         //showUndoSnackbar();
+
+    }
+
+    @Override
+    public void onBookmarkedClick(View view,int position) {
+
+        ImageView bookMarked = view.findViewById(R.id.imageViewBookmarkCardView);
+        bookMarked.setColorFilter(getContext().getResources().getColor(R.color.yellow));
+
+        Employee selectedEmployee = employees.get(position);
+
+        if(selectedEmployee.getBookMark().equals("unbookmarked")){
+
+            mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    dataSnapshot.getRef().child(selectedEmployee.getKey()).child("bookMark").setValue("bookmarked");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d("User", databaseError.getMessage());
+                }
+            });
+
+        }else if (selectedEmployee.getBookMark().equals("bookmarked")){
+
+            mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    dataSnapshot.getRef().child(selectedEmployee.getKey()).child("bookMark").setValue("unbookmarked");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d("User", databaseError.getMessage());
+                }
+            });
+
+        }
+
+
 
     }
 
@@ -461,25 +517,15 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     }
 
-    public void showSnackBar() {
-        Snackbar snackbar = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.snackbar_delete, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.undo, v -> {
-                    Snackbar snackbarUndo = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.undo_success, Snackbar.LENGTH_SHORT);
-                    snackbarUndo.show();
-                    undoDeleteAllEmployee(getView());
-                });
-        snackbar.show();
-    }
-
-
     private void showDeleteConfirmationDialog(){
         AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
         confirmationDelete.setMessage(getString(R.string.confirmation_delete))
         .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                saveDeleteAllEmployees();
-                showSnackBar();
+                //saveDeleteAllEmployees();
+                //showSnackBar();
+                deleteAllEmployees();
 
             }
         })
@@ -496,7 +542,74 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     }
 
-    private void saveDeleteAllEmployees(){
+    private void showDeleteConfirmationDialogForSingleDelete(int position){
+        AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
+        confirmationDelete.setMessage(getString(R.string.confirmation_delete))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //saveDeleteAllEmployees();
+                        //showSnackBar();
+                        onDeleteClick(position);
+
+                    }
+                })
+
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = confirmationDelete.create();
+        alertDialog.show();
+
+    }
+
+    private void deleteAllEmployees(){
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
+            }
+        }, 200);
+
+        Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_LONG).show();
+
+        for(int i=0;i<employees.size();i++){
+
+            Employee selectedItem = employees.get(i);
+            final String selectedKey = selectedItem.getKey();
+            if(selectedItem.getmImageUrl().equals("noProfile")||selectedItem.getResumeImageUrl().equals("noResume")){
+                mDatabaseRef.child(selectedKey).removeValue();
+            }else{
+                StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
+                final StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
+
+                imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        imageResumeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mDatabaseRef.child(selectedKey).removeValue();
+                                Toast.makeText(getActivity(), selectedItem.getmName() + " " + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                });
+            }
+        }
+
+        binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
+
+    }
+
+    /*private void saveDeleteAllEmployees(){
         undoEmployees = new ArrayList<>(employees);
 
         for(int i=0;i<employees.size();i++){
@@ -533,4 +646,15 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     private void undoDeleteAllEmployee(View view){
 
     }
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.snackbar_delete, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.undo, v -> {
+                    Snackbar snackbarUndo = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.undo_success, Snackbar.LENGTH_SHORT);
+                    snackbarUndo.show();
+                    undoDeleteAllEmployee(getView());
+                });
+        snackbar.show();
+    }*/
+
 }

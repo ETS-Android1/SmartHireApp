@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_search_saved_employee"
         android:icon="@drawable/ic_search"
-        android:title= "@string/search"
+        android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
-        android:id="@+id/deleteAll"
-        android:title="@string/delete_all"/>
+        android:id="@+id/clear_mark_saved_employee"
+        android:title="@string/unsaved_all"/>
 
 </menu>

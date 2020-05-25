@@ -29,10 +29,17 @@
     </fragment>
 
     <fragment
-        android:id="@+id/historyFragment"
+        android:id="@+id/savedEmployeeFragment"
         android:name="com.example.hire.recyclerViewSavedEmployee.SavedEmployeeFragment"
-        android:label="activity_fab_for_extacted"
+        android:label="fragment_saved_employee"
         tools:layout="@layout/fragment_saved_employee">
+        <action
+            android:id="@+id/action_savedEmployeeFragment_to_employeeProfile"
+            app:destination="@id/employeeProfile"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"/>
     </fragment>
 
     <fragment

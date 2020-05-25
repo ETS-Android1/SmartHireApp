@@ -13,8 +13,10 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,6 +83,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
             myHolder.verifiedLogo.setVisibility(ImageView.INVISIBLE);
         }
 
+        if(employeeCurrent.getBookMark().equals("bookmarked")){
+            myHolder.bookmarkedLogo.setColorFilter(context.getResources().getColor(R.color.yellow));
+        }else{
+            myHolder.bookmarkedLogo.setColorFilter(context.getResources().getColor(R.color.grey));
+        }
+
         ViewCompat.setTransitionName(myHolder.mImageView, i + "_image");
 
 
@@ -109,9 +117,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
             this.verifiedLogo = itemView.findViewById(R.id.imageViewVerifiedCardView);
             this.bookmarkedLogo = itemView.findViewById(R.id.imageViewBookmarkCardView);
 
-            itemView.setOnClickListener(this);
-            itemView.setOnCreateContextMenuListener(this);
-
+            itemView.setOnClickListener(this); // link to override onClick method below
+            itemView.setOnCreateContextMenuListener(this); // link to override onCreateContextMenu method below
+            this.bookmarkedLogo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        //ViewCompat.setTransitionName(v.findViewById(R.id.imageViewPerson), position + "_image");
+                        if (position != RecyclerView.NO_POSITION) {
+                            mListener.onBookmarkedClick(v,position);
+                        }
+                    }
+                }
+            });
 
         }
 
@@ -171,6 +190,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         void onCallEmployeeClick(int position);
 
         void onDeleteClick(int position);
+
+        void onBookmarkedClick(View view, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
