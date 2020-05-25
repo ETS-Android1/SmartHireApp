@@ -8,13 +8,15 @@
         android:title="@string/title_home" />
 
     <item
+        android:id="@+id/historyFragment"
+        android:icon="@drawable/save_employee_bookmark"
+        android:title="Saved" />
+
+
+    <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/bottom_profile"
         android:title="Profile" />
 
-    <item
-        android:id="@+id/historyFragment"
-        android:icon="@drawable/bottom_history"
-        android:title="History" />
 
 </menu>

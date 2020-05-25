@@ -9,4 +9,8 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
+    <item
+        android:id="@+id/deleteAll"
+        android:title="Delete All"/>
+
 </menu>

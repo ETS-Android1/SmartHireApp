@@ -21,6 +21,16 @@
             android:transitionName="imageTransition"
             app:srcCompat="@drawable/extracted_name" />
 
+        <ImageView
+            android:id="@+id/imageViewVerifiedCardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/imageViewPerson"
+            android:layout_alignBottom="@+id/imageViewPerson"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/verified_user" />
+
+
         <TextView
             android:id="@+id/textViewName"
             android:layout_width="match_parent"
@@ -28,7 +38,11 @@
             android:layout_alignTop="@+id/imageViewPerson"
             android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginTop="5dp"
+            android:layout_toStartOf="@+id/imageViewBookmarkCardView"
+            android:layout_toLeftOf="@id/imageViewBookmarkCardView"
             android:layout_toEndOf="@+id/imageViewPerson"
             android:layout_toRightOf="@id/imageViewPerson"
             android:text="Name"
@@ -61,6 +75,14 @@
             android:text="Date Recruited"
             android:textSize="12sp" />
 
+        <ImageView
+            android:id="@+id/imageViewBookmarkCardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+
+            app:srcCompat="@drawable/save_employee_bookmark" />
 
     </RelativeLayout>
 

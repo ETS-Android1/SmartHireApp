@@ -30,9 +30,9 @@
 
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.hire.frgaments.HistoryFragment"
+        android:name="com.example.hire.recyclerViewSavedEmployee.SavedEmployeeFragment"
         android:label="activity_fab_for_extacted"
-        tools:layout="@layout/fragment_history">
+        tools:layout="@layout/fragment_saved_employee">
     </fragment>
 
     <fragment

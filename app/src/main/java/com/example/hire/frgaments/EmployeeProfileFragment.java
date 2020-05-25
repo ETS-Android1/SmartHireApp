@@ -15,16 +15,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.telecom.Call;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ceylonlabs.imageviewpopup.ImagePopup;
+import com.example.hire.Employee;
 import com.example.hire.R;
 import com.example.hire.databinding.ActivityEmployeeProfileBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -50,8 +58,11 @@ public class EmployeeProfileFragment extends Fragment {
     private ConnectivityManager connectivityManager;
 
     private String employeePhone, employeeName, employeePosition, employeeEmail, employeeAddress, employeeSkills, employeeEducation, employeeProfilePhoto,
-            employeeResume,verify;
+            employeeResume,verify, selectedKey;
     private int employeeAge;
+
+    private DatabaseReference mDatabaseRef;
+    private ValueEventListener mDBListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +79,8 @@ public class EmployeeProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
         //Bundle args = getArguments();
         //int kittenNumber = args.containsKey(ARG_KITTEN_NUMBER) ? args.getInt(ARG_KITTEN_NUMBER) : 1;
@@ -90,9 +103,11 @@ public class EmployeeProfileFragment extends Fragment {
         employeeProfilePhoto = bundle.getString("EMPLOYEE_PHOTO");
         employeeResume = bundle.getString("EMPLOYEE_RESUME");
         verify = bundle.getString("EMPLOYEE_VERIFY");
+        selectedKey = bundle.getString("EMPLOYEE_KEY");
+        Log.d("VERIFICATION", "onViewCreated: " + verify);
 
         if(verify.equals("verified")){
-            
+
             binding.buttonProfileVerify.setText(getString(R.string.verified));
             binding.buttonProfileVerify.setClickable(false);
             binding.imageViewVerified.setVisibility(ImageView.VISIBLE);
@@ -165,6 +180,18 @@ public class EmployeeProfileFragment extends Fragment {
     }
 
     private void verifyEmployee(){
+
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dataSnapshot.getRef().child(selectedKey).child("verify").setValue("verified");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("User", databaseError.getMessage());
+            }
+        });
 
         binding.buttonProfileVerify.setText(getString(R.string.verified));
         binding.buttonProfileVerify.setClickable(false);

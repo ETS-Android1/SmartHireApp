@@ -75,6 +75,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
                     .into(myHolder.mImageView);
         }
 
+        if(employeeCurrent.getVerify().equals("verified")){
+            myHolder.verifiedLogo.setVisibility(ImageView.VISIBLE);
+        }else{
+            myHolder.verifiedLogo.setVisibility(ImageView.INVISIBLE);
+        }
+
         ViewCompat.setTransitionName(myHolder.mImageView, i + "_image");
 
 
@@ -90,7 +96,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        ImageView mImageView;
+        ImageView mImageView, verifiedLogo, bookmarkedLogo;
         TextView mName, mPosition,textViewRecruitedDate;
 
         public MyHolder(@NonNull View itemView) {
@@ -100,6 +106,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
             this.mName = itemView.findViewById(R.id.textViewName);
             this.mPosition = itemView.findViewById(R.id.textViewPosition);
             this.textViewRecruitedDate = itemView.findViewById(R.id.textViewDateRecruited);
+            this.verifiedLogo = itemView.findViewById(R.id.imageViewVerifiedCardView);
+            this.bookmarkedLogo = itemView.findViewById(R.id.imageViewBookmarkCardView);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);

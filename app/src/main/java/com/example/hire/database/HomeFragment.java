@@ -3,6 +3,7 @@ package com.example.hire.database;
 import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -72,10 +73,10 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListener {
 
-    MyAdapter myAdapter;
+    private MyAdapter myAdapter;
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
-    private ArrayList<Employee> employees;
+    private ArrayList<Employee> employees, undoEmployees;
     private ValueEventListener mDBListener;
 
     private ActivityFabForEmployeeListBinding binding;
@@ -347,6 +348,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         bundle.putString("EMPLOYEE_RESUME",employeeResume);
         bundle.putString("EMPLOYEE_ADDRESS",employeeAddress);
         bundle.putString("EMPLOYEE_VERIFY",verify);
+        bundle.putString("EMPLOYEE_KEY",selectedKey);
+
 
         navController.navigate(R.id.action_homeFragment_to_employeeProfile,bundle);
     }
@@ -415,27 +418,119 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         }
     }
 
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.serach_menu, menu);
+    }
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        switch (item.getItemId()){
+            case R.id.action_search:
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                SearchView searchView = (SearchView) item.getActionView();
+
+                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        myAdapter.getFilter().filter(newText);
+                        return false;
+                    }
+                });
+                break;
+
+            case R.id.deleteAll:
+
+                showDeleteConfirmationDialog();
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    public void showSnackBar() {
+        Snackbar snackbar = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.snackbar_delete, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.undo, v -> {
+                    Snackbar snackbarUndo = Snackbar.make(binding.coordinateLayoutEmployeeList, R.string.undo_success, Snackbar.LENGTH_SHORT);
+                    snackbarUndo.show();
+                    undoDeleteAllEmployee(getView());
+                });
+        snackbar.show();
+    }
+
+
+    private void showDeleteConfirmationDialog(){
+        AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
+        confirmationDelete.setMessage(getString(R.string.confirmation_delete))
+        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void onClick(DialogInterface dialog, int which) {
+                saveDeleteAllEmployees();
+                showSnackBar();
+
             }
+        })
 
+        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
-            public boolean onQueryTextChange(String newText) {
-                myAdapter.getFilter().filter(newText);
-                return false;
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
             }
         });
+
+        AlertDialog alertDialog = confirmationDelete.create();
+        alertDialog.show();
+
+    }
+
+    private void saveDeleteAllEmployees(){
+        undoEmployees = new ArrayList<>(employees);
+
+        for(int i=0;i<employees.size();i++){
+            Employee selectedItem = employees.get(i);
+            final String selectedKey = selectedItem.getKey();
+            if(selectedItem.getmImageUrl().equals("noProfile")||selectedItem.getResumeImageUrl().equals("noResume")){
+                mDatabaseRef.child(selectedKey).removeValue();
+            }else{
+                StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
+                final StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
+
+                Log.d("ERROR", "onDeleteClick: "+imageRef);
+                imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        imageResumeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mDatabaseRef.child(selectedKey).removeValue();
+                                Toast.makeText(getActivity(), "Employee deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                });
+            }
+            myAdapter.notifyDataSetChanged();
+        }
+
+
+    }
+
+
+    private void undoDeleteAllEmployee(View view){
+
     }
 }

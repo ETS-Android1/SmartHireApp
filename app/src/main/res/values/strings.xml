@@ -83,6 +83,9 @@
     <string name="recruit_option">Recruit Options</string>
     <string name="ai_recruit">A.I.</string>
     <string name="manual">Manual Form</string>
+    <string name="confirmation_delete">Are you sure to delete all the employees?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
     <!--Upload Fragment-->
@@ -92,6 +95,9 @@
     <!-- Profile Fragment -->
     <string name="verified">verified account</string>
     <string name="unverified">click to verify</string>
+
+    <!-- Saved Employee Fragment -->
+    <string name="no_saved_employee">No Saved Employee</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

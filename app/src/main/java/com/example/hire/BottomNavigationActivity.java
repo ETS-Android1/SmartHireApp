@@ -3,6 +3,7 @@ package com.example.hire;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.hire.database.HomeFragment;
 import com.example.hire.databinding.ActivityBottomNavigationBinding;
@@ -43,6 +44,20 @@ public class BottomNavigationActivity extends AppCompatActivity {
         }*/
 
     }
+
+    /*@Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            Toast.makeText(BottomNavigationActivity.this,"Exit",Toast.LENGTH_SHORT).show();
+            super.onBackPressed();
+
+            //additional code
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+    }*/
 
     /*private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
