@@ -249,6 +249,32 @@ public class SavedEmployeeFragment extends Fragment implements MyAdapter.OnItemC
     }
 
     @Override
+    public void showDeleteConfirmationDialogForSingleDelete(int position) {
+        AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
+        confirmationDelete.setMessage(getString(R.string.confirmation_single_delete))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //saveDeleteAllEmployees();
+                        //showSnackBar();
+                        onDeleteClick(position);
+
+                    }
+                })
+
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = confirmationDelete.create();
+        alertDialog.show();
+
+    }
+
+    @Override
     public void onBookmarkedClick(View view, int position) {
 
         Employee selectedEmployee = employees.get(position);
@@ -286,7 +312,6 @@ public class SavedEmployeeFragment extends Fragment implements MyAdapter.OnItemC
 
     }
 
-    @Override
     public void onDeleteClick(int position) {
 
         binding.progressBarSavedEmployeeFragment.setVisibility(ProgressBar.VISIBLE);
@@ -382,28 +407,4 @@ public class SavedEmployeeFragment extends Fragment implements MyAdapter.OnItemC
 
     }
 
-    private void showDeleteConfirmationDialogForSingleDelete(int position){
-        AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
-        confirmationDelete.setMessage(getString(R.string.confirmation_delete))
-                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //saveDeleteAllEmployees();
-                        //showSnackBar();
-                        onDeleteClick(position);
-
-                    }
-                })
-
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = confirmationDelete.create();
-        alertDialog.show();
-
-    }
 }

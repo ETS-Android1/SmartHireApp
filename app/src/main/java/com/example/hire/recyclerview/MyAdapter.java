@@ -168,7 +168,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
                             mListener.onCallEmployeeClick(position);
                             return true;
                         case 2:
-                            mListener.onDeleteClick(position);
+                            mListener.showDeleteConfirmationDialogForSingleDelete(position);
                             return true;
                     }
                 }
@@ -177,19 +177,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         }
     }
 
-    public void deleteItem(int position) {
-        //employees.remove(position);
-        //notifyDataSetChanged();
-        mListener.onDeleteClick(position);
-    }
-
     public interface OnItemClickListener {
 
         void onItemClick(View v,int position);
 
         void onCallEmployeeClick(int position);
 
-        void onDeleteClick(int position);
+        void showDeleteConfirmationDialogForSingleDelete(int position);
 
         void onBookmarkedClick(View view, int position);
     }

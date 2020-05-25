@@ -1,7 +1,5 @@
 package com.example.hire.database;
 
-import android.app.ActivityOptions;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,22 +9,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.transition.Fade;
 
 import android.os.Handler;
-import android.transition.Transition;
 import android.util.Log;
-import android.util.Pair;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.appcompat.app.AlertDialog;
@@ -47,20 +39,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.TransitionInflater;
 
 import com.example.hire.CustomItemAnimation;
-import com.example.hire.DetailsTransition;
 import com.example.hire.Employee;
 import com.example.hire.StartExtractActivity;
-import com.example.hire.databinding.CardViewDesignBinding;
-import com.example.hire.frgaments.EmployeeProfileFragment;
 import com.example.hire.recyclerview.MyAdapter;
 import com.example.hire.R;
 import com.example.hire.databinding.ActivityFabForEmployeeListBinding;
-import com.example.hire.recyclerview.SwipeToDeleteCallback;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -366,6 +352,30 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     }
 
     @Override
+    public void showDeleteConfirmationDialogForSingleDelete(int position) {
+        AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
+        confirmationDelete.setMessage(getString(R.string.confirmation_single_delete))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //saveDeleteAllEmployees();
+                        //showSnackBar();
+                        onDeleteClick(position);
+
+                    }
+                })
+
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = confirmationDelete.create();
+        alertDialog.show();
+    }
+
     public void onDeleteClick(int position) {
 
         Handler handler = new Handler();
@@ -527,6 +537,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 //showSnackBar();
                 deleteAllEmployees();
 
+
             }
         })
 
@@ -542,44 +553,16 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     }
 
-    private void showDeleteConfirmationDialogForSingleDelete(int position){
-        AlertDialog.Builder confirmationDelete = new AlertDialog.Builder(getActivity());
-        confirmationDelete.setMessage(getString(R.string.confirmation_delete))
-                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //saveDeleteAllEmployees();
-                        //showSnackBar();
-                        onDeleteClick(position);
 
-                    }
-                })
-
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = confirmationDelete.create();
-        alertDialog.show();
-
-    }
 
     private void deleteAllEmployees(){
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
-            }
-        }, 200);
-
         Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_LONG).show();
+        binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
 
-        for(int i=0;i<employees.size();i++){
+        for(int i = employees.size()-1;i>=0;i--){
+
+            int position = i;
 
             Employee selectedItem = employees.get(i);
             final String selectedKey = selectedItem.getKey();
@@ -597,6 +580,10 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                             public void onSuccess(Void aVoid) {
                                 mDatabaseRef.child(selectedKey).removeValue();
                                 Toast.makeText(getActivity(), selectedItem.getmName() + " " + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                                if(position==0){
+                                    binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
+                                    Toast.makeText(getActivity(),getString(R.string.all_deleted_sucess),Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
 
@@ -605,7 +592,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             }
         }
 
-        binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
+
+
 
     }
 

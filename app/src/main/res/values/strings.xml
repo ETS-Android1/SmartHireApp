@@ -84,6 +84,7 @@
     <string name="ai_recruit">A.I.</string>
     <string name="manual">Manual Form</string>
     <string name="confirmation_delete">Are you sure to delete all the employees?</string>
+    <string name="confirmation_single_delete">Are you sure to delete?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="search">Search</string>
