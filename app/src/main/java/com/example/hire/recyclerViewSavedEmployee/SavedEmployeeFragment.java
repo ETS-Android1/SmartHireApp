@@ -348,6 +348,7 @@ public class SavedEmployeeFragment extends Fragment implements MyAdapter.OnItemC
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
         inflater.inflate(R.menu.saved_employee_menu, menu);
     }
 

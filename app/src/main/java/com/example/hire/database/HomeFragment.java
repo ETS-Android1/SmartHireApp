@@ -489,8 +489,10 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
         inflater.inflate(R.menu.serach_menu, menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -536,7 +538,6 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 //saveDeleteAllEmployees();
                 //showSnackBar();
                 deleteAllEmployees();
-
 
             }
         })

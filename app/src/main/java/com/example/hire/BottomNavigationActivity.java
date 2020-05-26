@@ -1,26 +1,37 @@
 package com.example.hire;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hire.database.HomeFragment;
 import com.example.hire.databinding.ActivityBottomNavigationBinding;
+import com.example.hire.frgaments.EmployerProfileFragment;
+import com.example.hire.recyclerViewSavedEmployee.SavedEmployeeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class BottomNavigationActivity extends AppCompatActivity {
+public class BottomNavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActivityBottomNavigationBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +40,8 @@ public class BottomNavigationActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        //navController = Navigation.findNavController(view);
+
         setSupportActionBar(binding.toolbarHomePage);
         getSupportActionBar().setTitle("Hire");
 
@@ -36,8 +49,10 @@ public class BottomNavigationActivity extends AppCompatActivity {
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bottomNav,navController);
+
+        binding.navView.setNavigationItemSelectedListener(this);  // if use this, the no need put eg: new View.OnClickListener, but have to implements its class
 
 
         //binding.bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -48,6 +63,120 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     new HomeFragment()).commit();
         }*/
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        switch (menuItem.getItemId()){
+            case R.id.go_to_home:
+
+                navController.navigate(R.id.homeFragment);
+                break;
+
+            case R.id.go_to_saved:
+                navController.navigate(R.id.savedEmployeeFragment);
+                break;
+
+            case R.id.go_to_profile:
+                navController.navigate(R.id.profileFragment);
+                break;
+
+            case R.id.about_us:
+                break;
+
+            case R.id.feedback:
+                createfeedBack();
+                break;
+
+            case R.id.logout:
+                logOutConfirmation();
+                break;
+        }
+
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void createfeedBack(){
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText edittext = new EditText(this);
+        edittext.setSingleLine(false);
+        edittext.setPadding(50,30,50,30);
+        //edittext.setPadding(10,0,10,0);
+        edittext.setHint(R.string.example_feedback);
+        alert.setTitle(getString(R.string.feedback));
+        alert.setMessage(getString(R.string.enter_your_feedback));
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                String editTextValue = edittext.getText().toString();
+                if(editTextValue.isEmpty()){
+                    edittext.setError(getString(R.string.feedback_error));
+                    errorFeedback();
+                }else{
+                    Toast.makeText(BottomNavigationActivity.this,getString(R.string.feedback_success),Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
+                }
+
+            }
+        });
+
+        alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.cancel();
+            }
+        });
+
+        alert.show();
+
+    }
+
+    public void errorFeedback(){
+
+        AlertDialog.Builder errorSendFeedback = new AlertDialog.Builder(this);
+        errorSendFeedback.setIcon(R.drawable.error);
+        errorSendFeedback.setMessage(getString(R.string.feedback_error));
+        errorSendFeedback.setTitle(getString(R.string.error))
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+
+                    }
+                });
+
+        AlertDialog alertDialog = errorSendFeedback.create();
+        alertDialog.show();
+    }
+
+    public void logOutConfirmation(){
+
+        AlertDialog.Builder confirmationLogOut = new AlertDialog.Builder(this);
+        confirmationLogOut.setMessage(getString(R.string.confirmation_logout))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //logout();
+
+                    }
+                })
+
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = confirmationLogOut.create();
+        alertDialog.show();
     }
 
     /*@Override
@@ -71,19 +200,30 @@ public class BottomNavigationActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     switch (item.getItemId()) {
-                        case R.id.nav_home:
-                            selectedFragment = new MainFragment();
-                            break;
-                        case R.id.nav_history:
-                            selectedFragment = new HistoryFragment();
-                            break;
+                        case R.id.homeFragment:
+                            navController.navigate(R.id.homeFragment);
+                            //openFragment(new HomeFragment());
+                            //selectedFragment = new HomeFragment();
+                            return true;
+
+                        case R.id.savedEmployeeFragment:
+                            //openFragment(new SavedEmployeeFragment());
+                            return true;
+
+                        case R.id.profileFragment:
+                            //openFragment(new EmployerProfileFragment());
+                            return true;
                     }
 
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-
-                    return true;
+                    return false;
                 }
-            };*/
+            };
+
+    public void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }*/
 
 }

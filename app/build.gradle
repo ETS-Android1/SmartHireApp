@@ -90,6 +90,8 @@ dependencies {
     //Swipe recycler view
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.2'
 
+    implementation "androidx.drawerlayout:drawerlayout:1.0.0"
+
 }
 
 apply plugin: 'com.google.gms.google-services'

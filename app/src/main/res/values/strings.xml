@@ -116,6 +116,15 @@
     <string name="feedback">Feedback</string>
     <string name="account">Account</string>
     <string name="logout">Log Out</string>
+    <string name="confirmation_logout">Are you sure to log out?</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+    <string name="feedback_success">Feedback successfully sent</string>
+    <string name="example_feedback">Eg: The A.I. extraction is too slow</string>
+    <string name="enter_your_feedback">Enter your feedback</string>
+    <string name="feedback_error">Feedback cannot be empty</string>
+    <string name="ok">OK</string>
+    <string name="error">Error</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
