@@ -84,7 +84,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> implemen
         }
 
         if(employeeCurrent.getBookMark().equals("bookmarked")){
-            myHolder.bookmarkedLogo.setColorFilter(context.getResources().getColor(R.color.yellow));
+            myHolder.bookmarkedLogo.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
         }else{
             myHolder.bookmarkedLogo.setColorFilter(context.getResources().getColor(R.color.grey));
         }

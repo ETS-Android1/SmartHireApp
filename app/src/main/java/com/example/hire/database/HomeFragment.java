@@ -422,7 +422,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     public void onBookmarkedClick(View view,int position) {
 
         ImageView bookMarked = view.findViewById(R.id.imageViewBookmarkCardView);
-        bookMarked.setColorFilter(getContext().getResources().getColor(R.color.yellow));
+        bookMarked.setColorFilter(getContext().getResources().getColor(R.color.colorPrimary));
 
         Employee selectedEmployee = employees.get(position);
 

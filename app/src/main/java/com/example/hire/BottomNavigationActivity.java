@@ -10,6 +10,7 @@ import com.example.hire.databinding.ActivityBottomNavigationBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -30,6 +31,10 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbarHomePage);
         getSupportActionBar().setTitle("Hire");
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,binding.drawerLayout,binding.toolbarHomePage,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        binding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         NavController navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bottomNav,navController);

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single"> <!--Make sure we only can select single item within this group-->
+
+        <item
+            android:id="@+id/go_to_home"
+            android:title="@string/home"
+            android:icon="@drawable/bottom_home"/>
+
+        <item android:id="@+id/go_to_saved"
+            android:title="@string/saved"
+            android:icon="@drawable/save_employee_bookmark"/>
+
+
+        <item android:id="@+id/go_to_profile"
+            android:title="@string/profile"
+            android:icon="@drawable/bottom_profile"/>
+
+    </group>
+
+    <item android:title="@string/others">
+        <menu>
+            <item android:id="@+id/about_us"
+                android:title="@string/aboutus"/>
+            <item android:id="@+id/feedback"
+                android:title="@string/feedback"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/account">
+        <menu>
+            <item android:id="@+id/logout"
+                android:title="@string/logout"/>
+        </menu>
+    </item>
+
+</menu>

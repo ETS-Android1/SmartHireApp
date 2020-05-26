@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StartExtractActivity"></activity>
+        <activity android:name=".StartExtractActivity" />
         <activity
             android:name=".BottomNavigationActivity"
             android:label="@string/title_activity_bottom_navigation">
