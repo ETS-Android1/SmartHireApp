@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#1399C6</color>
-    <color name="colorPrimaryDark">#202020</color>
+    <color name="colorPrimaryDark">#3D3737</color>
     <color name="colorAccent">#1399C6</color>
     <color name="green">#3CB371</color>
     <color name="white">#FFFFFF</color>
@@ -10,6 +10,7 @@
     <color name="skyBlue">#87CEEB</color>
     <color name="red">#FF1919</color>
     <color name="grey">#F0F0F0</color>
+    <color name="light_grey">#FCFCFC</color>
     <color name="yellow">#FFD700</color>
 
 </resources>

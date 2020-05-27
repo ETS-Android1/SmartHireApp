@@ -22,10 +22,19 @@
 
     <item android:title="@string/others">
         <menu>
+
             <item android:id="@+id/about_us"
-                android:title="@string/aboutus"/>
+                android:title="@string/aboutus"
+                android:icon="@drawable/about_us"/>
+
+            <item android:id="@+id/contact_us"
+                android:title="@string/contact_us"
+                android:icon="@drawable/contact_us"/>
+
             <item android:id="@+id/feedback"
-                android:title="@string/feedback"/>
+                android:title="@string/feedback"
+                android:icon="@drawable/feedback"/>
+
         </menu>
     </item>
 

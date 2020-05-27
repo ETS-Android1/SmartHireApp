@@ -1,6 +1,7 @@
 package com.example.hire;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Gravity;
@@ -83,10 +84,15 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
                 break;
 
             case R.id.about_us:
+                aboutUsPage();
                 break;
 
             case R.id.feedback:
                 createfeedBack();
+                break;
+
+            case R.id.contact_us:
+                contactUsPage();
                 break;
 
             case R.id.logout:
@@ -96,6 +102,19 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
 
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void aboutUsPage(){
+
+        Intent intent = new Intent(BottomNavigationActivity.this,AboutUs.class);
+        startActivity(intent);
+    }
+
+    private void contactUsPage(){
+
+        Intent intent = new Intent(BottomNavigationActivity.this, ContactUsActivity.class);
+        startActivity(intent);
+
     }
 
     public void createfeedBack(){

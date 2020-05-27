@@ -61,7 +61,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_drawer_header"
-        app:menu="@menu/profile_drawer"/> <!--When you face crash in navigation
+        app:menu="@menu/nav_drawer"/> <!--When you face crash in navigation
         drawer, check all the drawable, make sure it isn't wrong folder-->
 
 </androidx.drawerlayout.widget.DrawerLayout>
