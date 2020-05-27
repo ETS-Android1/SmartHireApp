@@ -126,6 +126,24 @@
     <string name="ok">OK</string>
     <string name="error">Error</string>
 
+    <!--About Us-->
+    <string name="purpose">Purpose</string>
+    <string name="our_team">Our Team</string>
+    <string name="hiring_become_simple">\" Hiring are now becoming simple and easy \" </string>
+    <string name="team1_content">\" Always improving is our main objective. Nothing can stop us for improving our products
+        and we will keep hiring talented people to produce the best products you ever used.\"</string>
+    <string name="team1_title"> TEE YU JUNE \n CEO </string>
+    <string name="team2_title">POH CHONG SIEN \n CFO </string>
+    <string name="team2_content">\" This must the most high-tech hiring app you ever seen and it has help the worldwide employers
+        to recruit their candidate in a very convenience and time-saving way. No more traditional way,
+        only the smart way.\"</string>
+    <string name="ending">\" Hire App, Makes Your Life Happy \"</string>
+    <string name="explore_now">Explore Now</string>
+    <string name="about_us_content">This is a hiring app which implemented with A.I technology to help you to hire
+    the right one in a different way with shorter, faster time, and smarter way.</string>
+    <string name="purpose_content"> Our mission is to make the hiring app worldwide and our vision is to be the
+    top 5 hiring app in the next 5 years.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
