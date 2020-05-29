@@ -21,7 +21,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:background="@color/darkSlateGrey">
+                android:background="@drawable/gradient_profile">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imageViewEmployeeProfile"

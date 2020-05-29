@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/white">
+            android:background="@drawable/gradient_background">
 
             <fragment
                 android:id="@+id/map"
@@ -73,7 +73,7 @@
             <TextView
                 android:id="@+id/textViewContactUsAddressLine"
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="2dp"
                 android:layout_marginLeft="36dp"
                 android:layout_marginRight="36dp"
                 android:background="@drawable/background_extracted_text"
@@ -106,7 +106,7 @@
             <TextView
                 android:id="@+id/textViewContactUsPhoneLine"
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="2dp"
                 android:layout_marginLeft="36dp"
                 android:layout_marginRight="36dp"
                 android:background="@drawable/background_extracted_text"
@@ -139,7 +139,7 @@
             <TextView
                 android:id="@+id/textViewContactUsHoursLine"
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="2dp"
                 android:layout_marginLeft="36dp"
                 android:layout_marginRight="36dp"
                 android:background="@drawable/background_extracted_text"

@@ -638,7 +638,7 @@ public class UploadFragment extends Fragment {
                                     employeeAddress = result;
                                 } else if (result.matches(emailRegex) && employeeEmail.isEmpty()) {
                                     employeeEmail = result;
-                                } else if (result.matches(ageRegex) && employeeAge.isEmpty()) {
+                                } else if (result.matches(ageRegex) && employeeAge.equals("0")) {
                                     employeeAge = result;
                                     Pattern p = Pattern.compile("\\d+");
                                     Matcher m = p.matcher(employeeAge);
@@ -679,7 +679,7 @@ public class UploadFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                Toast.makeText(getActivity(), "Error getting response", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Error getting response, try again", Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
