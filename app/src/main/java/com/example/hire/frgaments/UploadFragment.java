@@ -513,9 +513,11 @@ public class UploadFragment extends Fragment {
         edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz","annotators":"tokenize,ssplit,ner"}*/
         String url = "http://192.168.0.187:9000/?properties=%7B" +
                 "%22ner.model%22%3A%22/Users/ASUS/Desktop/stanford-corenlp-full-2018-10-05/ner-model.ser.gz," +
+                "edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz,edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz," +
                 "edu/stanford/nlp/models/ner/english.muc.7class.distsim.crf.ser.gz%22%2C" +
-                "%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C%" +
-                "22ner.useSUTime%22%3Afalse%2C" +
+                "%22annotators%22%3A%22tokenize%2Cssplit%2Cner%22%2C" +
+                "%22ner.combinationMode%22%3A%22HIGH_RECALL%22%2C"+
+                "%22ner.useSUTime%22%3Afalse%2C" +
                 "%22ner.applyNumericClassifiers%22%3Afalse%7D";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, object,
