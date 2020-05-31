@@ -3,19 +3,25 @@ package com.example.hire.frgaments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.pdf.PdfRenderer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
@@ -25,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.MimeTypeMap;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +65,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,6 +86,7 @@ public class UploadFragment extends Fragment {
     private static final int CAMERA_REQUEST_CODE = 200;
     private static final int STORAGE_REQUEST_CODE = 400;
     private static final int IMAGE_PICK_GALLERY_CODE = 1000;
+    private static final int PICK_PDF_CODE = 100;
     String camaraPermission[];
     String storagePermission[];
 
@@ -187,6 +199,17 @@ public class UploadFragment extends Fragment {
             }
         });
 
+        binding.fabPDF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!checkStoragePermission()) {
+                    requestStoragePermission();
+                } else {
+                    selectPDF();
+                }
+            }
+        });
+
         binding.fabExtract.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -247,6 +270,73 @@ public class UploadFragment extends Fragment {
             binding.fabExtract.setClickable(true);
             isOpen = true;
         }
+    }
+
+    private void selectPDF(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT); //If you want the user to choose something based on MIME type, use ACTION_GET_CONTENT.
+        intent.setType("application/pdf");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            startActivityForResult(Intent.createChooser(intent,"Select PDF"),PICK_PDF_CODE);
+        }else{
+            showCustomToast("Your version is not support pdf chooser",Toast.LENGTH_LONG);
+        }
+    }
+
+    private String getRealPathFromURI(Context context, Uri contentUri) {
+
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = MediaStore.Files.getContentUri("external");
+// every column, although that is huge waste, you probably need
+// BaseColumns.DATA (the path) only.
+        String[] projection = null;
+        String[] column = {MediaStore.Files.FileColumns.DATA};
+        String sortOrder = null; // unordered
+
+        // only pdf
+        String selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + " = ?";
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf");
+        String[] selectionArgsPdf = new String[]{ mimeType };
+        Cursor allPdfFiles = cr.query(uri, column, selectionMimeType, selectionArgsPdf, sortOrder);
+        int column_iondex = allPdfFiles.getColumnIndexOrThrow(selectionMimeType);
+        allPdfFiles.moveToFirst();
+        return allPdfFiles.getString(column_iondex);
+
+    }
+
+    private ArrayList<Bitmap> pdfToBitmap(File pdfFile) {
+
+        ArrayList<Bitmap> bitmaps = new ArrayList<>();
+
+        try {
+            PdfRenderer renderer = new PdfRenderer(ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY));
+
+            Bitmap bitmap;
+            final int pageCount = renderer.getPageCount();
+            for (int i = 0; i < pageCount; i++) {
+                PdfRenderer.Page page = renderer.openPage(i);
+
+                int width = getResources().getDisplayMetrics().densityDpi / 72 * page.getWidth();
+                int height = getResources().getDisplayMetrics().densityDpi / 72 * page.getHeight();
+                bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+                page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+
+                bitmaps.add(bitmap);
+
+                // close the page
+                page.close();
+
+            }
+
+            // close the renderer
+            renderer.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return bitmaps;
+
     }
 
     private void pickGallery() {
@@ -312,11 +402,26 @@ public class UploadFragment extends Fragment {
                 //imageBitmap = BitmapFactory.decodeFile(currentImagePath);
                 //imageViewResume.setImageBitmap(imageBitmap);
             }
+            if(requestCode == PICK_PDF_CODE){
+
+                Uri selectedPDF = data.getData();
+
+                String pdfPath = getRealPathFromURI(getContext(),selectedPDF);
+
+
+                File pdfFile = new File(Uri.parse(pdfPath).toString());
+
+                Log.d("URI PDF", "onActivityResult: "+pdfFile);
+
+                pdfToBitmap(pdfFile);
+
+            }
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK) {
                 resultUri = result.getUri();//get image uri
+                Log.d("IMAGEURI", "onActivityResult: " + resultUri);
                 binding.include.imageViewResume.setImageURI(resultUri);
                 binding.include.includeStepBar.textViewDot1.setBackgroundResource(R.drawable.circle_text_view_done);
                 binding.include.includeStepBar.textViewDot2.setBackgroundResource(R.drawable.circle_text_view_done);

@@ -34,6 +34,18 @@
         android:visibility="invisible"
         app:srcCompat="@drawable/fab_camera" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabPDF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="230dp"
+        app:backgroundTint="#2196F3"
+        android:visibility="visible"
+        app:srcCompat="@drawable/resume_fab" />
+
     <TextView
         android:id="@+id/textViewGallery"
         android:layout_width="wrap_content"
