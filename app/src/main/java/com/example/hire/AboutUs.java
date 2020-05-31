@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hire.databinding.ActivityAboutUsBinding;
@@ -23,8 +27,12 @@ public class AboutUs extends AppCompatActivity implements View.OnClickListener {
         setContentView(view);
 
         setSupportActionBar(binding.toolbarAboutUs);
-        getSupportActionBar().setTitle("About Us");
+        getSupportActionBar().setTitle(getString(R.string.aboutus));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //set up up button
+
+        showCustomToast(getString(R.string.aboutus),Toast.LENGTH_LONG);
+
+
 
         Picasso.get()
                 .load("https://raw.githubusercontent.com/yujune/Hire/master/screenshots/hire_easy.jpeg")
@@ -38,7 +46,7 @@ public class AboutUs extends AppCompatActivity implements View.OnClickListener {
 
                     @Override
                     public void onError(Exception e) {
-                        Toast.makeText(AboutUs.this, "Error loading image", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.error_loading_images),Toast.LENGTH_SHORT);
 
                     }
                 });
@@ -56,7 +64,7 @@ public class AboutUs extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onError(Exception e) {
 
-                        Toast.makeText(AboutUs.this, "Error loading image", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.error_loading_images),Toast.LENGTH_SHORT);
 
                     }
                 });
@@ -74,7 +82,7 @@ public class AboutUs extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onError(Exception e) {
 
-                        Toast.makeText(AboutUs.this, "Error loading image", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.error_loading_images),Toast.LENGTH_SHORT);
 
                     }
                 });
@@ -88,5 +96,21 @@ public class AboutUs extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent = new Intent(AboutUs.this, BottomNavigationActivity.class);
         startActivity(intent);
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
     }
 }

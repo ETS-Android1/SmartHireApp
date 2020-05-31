@@ -97,6 +97,7 @@
     <!--Upload Fragment-->
     <string name="info">The process may take up to 20 second or more if your uploaded resume has too much of information to be processed.
     Please be patient while waiting for the result.</string>
+    <string name="error_getting_response">Error getting response, Try again</string>
 
     <!-- Profile Fragment -->
     <string name="verified">verified account</string>
@@ -144,6 +145,7 @@
     the right one in a different way with shorter, faster time, and smarter way.</string>
     <string name="purpose_content"> Our mission is to make the hiring app worldwide and our vision is to be the
     top 5 hiring app in the next 5 years. We will keep implementing new technologies such as Blockchain into this app.</string>
+    <string name="error_loading_images">Error loading images</string>
 
     <!--Contact Us-->
     <string name="taruc">Tunku Abdul Rahman University College</string>

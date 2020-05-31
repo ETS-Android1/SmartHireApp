@@ -19,12 +19,14 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -594,9 +596,9 @@ public class UploadFragment extends Fragment {
 
                             // age has the regex from 10 years old to 59 years old and (?<![\\d]) is a negative lookbehind which the preceding
                             //elements cannot be digit.
-                            String ageHeader = "(Age|age):? ?";
+                            String ageHeader = "(Age|age|AGE):? ?";
                             String ageNo = "(?<![\\d])[1-5][0-9](?!\\d)";
-                            String ageFormat = " ?years old";
+                            String ageFormat = " ?(years old|Years Old|YEARS OLD|-year(s)?-old)";
                             String ageRegex = ageHeader + ageNo +
                                     "|" +
                                     ageNo + ageFormat +
@@ -607,7 +609,8 @@ public class UploadFragment extends Fragment {
                             //Address use ".+?" which is the lazy matching which matching as few characters as possible between \n and postCode and
                             //location. If location not found, then, it will match the nearest addressNo and postCode.
                             // "." will match any character except newline.
-                            String addressHeader = "((Address|address|ADDRESS):?)? ?";
+                            //".+?" Makes the preceding quantifier lazy, causing it to match as few characters as possible. By default, quantifiers are greedy, and will match as many characters as possible.
+                            String addressHeader = "(Address|address|ADDRESS):? ?";
                             String addressFormat = "((NO|no|No|LOT|Lot|lot).?:?)? ?";
                             String addressNo = "(\\d{1,2})?-?(\\d{1,2}[A-Z]?)?\\d{1,4},?";
                             String postCode = "(?<![\\d])[0-9]{5}(?!\\d)";
@@ -620,6 +623,8 @@ public class UploadFragment extends Fragment {
                                     addressNo + ".+?" + postCode;*/
 
                             String addressRegex =
+                                    "(" + addressHeader + ".+?" + postCode + ".+?" + location + ")" +
+                                            "|" +
                                     "(" + ".+?" + postCode + ".+?" + location + ")" +
                                             "|" +
                                             addressNo + ".+?" + postCode;
@@ -633,11 +638,25 @@ public class UploadFragment extends Fragment {
                             Pattern allPattern = Pattern.compile(phoneRegex + "|" + emailRegex + "|" + addressRegex + "|" + ageRegex);
                             Matcher allMatcher = allPattern.matcher(str);
                             while (allMatcher.find()) {
+                                Log.d("REXRESULT", "onResponse: "+ allMatcher.group(0));
                                 String result = allMatcher.group(0);
                                 if (result.matches(phoneRegex) && employeePhoneNum.isEmpty()) {
                                     employeePhoneNum = result;
                                 } else if (result.matches(addressRegex) && employeeAddress.isEmpty()) {
+                                    int indexOfAddress = 0;
+                                    String newAddress="";
+                                    if(result.contains("Address")){
+                                        indexOfAddress = result.indexOf("Address")+8;
+                                        newAddress = result.substring(indexOfAddress);
+                                        result = newAddress;
+                                    }else if (result.contains("ADDRESS")){
+                                        indexOfAddress = result.indexOf("ADDRESS")+8;
+                                        newAddress = result.substring(indexOfAddress);
+                                        result = newAddress;
+                                    }
+
                                     employeeAddress = result;
+
                                 } else if (result.matches(emailRegex) && employeeEmail.isEmpty()) {
                                     employeeEmail = result;
                                 } else if (result.matches(ageRegex) && employeeAge.equals("0")) {
@@ -681,7 +700,9 @@ public class UploadFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 binding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                Toast.makeText(getActivity(), "Error getting response, try again", Toast.LENGTH_LONG).show();
+
+                showCustomToast(getString(R.string.error_getting_response),Toast.LENGTH_LONG);
+                //Toast.makeText(getActivity(), "Error getting response, try again", Toast.LENGTH_LONG).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
@@ -721,6 +742,22 @@ public class UploadFragment extends Fragment {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, timeStamp, null);
         return Uri.parse(path);
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, getActivity().findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
     }
 
     class ExtractThread implements Runnable {
