@@ -45,6 +45,10 @@
     <string name="position">Position:</string>
     <string name="example_position">Eg: HR</string>
     <string name="empty_position">Position cannot be empty</string>
+    <string name="say_cheese">Say Cheese</string>
+    <string name="pick_photo">Pick a photo</string>
+    <string name="invalid_phone_length">Invalid Phone No. Length</string>
+    <string name="invalid_age">Invalid Age</string>
 
     <string-array name="level">
         <item>Beginner</item>
@@ -78,6 +82,8 @@
     <string name="no_address_found">No address found</string>
     <string name="no_skills_found">No skills found</string>
     <string name="no_education_found">No education found</string>
+    <string name="uploading_to_database">Uploading to Database</string>
+    <string name="uploading">Uploading...</string>
 
     <!--Home Fragment/ Employee List-->
     <string name="recruit_option">Recruit Options</string>
@@ -92,12 +98,23 @@
     <string name="deleting">Deleting...</string>
     <string name="deleted">deleted</string>
     <string name="all_deleted_sucess">Success Deleted All</string>
+    <string name="no_employee">No Employee to be deleted</string>
 
 
     <!--Upload Fragment-->
     <string name="info">The process may take up to 20 second or more if your uploaded resume has too much of information to be processed.
     Please be patient while waiting for the result.</string>
     <string name="error_getting_response">Error getting response, Try again</string>
+    <string name="no_face_detected">No Face Detected</string>
+    <string name="could_not_set_up_face_detector">Could not set up Face Dectector</string>
+    <string name="error_setting_up_text_recognizer">Error setting up Text Recognizer</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="error_crop">Error Cropping Image</string>
+    <string name="no_internet">No Internet</string>
+    <string name="extracting">Extracting...</string>
+    <string name="upload_resume_first">Please Upload your resume first</string>
+    <string name="choose_resume">Choose a resume</string>
+    <string name="capture_resume">Capture the resume</string>
 
     <!-- Profile Fragment -->
     <string name="verified">verified account</string>
@@ -127,6 +144,9 @@
     <string name="ok">OK</string>
     <string name="error">Error</string>
     <string name="contact_us">Contact Us</string>
+
+    <!--Bottom Navigation Activity-->
+    <string name="logged_out">Successfully Logged Out</string>
 
     <!--About Us-->
     <string name="purpose">Purpose</string>

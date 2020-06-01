@@ -12,6 +12,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.pdf.PdfRenderer;
 import android.net.ConnectivityManager;
@@ -57,6 +59,9 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.shockwave.pdfium.PdfDocument;
+import com.shockwave.pdfium.PdfiumCore;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -66,6 +71,10 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -175,7 +184,8 @@ public class UploadFragment extends Fragment {
         binding.fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Capture the resume", Toast.LENGTH_SHORT).show();
+                showCustomToast(getString(R.string.capture_resume),Toast.LENGTH_SHORT);
+                //Toast.makeText(getActivity(), "Capture the resume", Toast.LENGTH_SHORT).show();
                 animateFab();
                 if (!checkCameraPermission()) {
                     requestCameraPermission();
@@ -188,7 +198,8 @@ public class UploadFragment extends Fragment {
         binding.fabGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Choose a resume", Toast.LENGTH_SHORT).show();
+                showCustomToast(getString(R.string.choose_resume),Toast.LENGTH_SHORT);
+                //Toast.makeText(getActivity(), "Choose a resume", Toast.LENGTH_SHORT).show();
                 animateFab();
 
                 if (!checkStoragePermission()) {
@@ -216,7 +227,8 @@ public class UploadFragment extends Fragment {
             public void onClick(View v) {
                 //fab.setVisibility(FloatingActionButton.INVISIBLE);
                 if (resultUri == null) {
-                    Toast.makeText(getActivity(), "Please Upload your resume first", Toast.LENGTH_LONG).show();
+                    showCustomToast(getString(R.string.upload_resume_first),Toast.LENGTH_LONG);
+                    //Toast.makeText(getActivity(), "Please Upload your resume first", Toast.LENGTH_LONG).show();
                 } else {
                     connected = false;
                     if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
@@ -224,14 +236,16 @@ public class UploadFragment extends Fragment {
                         //we are connected to a network
                         connected = true;
                         binding.fab.setClickable(false);
-                        Toast.makeText(getActivity(), "Extracting...", Toast.LENGTH_LONG).show();
+                        showCustomToast(getString(R.string.extracting),Toast.LENGTH_SHORT);
+                        //Toast.makeText(getActivity(), "Extracting...", Toast.LENGTH_LONG).show();
                         animateFab();
                         binding.progressBar.setVisibility(ProgressBar.VISIBLE);
                         new Thread(extractThread).start();
                         navController = Navigation.findNavController(v);
                     } else {
                         connected = false;
-                        Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_LONG).show();
+                        showCustomToast(getString(R.string.no_internet),Toast.LENGTH_SHORT);
+                        //Toast.makeText(getActivity(), "No Internet", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -248,9 +262,12 @@ public class UploadFragment extends Fragment {
             binding.textViewExtract.setAnimation(fabClose);
             binding.fabGallery.startAnimation(fabClose);
             binding.fabExtract.startAnimation(fabClose);
+            binding.fabPDF.startAnimation(fabClose);
+            binding.textViewPDF.startAnimation(fabClose);
             binding.fabCamera.setClickable(false);
             binding.fabGallery.setClickable(false);
             binding.fabExtract.setClickable(false);
+            binding.fabPDF.setClickable(false);
             isOpen = false;
         } else {
             binding.fab.startAnimation(rotateForward);
@@ -261,13 +278,17 @@ public class UploadFragment extends Fragment {
             binding.textViewCamera.setAnimation(fabOpen);
             binding.textViewGallery.setAnimation(fabOpen);
             binding.textViewExtract.setAnimation(fabOpen);
+            binding.fabPDF.startAnimation(fabOpen);
+            binding.textViewPDF.startAnimation(fabOpen);
             //textViewExtract.setBackgroundResource(R.color.colorPrimary);
             binding.textViewCamera.setBackgroundResource(R.drawable.rounded_corner);
             binding.textViewGallery.setBackgroundResource(R.drawable.rounded_corner);
             binding.textViewExtract.setBackgroundResource(R.drawable.rounded_corner);
+            binding.textViewPDF.setBackgroundResource(R.drawable.rounded_corner);
             binding.fabCamera.setClickable(true);
             binding.fabGallery.setClickable(true);
             binding.fabExtract.setClickable(true);
+            binding.fabPDF.setClickable(true);
             isOpen = true;
         }
     }
@@ -282,34 +303,40 @@ public class UploadFragment extends Fragment {
             showCustomToast("Your version is not support pdf chooser",Toast.LENGTH_LONG);
         }
     }
+    public Bitmap getBitmap(ParcelFileDescriptor file){
+        int pageNum = 0;
+        PdfiumCore pdfiumCore = new PdfiumCore(getContext());
+        try {
+            PdfDocument pdfDocument = pdfiumCore.newDocument(file);
+            pdfiumCore.openPage(pdfDocument, pageNum);
 
-    private String getRealPathFromURI(Context context, Uri contentUri) {
+            int width = pdfiumCore.getPageWidthPoint(pdfDocument, pageNum);
+            int height = pdfiumCore.getPageHeightPoint(pdfDocument, pageNum);
 
-        ContentResolver cr = context.getContentResolver();
-        Uri uri = MediaStore.Files.getContentUri("external");
-// every column, although that is huge waste, you probably need
-// BaseColumns.DATA (the path) only.
-        String[] projection = null;
-        String[] column = {MediaStore.Files.FileColumns.DATA};
-        String sortOrder = null; // unordered
 
-        // only pdf
-        String selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + " = ?";
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf");
-        String[] selectionArgsPdf = new String[]{ mimeType };
-        Cursor allPdfFiles = cr.query(uri, column, selectionMimeType, selectionArgsPdf, sortOrder);
-        int column_iondex = allPdfFiles.getColumnIndexOrThrow(selectionMimeType);
-        allPdfFiles.moveToFirst();
-        return allPdfFiles.getString(column_iondex);
+            // ARGB_8888 - best quality, high memory usage, higher possibility of OutOfMemoryError
+            // RGB_565 - little worse quality, twice less memory usage
+            Bitmap bitmap = Bitmap.createBitmap(width , height ,
+                    Bitmap.Config.ARGB_8888);
+            pdfiumCore.renderPageBitmap(pdfDocument, bitmap, pageNum, 0, 0,
+                    width, height);
+            //if you need to render annotations and form fields, you can use
+            //the same method above adding 'true' as last param
 
+            pdfiumCore.closeDocument(pdfDocument); // important!
+            return bitmap;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
-    private ArrayList<Bitmap> pdfToBitmap(File pdfFile) {
+    private ArrayList<Bitmap> pdfToBitmap(ParcelFileDescriptor pdfFile) {
 
         ArrayList<Bitmap> bitmaps = new ArrayList<>();
 
         try {
-            PdfRenderer renderer = new PdfRenderer(ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY));
+            PdfRenderer renderer = new PdfRenderer(pdfFile);
 
             Bitmap bitmap;
             final int pageCount = renderer.getPageCount();
@@ -372,7 +399,7 @@ public class UploadFragment extends Fragment {
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 
             ContentValues values = new ContentValues();
-            Toast.makeText(getActivity(), "hi:", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "hi:", Toast.LENGTH_SHORT).show();
             values.put(MediaStore.Images.Media.TITLE, "NewPic");
             values.put(MediaStore.Images.Media.DESCRIPTION, "Image to Text");
             imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -405,15 +432,38 @@ public class UploadFragment extends Fragment {
             if(requestCode == PICK_PDF_CODE){
 
                 Uri selectedPDF = data.getData();
+                ParcelFileDescriptor inputPFD = null;
 
-                String pdfPath = getRealPathFromURI(getContext(),selectedPDF);
+                try {
+                    inputPFD = getContext().getContentResolver().openFileDescriptor(selectedPDF, "r");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
+                //ArrayList<Bitmap> pdfbitmap = pdfToBitmap(inputPFD);
+                //Log.d("URI PDF", "onActivityResult: "+pdfbitmap.toString());
 
-                File pdfFile = new File(Uri.parse(pdfPath).toString());
+                Bitmap pdfbitmap = getBitmap(inputPFD);
 
-                Log.d("URI PDF", "onActivityResult: "+pdfFile);
+                resultUri = getImageUri(getActivity(),pdfbitmap);
 
-                pdfToBitmap(pdfFile);
+                //resultUri = selectedPDF;
+                //imageBitmap = pdfbitmap;
+                CropImage.activity(resultUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(getActivity(), UploadFragment.this);
+
+                //binding.include.imageViewResume.setImageBitmap(pdfbitmap);
+
+                //FileDescriptor fd = inputPFD.getFileDescriptor();
+
+                //String pdfPath = selectedPDF.toString();
+
+                //File pdfFile = new File(Uri.parse(pdfPath).toString());
+
+                //Log.d("URI PDF", "onActivityResult: "+fd.toString());
+
+               // pdfToBitmap(pdfFile);
 
             }
         }
@@ -421,7 +471,10 @@ public class UploadFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK) {
                 resultUri = result.getUri();//get image uri
-                Log.d("IMAGEURI", "onActivityResult: " + resultUri);
+                /*Picasso.get()
+                        .load(resultUri)
+                        .into(binding.include.imageViewResume);*/
+                //Log.d("IMAGEURI", "onActivityResult: " + resultUri +" AND" +binding.include.imageViewResume.getDrawable().toString());
                 binding.include.imageViewResume.setImageURI(resultUri);
                 binding.include.includeStepBar.textViewDot1.setBackgroundResource(R.drawable.circle_text_view_done);
                 binding.include.includeStepBar.textViewDot2.setBackgroundResource(R.drawable.circle_text_view_done);
@@ -432,7 +485,8 @@ public class UploadFragment extends Fragment {
                 //code here
             }
         } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-            Toast.makeText(getActivity(), "Error :", Toast.LENGTH_SHORT).show();
+            showCustomToast(getString(R.string.error_crop),Toast.LENGTH_SHORT);
+            //Toast.makeText(getActivity(), "Error :", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -448,7 +502,8 @@ public class UploadFragment extends Fragment {
                     if (cameraAccepted && writeStorageAccepted) {
                         dispatchTakePictureIntent();
                     } else {
-                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.permission_denied),Toast.LENGTH_SHORT);
+                        //Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -460,7 +515,8 @@ public class UploadFragment extends Fragment {
                     if (writeStorageAccepted) {
                         pickGallery();
                     } else {
-                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.permission_denied),Toast.LENGTH_SHORT);
+                        //Toast.makeText(getActivity(), "Permission Denied", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -477,7 +533,8 @@ public class UploadFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getActivity(), "Error setting up text recognizer", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.error_setting_up_text_recognizer),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(), "Error setting up text recognizer", Toast.LENGTH_SHORT).show();
                 }
             });
             return;
@@ -527,7 +584,8 @@ public class UploadFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getActivity(), "Could not set up face detector", Toast.LENGTH_LONG).show();
+                    showCustomToast(getString(R.string.could_not_set_up_face_detector),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(), "Could not set up face detector", Toast.LENGTH_LONG).show();
                 }
             });
             return true;
@@ -579,7 +637,8 @@ public class UploadFragment extends Fragment {
 
             getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.no_face_detected),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
                 }
             });
             //Resources resources = getActivity().getResources();
@@ -853,6 +912,22 @@ public class UploadFragment extends Fragment {
 
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.custom_toast, getActivity().findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+    private void showSuccessCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_success, getActivity().findViewById(R.id.custom_toast_container_success));
 
         TextView text = layout.findViewById(R.id.text);
         text.setText(msg);

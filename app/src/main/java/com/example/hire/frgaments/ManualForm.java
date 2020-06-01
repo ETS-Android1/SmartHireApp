@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -161,7 +162,8 @@ public class ManualForm extends Fragment {
                     postDataToDatabase();
                 }
             } else {
-                Toast.makeText(getActivity(), getString(R.string.error_input), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), getString(R.string.error_input), Toast.LENGTH_LONG).show();
+                showCustomToast(getString(R.string.error_input), Toast.LENGTH_LONG);
             }
         });
 
@@ -219,7 +221,8 @@ public class ManualForm extends Fragment {
                         dispatchTakePictureIntent();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Pick a photo", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.pick_photo),Toast.LENGTH_LONG);
+                    //Toast.makeText(getActivity(), "Pick a photo", Toast.LENGTH_SHORT).show();
                     if (!checkStoragePermission()) {
                         requestStoragePermission();
                     } else {
@@ -309,7 +312,7 @@ public class ManualForm extends Fragment {
         if (!(undoRadioId == 0)) {
             radioButton = view.findViewById(undoRadioId);
             radioButton.setChecked(true);
-            Toast.makeText(getActivity(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), radioButton.getText(), Toast.LENGTH_SHORT).show();
         }
         binding.editTextManualAddress.setText(undoAddress);
         skills.addAll(undoSkills);
@@ -407,6 +410,11 @@ public class ManualForm extends Fragment {
                 binding.editTextManualPhoneNum.setError(getString(R.string.numeric_phone_error));
                 validInput = false;
 
+            }else{
+                if (binding.editTextManualPhoneNum.getText().toString().length()>10 || binding.editTextManualPhoneNum.getText().toString().length()<9){
+                    binding.editTextManualPhoneNum.setError(getString(R.string.invalid_phone_length));
+                    validInput = false;
+                }
             }
         }
 
@@ -425,6 +433,10 @@ public class ManualForm extends Fragment {
             if (!isNumeric(binding.editTextManualAge.getText().toString())) {
                 binding.editTextManualAge.setError(getString(R.string.numeric_age_error));
                 validInput = false;
+            }else{
+                if(Integer.parseInt(binding.editTextManualAge.getText().toString())>50||Integer.parseInt(binding.editTextManualAge.getText().toString())<18){
+                    binding.editTextManualAge.setError(getString(R.string.invalid_age));
+                }
             }
         }
 
@@ -437,13 +449,15 @@ public class ManualForm extends Fragment {
 
     public boolean isGenderAndBoxChecked() {
         if (binding.radioMale.isChecked() == false && binding.radioFemale.isChecked() == false) {
-            Toast.makeText(getActivity(), R.string.gender_error, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), R.string.gender_error, Toast.LENGTH_SHORT).show();
+            showCustomToast(getString(R.string.gender_error), Toast.LENGTH_SHORT);
             return false;
         } else {
             if (binding.checkBoxManualTerms.isChecked()) {
                 return true;
             } else {
-                Toast.makeText(getActivity(), R.string.unchecked_TandC, Toast.LENGTH_SHORT).show();
+                showCustomToast(getString(R.string.unchecked_TandC), Toast.LENGTH_SHORT);
+                //Toast.makeText(getActivity(), R.string.unchecked_TandC, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -513,14 +527,17 @@ public class ManualForm extends Fragment {
                                 photoDownloadUri = task.getResult();
 
                             }
-                            else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            else {
+                                //Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                showCustomToast(getString(R.string.error)+" : "+ task.getException().getMessage(), Toast.LENGTH_LONG);
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            showCustomToast(e.getMessage(), Toast.LENGTH_LONG);
+                            //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         } else {
@@ -556,14 +573,17 @@ public class ManualForm extends Fragment {
                                 resumeDownloadUri = task.getResult();
                                 saveToDatabase(name, address, phone, email, employeeSkills, employeeEducation, age, position);
                             }
-                            else { Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            else {
+                                //Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                showCustomToast(getString(R.string.error)+" : "+ task.getException().getMessage(), Toast.LENGTH_LONG);
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            showCustomToast(e.getMessage(), Toast.LENGTH_LONG);
                         }
                     });
         } else {
@@ -580,7 +600,8 @@ public class ManualForm extends Fragment {
         String uploadId = mDatabaseRef.push().getKey();
         mDatabaseRef.child(uploadId).setValue(upload);
         //mDatabaseRef.push().setValue(upload);
-        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+        showSuccessCustomToast(getString(R.string.upload_success),Toast.LENGTH_LONG);
+        //Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
         startActivity(intent);
     }
@@ -621,7 +642,8 @@ public class ManualForm extends Fragment {
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 
             ContentValues values = new ContentValues();
-            Toast.makeText(getActivity(), "Say cheese!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Say cheese!", Toast.LENGTH_SHORT).show();
+            showCustomToast(getString(R.string.say_cheese),Toast.LENGTH_LONG);
             values.put(MediaStore.Images.Media.TITLE, "NewPic");
             values.put(MediaStore.Images.Media.DESCRIPTION, "Image to Text");
             imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -653,7 +675,8 @@ public class ManualForm extends Fragment {
                     if (cameraAccepted && writeStorageAccepted) {
                         dispatchTakePictureIntent();
                     } else {
-                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.permission_denied),Toast.LENGTH_LONG);
                     }
                 }
                 break;
@@ -665,7 +688,8 @@ public class ManualForm extends Fragment {
                     if (writeStorageAccepted) {
                         pickGallery();
                     } else {
-                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.permission_denied),Toast.LENGTH_LONG);
                     }
                 }
                 break;
@@ -703,19 +727,55 @@ public class ManualForm extends Fragment {
                     } else {
                         resumeUri = resultUri;
                         binding.textViewManualUploadResumeMsg.setVisibility(TextView.VISIBLE);
-                        Toast.makeText(getActivity(), getString(R.string.upload_success), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), getString(R.string.upload_success), Toast.LENGTH_SHORT).show();
+                        showSuccessCustomToast(getString(R.string.upload_success), Toast.LENGTH_SHORT);
                     }
                     //Log.d("Image", "" + profileUri);
                     break;
 
                 case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:
-                    Toast.makeText(getActivity(), "Error getting crop image", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.error_crop),Toast.LENGTH_LONG);
+                    //Toast.makeText(getActivity(), "Error getting crop image", Toast.LENGTH_SHORT).show();
                     break;
 
                 default:
-                    Toast.makeText(getActivity(), "Error getting result", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.error_getting_response),Toast.LENGTH_LONG);
+                    //Toast.makeText(getActivity(), "Error getting result", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, getActivity().findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+
+    private void showSuccessCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_success, getActivity().findViewById(R.id.custom_toast_container_success));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
     }
 
 }

@@ -14,18 +14,18 @@
         android:id="@+id/imageViewNavHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/delete" />
+        app:srcCompat="@drawable/bolt_msg" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your name here"
+        android:text="TEE YU JUNE"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="email@gmail.com"/>
+        android:text="yujune@gmail.com"/>
 
 
 </LinearLayout>

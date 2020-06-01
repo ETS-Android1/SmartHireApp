@@ -12,5 +12,8 @@
     <color name="grey">#F0F0F0</color>
     <color name="light_grey">#FCFCFC</color>
     <color name="yellow">#FFD700</color>
+    <color name="tomato">#FF6347</color>
+    <color name="coral">#FF7F50</color>
+    <color name="light_salmon">#FFA07A</color>
 
 </resources>

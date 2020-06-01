@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/custom_toast_container"
+    android:id="@+id/custom_toast_container_success"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="15dp"
     android:gravity="center"
     android:background="@drawable/background_extracted_text"
-    android:backgroundTint="@color/darkSlateGrey"
+    android:backgroundTint="@color/green"
     android:elevation="5dp">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/bolt_msg"
-        android:backgroundTint="@color/white"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/fab_done"
         android:paddingLeft="10dp"/>
 
     <TextView android:id="@+id/text"

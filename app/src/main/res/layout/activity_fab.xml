@@ -30,8 +30,8 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="160dp"
-        app:backgroundTint="#2196F3"
         android:visibility="invisible"
+        app:backgroundTint="#2196F3"
         app:srcCompat="@drawable/fab_camera" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -42,9 +42,27 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="230dp"
+        android:visibility="invisible"
         app:backgroundTint="#2196F3"
-        android:visibility="visible"
         app:srcCompat="@drawable/resume_fab" />
+
+    <TextView
+        android:id="@+id/textViewPDF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginBottom="240dp"
+        android:background="#00BBAFAF"
+        android:elevation="16dp"
+        android:gravity="center"
+        android:text="PDF"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/textViewGallery"
@@ -79,8 +97,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="70dp"
-        android:layout_marginRight="70dp"
+        android:layout_marginEnd="65dp"
+        android:layout_marginRight="65dp"
         android:layout_marginBottom="170dp"
         android:background="#00BBAFAF"
         android:elevation="16dp"

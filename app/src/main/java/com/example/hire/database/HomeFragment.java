@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -81,6 +82,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         return view;
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)  {
         super.onViewCreated(view, savedInstanceState);
@@ -146,14 +148,15 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    showCustomToast(databaseError.getMessage(), Toast.LENGTH_LONG);
                     //progressCircle.setVisibility(View.INVISIBLE);
 
                 }
             });
         }else{
-            Toast.makeText(getActivity(),"No Internet",Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity(),"No Internet",Toast.LENGTH_LONG).show();
+            showCustomToast(getString(R.string.no_internet),Toast.LENGTH_LONG);
         }
 
         binding.fabAddEmployee.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +172,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 alertDialog.setCanceledOnTouchOutside(true);
                 alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialogAIButton.setOnClickListener(v1 -> {
-                    Toast.makeText(getActivity(),"A.I. Recruit",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(),"A.I. Recruit",Toast.LENGTH_LONG).show();
+                    showCustomToast(getString(R.string.ai_recruit),Toast.LENGTH_LONG);
                     Intent intent = new Intent(getActivity(), StartExtractActivity.class);
                     startActivity(intent);
                     alertDialog.dismiss();
@@ -177,7 +181,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
                 dialogManualButton.setOnClickListener(v12 -> {
                     navController.navigate(R.id.action_homeFragment_to_manualForm);
-                    Toast.makeText(getActivity(),"Manually Recruit",Toast.LENGTH_LONG).show();
+                    showCustomToast(getString(R.string.manual),Toast.LENGTH_LONG);
+                    //Toast.makeText(getActivity(),"Manually Recruit",Toast.LENGTH_LONG).show();
                     alertDialog.dismiss();
                 });
                 alertDialog.show();
@@ -207,6 +212,7 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
 
     }
 
+
     public void setUpEmployeeRecyclerView(){
 
         binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
@@ -223,7 +229,6 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeToDeleteCallback(myAdapter));
 
         //itemTouchHelper.attachToRecyclerView(binding.include.recyclerView);
-
 
     }
 
@@ -387,12 +392,47 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
         }, 200);
 
         //binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
-        Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_SHORT).show();
+        showCustomToast(getString(R.string.deleting),Toast.LENGTH_LONG);
 
         Employee selectedItem = employees.get(position);
         final String selectedKey = selectedItem.getKey();
-        if(selectedItem.getmImageUrl().equals("noProfile")||selectedItem.getResumeImageUrl().equals("noResume")){
-            mDatabaseRef.child(selectedKey).removeValue();
+        if(selectedItem.getmImageUrl().equals("noProfile")&&selectedItem.getResumeImageUrl().equals("noResume")){
+            mDatabaseRef.child(selectedKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    showSuccessCustomToast(selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(),selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT).show();
+                    binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
+                }
+            });
+        }
+        else if(selectedItem.getmImageUrl().equals("noProfile")&&!(selectedItem.getResumeImageUrl().equals("noResume"))){
+
+            StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
+            imageResumeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mDatabaseRef.child(selectedKey).removeValue();
+                    showSuccessCustomToast(selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(),selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT).show();
+                    binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
+                }
+            });
+
+        }else if(!(selectedItem.getmImageUrl().equals("noProfile"))&&selectedItem.getResumeImageUrl().equals("noResume")){
+
+            StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mDatabaseRef.child(selectedKey).removeValue();
+                    showSuccessCustomToast(selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(),selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT).show();
+                    binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
+                }
+            });
+
         }else{
             StorageReference imageRef = mStorage.getReferenceFromUrl(selectedItem.getmImageUrl());
             final StorageReference imageResumeRef = mStorage.getReferenceFromUrl(selectedItem.getResumeImageUrl());
@@ -405,7 +445,8 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                         @Override
                         public void onSuccess(Void aVoid) {
                             mDatabaseRef.child(selectedKey).removeValue();
-                            Toast.makeText(getActivity(),selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT).show();
+                            showSuccessCustomToast(selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT);
+                            //Toast.makeText(getActivity(),selectedItem.getmName() + " " + getString(R.string.deleted),Toast.LENGTH_SHORT).show();
                             binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
                         }
                     });
@@ -537,7 +578,12 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
             public void onClick(DialogInterface dialog, int which) {
                 //saveDeleteAllEmployees();
                 //showSnackBar();
-                deleteAllEmployees();
+                if(myAdapter.getItemCount()==0){
+                    showCustomToast(getString(R.string.no_employee),Toast.LENGTH_LONG);
+                }else{
+                    deleteAllEmployees();
+                }
+
 
             }
         })
@@ -555,10 +601,10 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
     }
 
 
-
     private void deleteAllEmployees(){
 
-        Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_LONG).show();
+        showCustomToast(getString(R.string.deleting),Toast.LENGTH_LONG);
+        //Toast.makeText(getActivity(),getString(R.string.deleting),Toast.LENGTH_LONG).show();
         binding.progressBarRecylerView.setVisibility(ProgressBar.VISIBLE);
 
         for(int i = employees.size()-1;i>=0;i--){
@@ -580,10 +626,11 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                             @Override
                             public void onSuccess(Void aVoid) {
                                 mDatabaseRef.child(selectedKey).removeValue();
-                                Toast.makeText(getActivity(), selectedItem.getmName() + " " + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(), selectedItem.getmName() + " " + getString(R.string.deleted), Toast.LENGTH_SHORT).show();
                                 if(position==0){
                                     binding.progressBarRecylerView.setVisibility(ProgressBar.INVISIBLE);
-                                    Toast.makeText(getActivity(),getString(R.string.all_deleted_sucess),Toast.LENGTH_SHORT).show();
+                                    showSuccessCustomToast(getString(R.string.all_deleted_sucess),Toast.LENGTH_SHORT);
+                                    //Toast.makeText(getActivity(),getString(R.string.all_deleted_sucess),Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -592,11 +639,42 @@ public class HomeFragment extends Fragment implements MyAdapter.OnItemClickListe
                 });
             }
         }
+    }
 
+    private void showCustomToast(String msg, int length){
 
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, getActivity().findViewById(R.id.custom_toast_container));
 
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
 
     }
+
+
+    private void showSuccessCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_success, getActivity().findViewById(R.id.custom_toast_container_success));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+
 
     /*private void saveDeleteAllEmployees(){
         undoEmployees = new ArrayList<>(employees);

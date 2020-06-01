@@ -14,11 +14,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -139,7 +141,8 @@ public class ExtractedEditFragment extends Fragment {
             public void onClick(View v) {
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
                     //mProgressBar.setVisibility(ProgressBar.VISIBLE);
-                    Toast.makeText(getActivity(), "Upload in progress", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Upload in progress", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.uploading),Toast.LENGTH_SHORT);
                 } else {
 
                     if (isNumeric(binding.include.editTextExtractedAge.getText().toString())) {
@@ -181,17 +184,17 @@ public class ExtractedEditFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int option) {
                 if (option == 0) {
-                    Toast.makeText(getActivity(), "Say Cheese", Toast.LENGTH_SHORT).show();
                     if (!checkCameraPermission()) {
                         requestCameraPermission();
                     } else {
                         dispatchTakePictureIntent();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Pick a photo", Toast.LENGTH_SHORT).show();
+
                     if (!checkStoragePermission()) {
                         requestStoragePermission();
                     } else {
+                        showCustomToast(getString(R.string.choose_resume),Toast.LENGTH_SHORT);
                         pickGallery();
                     }
                 }
@@ -216,7 +219,8 @@ public class ExtractedEditFragment extends Fragment {
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 
             ContentValues values = new ContentValues();
-            Toast.makeText(getActivity(), "Say cheese!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Say cheese!", Toast.LENGTH_SHORT).show();
+            showCustomToast(getString(R.string.say_cheese),Toast.LENGTH_SHORT);
             values.put(MediaStore.Images.Media.TITLE, "NewPic");
             values.put(MediaStore.Images.Media.DESCRIPTION, "Image to Text");
             imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -254,7 +258,8 @@ public class ExtractedEditFragment extends Fragment {
                     if (cameraAccepted && writeStorageAccepted) {
                         dispatchTakePictureIntent();
                     } else {
-                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.permission_denied),Toast.LENGTH_SHORT);
                     }
                 }
                 break;
@@ -266,7 +271,8 @@ public class ExtractedEditFragment extends Fragment {
                     if (writeStorageAccepted) {
                         pickGallery();
                     } else {
-                        Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Permission Denied!", Toast.LENGTH_SHORT).show();
+                        showCustomToast(getString(R.string.permission_denied),Toast.LENGTH_SHORT);
                     }
                 }
                 break;
@@ -305,17 +311,20 @@ public class ExtractedEditFragment extends Fragment {
                     break;
 
                 case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:
-                    Toast.makeText(getActivity(), "Error getting crop image", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Error getting crop image", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.error_crop),Toast.LENGTH_LONG);
                     break;
 
                 default:
-                    Toast.makeText(getActivity(), "Error getting result", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Error getting result", Toast.LENGTH_SHORT).show();
+                    showCustomToast(getString(R.string.error_getting_response),Toast.LENGTH_LONG);
             }
         }
     }
 
     private void uploadToDatabase() {
-        Toast.makeText(getActivity(), "Uploading to Database", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Uploading to Database", Toast.LENGTH_SHORT).show();
+        showCustomToast(getString(R.string.uploading_to_database),Toast.LENGTH_SHORT);
         binding.progressBarExtractedEdit.setVisibility(ProgressBar.VISIBLE);
 
         /*String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
@@ -349,14 +358,16 @@ public class ExtractedEditFragment extends Fragment {
                                 photoDownloadUri = task.getResult();
 
                             } else {
-                                Toast.makeText(getActivity(), "Profile photo upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                showCustomToast(getString(R.string.error)+ task.getException().getMessage(),Toast.LENGTH_LONG);
+                                //Toast.makeText(getActivity(), "Profile photo upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            showCustomToast(e.getMessage(), Toast.LENGTH_LONG);
                         }
                     });
         } else {
@@ -397,18 +408,21 @@ public class ExtractedEditFragment extends Fragment {
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);
                                 //mDatabaseRef.push().setValue(upload);
-                                Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_LONG).show();
+                                showSuccessCustomToast(getString(R.string.upload_success),Toast.LENGTH_SHORT);
                                 Intent intent = new Intent(getActivity(), BottomNavigationActivity.class);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                showCustomToast(getString(R.string.error)+task.getException().getMessage(),Toast.LENGTH_LONG);
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            showCustomToast(e.getMessage(), Toast.LENGTH_LONG);
+                            //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
         } else {
@@ -421,5 +435,38 @@ public class ExtractedEditFragment extends Fragment {
         ContentResolver cR = getActivity().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, getActivity().findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+
+    private void showSuccessCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_success, getActivity().findViewById(R.id.custom_toast_container_success));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
     }
 }

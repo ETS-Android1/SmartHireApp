@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hire.database.HomeFragment;
@@ -138,7 +140,8 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
                     edittext.setError(getString(R.string.feedback_error));
                     errorFeedback();
                 }else{
-                    Toast.makeText(BottomNavigationActivity.this,getString(R.string.feedback_success),Toast.LENGTH_SHORT).show();
+                    showSuccessCustomToast(getString(R.string.feedback_success),Toast.LENGTH_SHORT);
+                    //Toast.makeText(BottomNavigationActivity.this,getString(R.string.feedback_success),Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 }
 
@@ -182,6 +185,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        showCustomToast(getString(R.string.logged_out),Toast.LENGTH_SHORT);
                         //logout();
 
                     }
@@ -196,6 +200,38 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
 
         AlertDialog alertDialog = confirmationLogOut.create();
         alertDialog.show();
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+    private void showSuccessCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_success, findViewById(R.id.custom_toast_container_success));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
     }
 
     /*@Override
