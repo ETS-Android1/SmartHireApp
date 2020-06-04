@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import android.telecom.Call;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -199,7 +200,8 @@ public class EmployeeProfileFragment extends Fragment {
     }
 
     private void inflateDialogResume() {
-        Toast.makeText(getActivity(), "Loading resume", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "Loading resume", Toast.LENGTH_SHORT).show();
+        showCustomToast(getString(R.string.loading_resume),Toast.LENGTH_SHORT);
         final ImagePopup imagePopup = new ImagePopup(getActivity());
         //imagePopup.setWindowHeight(800);
         imagePopup.setFullScreen(true);
@@ -238,6 +240,39 @@ public class EmployeeProfileFragment extends Fragment {
         intent.putExtra(Intent.EXTRA_TEXT, "Hi, " + employeeName + ". ");
         intent.setType("text/plain");
         startActivity(intent);
+
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, getActivity().findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
+    }
+
+
+    private void showSuccessCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast_success, getActivity().findViewById(R.id.custom_toast_container_success));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity().getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
 
     }
 

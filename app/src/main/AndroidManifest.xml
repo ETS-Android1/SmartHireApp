@@ -52,7 +52,7 @@
         <activity android:name=".StartExtractActivity" />
         <activity
             android:name=".BottomNavigationActivity"
-            android:label="@string/title_activity_bottom_navigation">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

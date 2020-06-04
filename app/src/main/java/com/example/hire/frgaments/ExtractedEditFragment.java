@@ -194,7 +194,7 @@ public class ExtractedEditFragment extends Fragment {
                     if (!checkStoragePermission()) {
                         requestStoragePermission();
                     } else {
-                        showCustomToast(getString(R.string.choose_resume),Toast.LENGTH_SHORT);
+                        showCustomToast(getString(R.string.pick_photo),Toast.LENGTH_SHORT);
                         pickGallery();
                     }
                 }
@@ -404,6 +404,13 @@ public class ExtractedEditFragment extends Fragment {
 
                                 resumeDownloadUri = task.getResult();
                                 String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date());
+                                extractedName = binding.include.editTextExtractedName.getText().toString();
+                                extractedAddress = binding.include.editTextExtractedAddress.getText().toString();
+                                extractedPhoneNumber = binding.include.editTextExtractedPhone.getText().toString();
+                                extractedEmail = binding.include.editTextExtractedEmail.getText().toString();
+                                extractedSkills = binding.include.editTextSkills.getText().toString();
+                                extractedEducation = binding.include.editTextEducation.getText().toString();
+                                extractedAge = Integer.parseInt(binding.include.editTextExtractedAge.getText().toString());
                                 Employee upload = new Employee(extractedName.trim(), photoDownloadUri.toString(), resumeDownloadUri.toString(), extractedAddress.trim(), extractedPhoneNumber.trim(), extractedEmail.trim(), timeStamp, extractedSkills.trim(), extractedEducation.trim(), extractedAge);
                                 String uploadId = mDatabaseRef.push().getKey();
                                 mDatabaseRef.child(uploadId).setValue(upload);

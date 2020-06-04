@@ -3,7 +3,7 @@
     <string name="title_activity_fab">FabActivity</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_bottom_navigation">BottomNavigationActivity</string>
-    <string name="title_home">Home</string>
+    <string name="title_home" translatable="false">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
@@ -115,10 +115,17 @@
     <string name="upload_resume_first">Please Upload your resume first</string>
     <string name="choose_resume">Choose a resume</string>
     <string name="capture_resume">Capture the resume</string>
+    <string name="face_detected">Face Detected</string>
+    <string name="detecting_face">Detecting Face...</string>
+    <string name="extracting_credentials">Extracting Credentials...</string>
+    <string name="extracted_successfully">Extracted Successfully</string>
+
+
 
     <!-- Profile Fragment -->
     <string name="verified">verified account</string>
     <string name="unverified">click to verify</string>
+    <string name="loading_resume">Loading Resume...</string>
 
     <!-- Saved Employee Fragment -->
     <string name="no_saved_employee">No Saved Employee</string>

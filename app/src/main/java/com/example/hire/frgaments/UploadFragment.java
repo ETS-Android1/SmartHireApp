@@ -559,6 +559,12 @@ public class UploadFragment extends Fragment {
             String newExtractedText = extractedTextFromImage.replaceAll(" \\ ", ".\n ");
             //extractedTextFromImage.substring(0,1000);
             //textViewExtractedText.setText(extractedTextFromImage);
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    showCustomToast(getString(R.string.extracting_credentials),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
+                }
+            });
             postData(newExtractedText);
         }
     }
@@ -590,6 +596,13 @@ public class UploadFragment extends Fragment {
             });
             return true;
         }
+
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                showCustomToast(getString(R.string.detecting_face),Toast.LENGTH_SHORT);
+                //Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Frame frame1 = new Frame.Builder().setBitmap(imageBitmap).build();
         SparseArray<Face> faces = faceDetector.detect(frame1);
@@ -627,10 +640,18 @@ public class UploadFragment extends Fragment {
             croppedBitmap = Bitmap.createBitmap(tempBitmap, (int) x1 - expandWidth, (int) y1 - expandHeight, faceWidth + (2 * expandWidth), faceHeight + (2 * expandHeight));
 
             Log.d("FACE URL", "" + croppedFace);
+
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    showCustomToast(getString(R.string.face_detected),Toast.LENGTH_SHORT);
+                    //Toast.makeText(getActivity(), "No Face Detected", Toast.LENGTH_SHORT).show();
+                }
+            });
             //imageViewResume.setImageBitmap(croppedBitmap);
             //Rect src = new Rect((int) x1, (int) y1, (int) x2, (int) y2);
             //Rect dst = new Rect(0, 0, 200, 200);
             //tempCanvas.drawBitmap(imageBitmap, src, dst, null);
+
         } else {
 
             isFaceCropped = false;
@@ -840,6 +861,8 @@ public class UploadFragment extends Fragment {
                             if(isFaceCropped){
                                 croppedFace = getImageUri(getActivity(), croppedBitmap);
                             }
+
+                            showSuccessCustomToast(getString(R.string.extracted_successfully),Toast.LENGTH_SHORT);
 
                             Bundle bundle = new Bundle();
                             bundle.putString("EXTRACTED_PHONE", employeePhoneNum);

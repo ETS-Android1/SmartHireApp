@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aboutus">关于我们</string>
+    <string name="account">账户</string>
+    <string name="action_settings">账户设置</string>
+    <string name="address">地址</string>
+    <string name="address_content">地址性息</string>
+    <string name="address_empty_error">遗漏了地址</string>
+    <string name="age_empty_error">遗漏了年龄</string>
+    <string name="ai_recruit">人工智能</string>
+    <string name="all_deleted_sucess">全部删除成功</string>
+    <string name="ask_resume">您有简历吗？</string>
+    <string name="beginer">初学者</string>
+    <string name="cancel">取消</string>
+    <string name="capture_resume">请拍您的简历</string>
+    <string name="choose_resume">选一个简历</string>
+    <string name="clearAll">清除全部</string>
+</resources>
