@@ -2,7 +2,7 @@ Requirements: Download CoreNLP from the Stanford CoreNLP official website >> htt
 
 -- Create a custom model and train --
 
-1. Create a text file (E.g. TeeYuJuneTrain.txt) in CoreNLP folder that downloaded previously.
+1. Create a text file (E.g. TeeYuJuneTrain.txt) in CoreNLP folder that downloaded
 
 2. Copy & Paste your text to be trained into the file created
 
@@ -10,7 +10,7 @@ Requirements: Download CoreNLP from the Stanford CoreNLP official website >> htt
 
 4. Copy & Paste the following command line one by one
 
-	4.1. cd desktop\stanford-corenlp-full-2018-10-05
+	4.1. cd desktop\stanford-corenlp-full-2020-04-19
 
 	4.2. java -cp "*" edu.stanford.nlp.process.PTBTokenizer TeeYuJuneTrain.txt > TeeYuJuneTrain.tok
 
@@ -39,6 +39,6 @@ Requirements: Download CoreNLP from the Stanford CoreNLP official website >> htt
 
 1. Open Command Prompt 
 
-2. Copy & Paste this command line >> java -mx4g -cp desktop/stanford-corenlp-full-2018-10-05/"*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 30000
+2. Copy & Paste this command line >> java -mx4g -cp desktop/stanford-corenlp-full-2020-04-19/"*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 30000
 
 
