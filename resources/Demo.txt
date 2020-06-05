@@ -1,0 +1,44 @@
+Requirements: Download CoreNLP from the Stanford CoreNLP official website >> https://stanfordnlp.github.io/CoreNLP/
+
+-- Create a custom model and train --
+
+1. Create a text file (E.g. TeeYuJuneTrain.txt) in CoreNLP folder that downloaded previously.
+
+2. Copy & Paste your text to be trained into the file created
+
+3. Open Command Prompt 
+
+4. Copy & Paste the following command line one by one
+
+	4.1. cd desktop\stanford-corenlp-full-2018-10-05
+
+	4.2. java -cp "*" edu.stanford.nlp.process.PTBTokenizer TeeYuJuneTrain.txt > TeeYuJuneTrain.tok
+
+	4.3. perl -ne "chomp; print qq{$_\tO\n}" TeeYuJuneTrain.tok > TeeYuJuneTrain.tsv
+
+5. Open your tsv file and label it
+
+6. Create properties file named ner_prop
+
+7. Copy and Paste the properties to the ner_prop as shown in >> https://github.com/yujune/Hire/blob/master/resources/Example%20Properties.txt
+
+8. Change train_tsv.tsv to TeeYuJuneTrain.tsv in the ner_prop properties file
+
+9. If you have multiple train files, just change the trainFile to trainFileList and include all your train files inside.
+   E.g. trainFileList = TeeYuJuneTrain.tsv, TanAhKauTrain.tsv, TanAhMiaoTrain.ts=sv
+
+10. Copy & Paste the command line >> java -cp "*" edu.stanford.nlp.ie.crf.CRFClassifier -prop ner_prop
+
+11. Copy & Paste the command line >> java -cp "*" edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ner-model.ser.gz
+
+12. Done !!!
+
+
+
+-- Start the server --
+
+1. Open Command Prompt 
+
+2. Copy & Paste this command line >> java -mx4g -cp desktop/stanford-corenlp-full-2018-10-05/"*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -timeout 30000
+
+
