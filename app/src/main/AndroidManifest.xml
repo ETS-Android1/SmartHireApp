@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hire">
+    package="com.example.smarthire">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -43,17 +43,17 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ContactUsActivity"
+            android:name="com.example.smarthire.ContactUsActivity"
             android:label="@string/title_activity_contact_us"
-            android:parentActivityName=".BottomNavigationActivity"></activity>
+            android:parentActivityName="com.example.smarthire.BottomNavigationActivity"></activity>
         <activity
-            android:name=".AboutUs"
-            android:parentActivityName=".BottomNavigationActivity"></activity>
-        <activity android:name=".Register" />
-        <activity android:name=".BottomNavigationActivity" />
-        <activity android:name=".StartExtractActivity" />
+            android:name="com.example.smarthire.AboutUs"
+            android:parentActivityName="com.example.smarthire.BottomNavigationActivity"></activity>
+        <activity android:name="com.example.smarthire.Register" />
+        <activity android:name="com.example.smarthire.BottomNavigationActivity" />
+        <activity android:name="com.example.smarthire.StartExtractActivity" />
         <activity
-            android:name=".Login"
+            android:name="com.example.smarthire.Login"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -61,7 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TestFireBase" />
+        <activity android:name="com.example.smarthire.TestFireBase" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

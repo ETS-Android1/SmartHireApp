@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.hire.database.HomeFragment"
+        android:name="com.example.smarthire.database.HomeFragment"
         android:label="fragment_blank"
         tools:layout="@layout/activity_fab_for_employee_list">
         <action
@@ -23,14 +23,14 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.hire.frgaments.EmployerProfileFragment"
+        android:name="com.example.smarthire.frgaments.EmployerProfileFragment"
         android:label="activity_fab_for_extacted"
         tools:layout="@layout/fragment_profile">
     </fragment>
 
     <fragment
         android:id="@+id/savedEmployeeFragment"
-        android:name="com.example.hire.recyclerViewSavedEmployee.SavedEmployeeFragment"
+        android:name="com.example.smarthire.recyclerViewSavedEmployee.SavedEmployeeFragment"
         android:label="fragment_saved_employee"
         tools:layout="@layout/fragment_saved_employee">
         <action
@@ -44,14 +44,14 @@
 
     <fragment
         android:id="@+id/employeeProfile"
-        android:name="com.example.hire.frgaments.EmployeeProfileFragment"
+        android:name="com.example.smarthire.frgaments.EmployeeProfileFragment"
         android:label="fragment_blank"
         tools:layout="@layout/activity_employee_profile" >
     </fragment>
 
     <fragment
         android:id="@+id/manualForm"
-        android:name="com.example.hire.frgaments.ManualForm"
+        android:name="com.example.smarthire.frgaments.ManualForm"
         android:label="fragment_blank"
         tools:layout="@layout/fragment_manual_form" >
         <action
