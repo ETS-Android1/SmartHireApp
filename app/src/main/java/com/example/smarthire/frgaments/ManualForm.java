@@ -321,6 +321,7 @@ public class ManualForm extends Fragment {
         educationAdapter.notifyDataSetChanged();
         binding.checkBoxManualTerms.setChecked(isCheckBoxChecked);
         if (undoProfileUri != null) {
+            profileUri = undoProfileUri;
             binding.imageViewManualProfile.setImageURI(undoProfileUri);
         }
 
