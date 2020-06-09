@@ -58,6 +58,11 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
         binding.navView.setNavigationItemSelectedListener(this);  // if use this, the no need put eg: new View.OnClickListener, but have to implements its class
 
 
+
+
+
+
+
         //binding.bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         //I added this if statement to keep the selected fragment when rotating the device
@@ -82,7 +87,8 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
                 break;
 
             case R.id.go_to_profile:
-                navController.navigate(R.id.profileFragment);
+                Bundle bundle = getIntent().getExtras();
+                navController.navigate(R.id.profileFragment,bundle);
                 break;
 
             case R.id.about_us:

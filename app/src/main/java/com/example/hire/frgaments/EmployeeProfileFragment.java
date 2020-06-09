@@ -3,6 +3,7 @@ package com.example.hire.frgaments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -38,12 +39,14 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class EmployeeProfileFragment extends Fragment {
 
     private static final String ARG_KITTEN_NUMBER = "argKittenNumber";
+
 
     public static EmployeeProfileFragment newInstance(int kittenNumber) {
         Bundle args = new Bundle();
