@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ceylonlabs.imageviewpopup.ImagePopup;
 import com.example.smarthire.R;
+import com.example.smarthire.Step1Activity;
 import com.example.smarthire.databinding.ActivityEmployeeProfileBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -178,21 +179,37 @@ public class EmployeeProfileFragment extends Fragment {
 
     private void verifyEmployee(){
 
-        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dataSnapshot.getRef().child(selectedKey).child("verify").setValue("verified");
-            }
+//        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                dataSnapshot.getRef().child(selectedKey).child("verify").setValue("verified");
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                Log.d("User", databaseError.getMessage());
+//            }
+//        });
+//
+//        binding.buttonProfileVerify.setText(getString(R.string.verified));
+//        binding.buttonProfileVerify.setClickable(false);
+//        binding.imageViewVerified.setVisibility(ImageView.VISIBLE);
+        Intent intent = new Intent(getContext(), Step1Activity.class);
+        if (employeeProfilePhoto.equals("noProfile")){
+            intent.putExtra("employeeFace","N/A");
+        } else {
+            intent.putExtra("employeeFace",employeeProfilePhoto);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("User", databaseError.getMessage());
-            }
-        });
+        }
+        if (employeeResume==" "){
+            intent.putExtra("employeeResume","N/A");
+        } else {
+            intent.putExtra("employeeResume",employeeResume);
 
-        binding.buttonProfileVerify.setText(getString(R.string.verified));
-        binding.buttonProfileVerify.setClickable(false);
-        binding.imageViewVerified.setVisibility(ImageView.VISIBLE);
+        }
+
+        startActivity(intent);
+
     }
 
     private void inflateDialogResume() {

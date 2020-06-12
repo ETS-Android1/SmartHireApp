@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.smarthire"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -97,6 +97,12 @@ dependencies {
 
     //pdf viewwer
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+
+    //Azure Face API
+    implementation 'com.microsoft.projectoxford:face:1.4.3'
+
+    implementation 'com.github.eddydn:EDMTDevCognitiveFace:1.7'
+    implementation 'com.github.d-max:spots-dialog:1.1@aar'
 
 }
 

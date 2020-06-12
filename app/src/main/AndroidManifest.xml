@@ -52,6 +52,9 @@
         <activity android:name="com.example.smarthire.Register" />
         <activity android:name="com.example.smarthire.BottomNavigationActivity" />
         <activity android:name="com.example.smarthire.StartExtractActivity" />
+        <activity android:name="com.example.smarthire.Step1Activity" />
+        <activity android:name="com.example.smarthire.Step2Activity" />
+        <activity android:name="com.example.smarthire.Step3Activity" />
         <activity
             android:name="com.example.smarthire.Login"
             android:label="@string/app_name">
