@@ -24,10 +24,11 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.acitivity_register);
 
 
-        final EditText txtUsername,txtPassword;
+        final EditText txtUsername,txtPassword,txtFullName;
         txtUsername = (EditText) findViewById(R.id.editText_username);
+        txtFullName = (EditText) findViewById(R.id.editText_fullName);
         txtPassword = (EditText) findViewById(R.id.editText_password);
-        btnConfirm = (Button) findViewById(R.id.button_confirmRegister);
+        btnConfirm = (Button) findViewById(R.id.button_next);
 
         user = new User();
 
@@ -36,16 +37,17 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String userId = txtUsername.getText().toString();
+                String userFullName = txtFullName.getText().toString();
                 String passw =  txtPassword.getText().toString();
-                user.setUserId(userId);
-                user.setPassword(passw);
-                user.setName("Tester");
-                user.setContact("0161234567");
-                user.setEmail("test@testmail.com");
-                user.setFaceImage("@testURL");
-                reff.push().setValue(user);
-                Toast.makeText(Register.this,"Successfully registered!",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
+//                user.setUserId(userId);
+//                user.setPassword(passw);
+//                user.setName("Tester");
+//                reff.push().setValue(user);
+//                Toast.makeText(Register.this,"Successfully registered!",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), Register2.class);
+                intent.putExtra("Register_UserId",userId);
+                intent.putExtra("Register_Name",userFullName);
+                intent.putExtra("Register_Password",passw);
                 startActivity(intent);
 
             }

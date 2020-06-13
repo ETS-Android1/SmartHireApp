@@ -50,6 +50,9 @@
             android:name="com.example.smarthire.AboutUs"
             android:parentActivityName="com.example.smarthire.BottomNavigationActivity"></activity>
         <activity android:name="com.example.smarthire.Register" />
+        <activity android:name="com.example.smarthire.Register2" />
+        <activity android:name="com.example.smarthire.Register3" />
+        <activity android:name="com.example.smarthire.Register4" />
         <activity android:name="com.example.smarthire.BottomNavigationActivity" />
         <activity android:name="com.example.smarthire.StartExtractActivity" />
         <activity android:name="com.example.smarthire.Step1Activity" />
