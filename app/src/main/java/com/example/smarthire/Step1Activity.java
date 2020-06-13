@@ -261,6 +261,7 @@ public class Step1Activity extends AppCompatActivity {
                 if (bool_image == true) {
                     Bundle extras = getIntent().getExtras();
                     String data = extras.getString("employeeResume");
+                    String key = extras.getString("employeeKey");
 
 
                     Intent intent = new Intent(getApplicationContext(), Step2Activity.class);
@@ -277,6 +278,7 @@ public class Step1Activity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),ex.toString(),Toast.LENGTH_LONG).show();
                     }
                     intent.putExtra("employeeResume",data);
+                    intent.putExtra("employeeKey",key);
                     startActivity(intent);
 
 

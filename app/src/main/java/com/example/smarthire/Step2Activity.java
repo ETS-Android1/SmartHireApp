@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,6 +25,11 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -280,6 +286,22 @@ public class Step2Activity extends AppCompatActivity {
 
             if (result != null) {
                 if (result.isIdentical){
+
+                    Bundle extras = getIntent().getExtras();
+                    String key = extras.getString("employeeKey");
+                    DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+                    mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            dataSnapshot.getRef().child(key).child("verify").setValue("verified");
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.d("User", databaseError.getMessage());
+                        }
+                    });
+
                     Intent intent = new Intent(getApplicationContext(), Step3Activity.class);
                     startActivity(intent);
                 } else {

@@ -192,23 +192,31 @@ public class EmployeeProfileFragment extends Fragment {
 //        });
 //
 //        binding.buttonProfileVerify.setText(getString(R.string.verified));
-//        binding.buttonProfileVerify.setClickable(false);
+
 //        binding.imageViewVerified.setVisibility(ImageView.VISIBLE);
-        Intent intent = new Intent(getContext(), Step1Activity.class);
-        if (employeeProfilePhoto.equals("noProfile")){
-            intent.putExtra("employeeFace","N/A");
-        } else {
-            intent.putExtra("employeeFace",employeeProfilePhoto);
+
+        if(!verify.equals("verified")){
+
+            Intent intent = new Intent(getContext(), Step1Activity.class);
+            if (employeeProfilePhoto.equals("noProfile")){
+                intent.putExtra("employeeFace","N/A");
+            } else {
+                intent.putExtra("employeeFace",employeeProfilePhoto);
+
+            }
+            if (employeeResume==" "){
+                intent.putExtra("employeeResume","N/A");
+            } else {
+                intent.putExtra("employeeResume",employeeResume);
+
+            }
+            intent.putExtra("employeeKey",selectedKey);
+
+            startActivity(intent);
 
         }
-        if (employeeResume==" "){
-            intent.putExtra("employeeResume","N/A");
-        } else {
-            intent.putExtra("employeeResume",employeeResume);
 
-        }
 
-        startActivity(intent);
 
     }
 
