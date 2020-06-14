@@ -123,7 +123,7 @@ public class EmployerProfileFragment extends Fragment {
                         }
                     }
                 } catch (Exception e) {
-                    Toast.makeText(getContext(),e.toString(),Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(),e.toString(),Toast.LENGTH_LONG).show();
                 }
             }
 
