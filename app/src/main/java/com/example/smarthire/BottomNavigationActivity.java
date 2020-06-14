@@ -48,6 +48,9 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
+       sharedPref.getString("USER_ID","");
+
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bottomNav,navController);
 
@@ -55,8 +58,8 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
         View header= navigationView.getHeaderView(0);
         TextView textViewHeaderName = header.findViewById(R.id.textView_headerName);
         TextView textViewHeaderEmail = header.findViewById(R.id.textView_headerEmail);
-        textViewHeaderName.setText("POH CHONG SIEN");
-        textViewHeaderEmail.setText("cs@gmail.com");
+        textViewHeaderName.setText(sharedPref.getString("USER_NAME",""));
+        textViewHeaderEmail.setText(sharedPref.getString("USER_EMAIL",""));
 
         binding.navView.setNavigationItemSelectedListener(this);  // if use this, the no need put eg: new View.OnClickListener, but have to implements its class
 

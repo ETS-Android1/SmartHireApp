@@ -93,6 +93,8 @@ public class Login extends AppCompatActivity {
                                 SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putString("USER_ID",ds.child("userId").getValue().toString());
+                                editor.putString("USER_NAME",ds.child("name").getValue().toString());
+                                editor.putString("USER_EMAIL",ds.child("email").getValue().toString());
                                 editor.commit();
 
 
