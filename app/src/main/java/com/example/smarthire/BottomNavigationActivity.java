@@ -25,6 +25,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import org.w3c.dom.Text;
+
 public class BottomNavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActivityBottomNavigationBinding binding;
@@ -48,6 +50,13 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
 
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(binding.bottomNav,navController);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View header= navigationView.getHeaderView(0);
+        TextView textViewHeaderName = header.findViewById(R.id.textView_headerName);
+        TextView textViewHeaderEmail = header.findViewById(R.id.textView_headerEmail);
+        textViewHeaderName.setText("POH CHONG SIEN");
+        textViewHeaderEmail.setText("cs@gmail.com");
 
         binding.navView.setNavigationItemSelectedListener(this);  // if use this, the no need put eg: new View.OnClickListener, but have to implements its class
 
