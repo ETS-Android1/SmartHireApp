@@ -1,7 +1,9 @@
 package com.example.smarthire;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -183,8 +185,15 @@ public class BottomNavigationActivity extends AppCompatActivity implements Navig
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        SharedPreferences sharedPref = getSharedPreferences("PREF", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("USER_ID","LOGGED_OUT");
+                        editor.commit();
+
                         showCustomToast(getString(R.string.logged_out),Toast.LENGTH_SHORT);
-                        //logout();
+
+                        Intent intent = new Intent(getApplicationContext(), Login.class);
+                        startActivity(intent);
 
                     }
                 })

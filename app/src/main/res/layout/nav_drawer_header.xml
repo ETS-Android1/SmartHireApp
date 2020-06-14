@@ -17,6 +17,7 @@
         app:srcCompat="@drawable/bolt_msg" />
 
     <TextView
+        android:id="@+id/textView_headerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TEE YU JUNE"

@@ -39,6 +39,8 @@ public class Login extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     private int loginStatus=0;
 
+    User user;
+
 
 
     @Override
@@ -48,6 +50,15 @@ public class Login extends AppCompatActivity {
         View v = binding.getRoot();
 
         setContentView(v);
+
+        SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
+
+
+        if (sharedPref.getString("USER_ID","") != null && !sharedPref.getString("USER_ID","").equals("LOGGED_OUT")){
+            Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
+            startActivity(intent);
+        }
+
 
         /*
         btConfirm = findViewById(R.id.button_login);
@@ -154,14 +165,53 @@ public class Login extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
-            SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("USER_ID",account.getDisplayName());
-            editor.commit();
+            reff = FirebaseDatabase.getInstance().getReference().child("User");
+            reff.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Boolean gmailFound = false;
+                    for (DataSnapshot ds: dataSnapshot.getChildren()){
+                        //Toast.makeText(Main4Activity.this,ds.child("userId").getValue().toString(),Toast.LENGTH_LONG).show();
+                        if (account.getEmail().equals(ds.child("userId").getValue().toString())){
+                            gmailFound = true;
+                            SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString("USER_ID",ds.child("userId").getValue().toString());
+                            editor.commit();
 
-            Toast.makeText(Login.this,"Welcome" + account.getDisplayName(), Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(Login.this, BottomNavigationActivity.class);
-            startActivity(intent);
+
+                            Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                    if (!gmailFound){
+                        user = new User();
+                        user.setUserId(account.getEmail());
+                        user.setName(account.getDisplayName());
+                        Intent intent = new Intent(getApplicationContext(), Register2B.class);
+                        intent.putExtra("Register_UserId",account.getEmail());
+                        intent.putExtra("Register_UserName",account.getDisplayName());
+                        intent.putExtra("Register_Password","N/A");
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+//            SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPref.edit();
+//            editor.putString("USER_ID",account.getEmail());
+//            editor.commit();
+//
+//            Toast.makeText(Login.this,"Welcome" + account.getDisplayName(), Toast.LENGTH_LONG).show();
+//            Intent intent = new Intent(Login.this, BottomNavigationActivity.class);
+//            startActivity(intent);
 
 
         } catch (ApiException e) {
