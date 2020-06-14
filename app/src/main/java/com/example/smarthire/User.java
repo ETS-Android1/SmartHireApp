@@ -7,6 +7,51 @@ public class User {
     private String faceImage;
     private String contact;
     private String email;
+    private String address;
+    private String position;
+    private String birthDay;
+    private String birthMonth;
+    private String birthYear;
+
+    public String getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public String getBirthMonth() {
+        return birthMonth;
+    }
+
+    public void setBirthMonth(String birthMonth) {
+        this.birthMonth = birthMonth;
+    }
+
+    public String getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(String birthYear) {
+        this.birthYear = birthYear;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
     public User() {
     }

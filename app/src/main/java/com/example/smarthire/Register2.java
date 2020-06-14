@@ -46,7 +46,7 @@ public class Register2 extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplicationContext(), Register3.class);
                 intent.putExtra("Register_UserId",userId);
-                intent.putExtra("Register_Name",userFullName);
+                intent.putExtra("Register_UserName",userFullName);
                 intent.putExtra("Register_Password",passw);
                 intent.putExtra("Register_position",userPosition);
                 intent.putExtra("Register_contact",userPhoneNumber);

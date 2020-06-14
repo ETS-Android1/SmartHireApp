@@ -20,7 +20,7 @@ import java.util.Calendar;
 public class Register3 extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     DatabaseReference reff;
     User user;
-    String storeYear,storeMonth,storeDay;
+    String storeYear = "",storeMonth = "",storeDay = "";
 
 
     @Override
@@ -54,12 +54,15 @@ public class Register3 extends AppCompatActivity implements DatePickerDialog.OnD
 
                 Intent intent = new Intent(getApplicationContext(), Register4.class);
                 intent.putExtra("Register_UserId",userId);
-                intent.putExtra("Register_Name",userFullName);
+                intent.putExtra("Register_UserName",userFullName);
                 intent.putExtra("Register_Password",passw);
                 intent.putExtra("Register_position",userPosition);
                 intent.putExtra("Register_contact",userPhoneNumber);
                 intent.putExtra("Register_email",userEmail);
                 intent.putExtra("Register_address",userAddress);
+                intent.putExtra("Register_birthDay",storeDay);
+                intent.putExtra("Register_birthMonth",storeMonth);
+                intent.putExtra("Register_birthYear",storeYear);
                 startActivity(intent);
 
             }
@@ -81,7 +84,6 @@ public class Register3 extends AppCompatActivity implements DatePickerDialog.OnD
         storeYear=year+ "";
         storeMonth=month+ "";
         storeDay=dayOfMonth+ "";
-        Toast.makeText(getApplicationContext(),storeYear,Toast.LENGTH_LONG).show();
 
     }
 }

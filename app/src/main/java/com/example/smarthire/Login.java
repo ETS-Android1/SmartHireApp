@@ -86,11 +86,6 @@ public class Login extends AppCompatActivity {
 
 
                                 Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
-                                intent.putExtra("USER_ID",ds.child("userId").getValue().toString());
-                                intent.putExtra("USER_NAME",ds.child("name").getValue().toString());
-                                intent.putExtra("USER_EMAIL",ds.child("email").getValue().toString());
-                                intent.putExtra("USER_CONTACT",ds.child("contact").getValue().toString());
-                                intent.putExtra("LOGIN_STATUS",loginStatus);
                                 startActivity(intent);
                             }
                         }
