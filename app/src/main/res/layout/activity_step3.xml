@@ -5,54 +5,103 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Step3Activity">
-
-    <ImageView
-        android:id="@+id/imageView6B"
+    <TextView
+        android:id="@+id/textView_step3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView9B"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/b1" />
+        android:layout_marginTop="16dp"
+        android:text="step 3"
+        app:layout_constraintEnd_toEndOf="@+id/textViewStep3"
+        app:layout_constraintStart_toStartOf="@+id/textViewStep3"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStep3" />
 
     <ImageView
-        android:id="@+id/imageView7B"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/b2" />
+        android:id="@+id/imageView10"
+        android:layout_width="59dp"
+        android:layout_height="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewStep2"
+        app:layout_constraintStart_toEndOf="@+id/textViewStep2"
+        app:layout_constraintTop_toTopOf="@+id/textViewStep2"
+        app:srcCompat="@drawable/arrow_right" />
 
     <ImageView
-        android:id="@+id/imageView8B"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/b3" />
+        android:id="@+id/imageView9"
+        android:layout_width="59dp"
+        android:layout_height="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewStep2"
+        app:layout_constraintEnd_toStartOf="@+id/textViewStep2"
+        app:layout_constraintTop_toTopOf="@+id/textViewStep2"
+        app:srcCompat="@drawable/arrow_right" />
 
     <TextView
-        android:id="@+id/textView2B"
+        android:id="@+id/textViewStep1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/circle_text_view"
+        android:backgroundTint="@color/green"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="#FFFFFF"
+        android:textColorLink="#E91E63"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textViewStep2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewStep2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/circle_text_view"
+        android:backgroundTint="@color/green"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:text="2"
+        android:textColor="#FFFFFF"
+        android:textColorLink="#E91E63"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewStep3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/circle_text_view"
+        android:backgroundTint="@color/green"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:text="3"
+        android:textColor="#FFFFFF"
+        android:textColorLink="#E91E63"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView10"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="step 1"
-        app:layout_constraintEnd_toEndOf="@+id/imageView6B"
-        app:layout_constraintStart_toStartOf="@+id/imageView6B"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6B" />
+        app:layout_constraintEnd_toEndOf="@+id/textViewStep1"
+        app:layout_constraintStart_toStartOf="@+id/textViewStep1"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStep1" />
 
     <TextView
-        android:id="@+id/textView3B"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="step 2"
-        app:layout_constraintEnd_toStartOf="@+id/imageView10"
-        app:layout_constraintStart_toStartOf="@+id/imageView7B"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7B" />
+        app:layout_constraintEnd_toEndOf="@+id/textViewStep2"
+        app:layout_constraintStart_toStartOf="@+id/textViewStep2"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStep2" />
 
     <TextView
         android:id="@+id/textView_InstructionB"
@@ -66,34 +115,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <TextView
-        android:id="@+id/textView_step3B"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="step 3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView8B"
-        app:layout_constraintStart_toStartOf="@+id/imageView8B"
-        app:layout_constraintTop_toBottomOf="@+id/imageView8B" />
-
-    <ImageView
-        android:id="@+id/imageView9B"
-        android:layout_width="59dp"
-        android:layout_height="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView7B"
-        app:layout_constraintEnd_toStartOf="@+id/imageView7B"
-        app:layout_constraintTop_toTopOf="@+id/imageView7B"
-        app:srcCompat="@drawable/arrow_right" />
-
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="59dp"
-        android:layout_height="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView7B"
-        app:layout_constraintStart_toEndOf="@+id/imageView7B"
-        app:layout_constraintTop_toTopOf="@+id/imageView7B"
-        app:srcCompat="@drawable/arrow_right" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
@@ -101,7 +122,7 @@
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3B"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
         app:srcCompat="@drawable/correct" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
