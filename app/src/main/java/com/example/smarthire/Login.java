@@ -179,10 +179,13 @@ public class Login extends AppCompatActivity {
                             SharedPreferences sharedPref = getSharedPreferences("PREF",Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("USER_ID",ds.child("userId").getValue().toString());
+                            editor.putString("USER_NAME",ds.child("name").getValue().toString());
+                            editor.putString("USER_EMAIL",ds.child("email").getValue().toString());
                             editor.commit();
 
-
+                            mGoogleSignInClient.signOut();
                             Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
+
                             startActivity(intent);
                         }
                     }
@@ -194,6 +197,7 @@ public class Login extends AppCompatActivity {
                         intent.putExtra("Register_UserId",account.getEmail());
                         intent.putExtra("Register_UserName",account.getDisplayName());
                         intent.putExtra("Register_Password","N/A");
+                        mGoogleSignInClient.signOut();
                         startActivity(intent);
                     }
                 }

@@ -28,7 +28,7 @@ public class InitialActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-        }, 2500);   //5 seconds
+        }, 1500);
 
 
 

@@ -204,7 +204,7 @@ public class EmployeeProfileFragment extends Fragment {
                 intent.putExtra("employeeFace",employeeProfilePhoto);
 
             }
-            if (employeeResume==" "){
+            if (employeeResume.equals("noResume")){
                 intent.putExtra("employeeResume","N/A");
             } else {
                 intent.putExtra("employeeResume",employeeResume);
