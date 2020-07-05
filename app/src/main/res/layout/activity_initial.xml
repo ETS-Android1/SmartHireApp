@@ -14,12 +14,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Smart Hire"
-        android:textColor="#2946FF"
+        android:textColor="@color/colorPrimary"
         android:textSize="30sp"
         app:fontFamily="sans-serif-smallcaps"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+    
 
     <ImageView
         android:id="@+id/imageView3"

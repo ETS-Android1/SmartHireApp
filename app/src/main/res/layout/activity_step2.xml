@@ -6,114 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".Step2Activity">
 
-    <TextView
-        android:id="@+id/textView_step3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="step 3"
-        app:layout_constraintEnd_toEndOf="@+id/textViewStep3"
-        app:layout_constraintStart_toStartOf="@+id/textViewStep3"
-        app:layout_constraintTop_toBottomOf="@+id/textViewStep3" />
-
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="59dp"
-        android:layout_height="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewStep2"
-        app:layout_constraintStart_toEndOf="@+id/textViewStep2"
-        app:layout_constraintTop_toTopOf="@+id/textViewStep2"
-        app:srcCompat="@drawable/arrow_right" />
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="59dp"
-        android:layout_height="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewStep2"
-        app:layout_constraintEnd_toStartOf="@+id/textViewStep2"
-        app:layout_constraintTop_toTopOf="@+id/textViewStep2"
-        app:srcCompat="@drawable/arrow_right" />
-
-    <TextView
-        android:id="@+id/textViewStep1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/circle_text_view"
-        android:backgroundTint="@color/green"
-        android:fontFamily="serif"
-        android:gravity="center"
-        android:text="1"
-        android:textColor="#FFFFFF"
-        android:textColorLink="#E91E63"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/textViewStep2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewStep2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/circle_text_view"
-        android:backgroundTint="@color/green"
-        android:fontFamily="serif"
-        android:gravity="center"
-        android:text="2"
-        android:textColor="#FFFFFF"
-        android:textColorLink="#E91E63"
-        android:textSize="18sp"
+    <include
+        android:id="@+id/verified_include2"
+        layout="@layout/step_2_verify"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewStep3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/circle_text_view"
-        android:backgroundTint="@color/slateGrey"
-        android:fontFamily="serif"
-        android:gravity="center"
-        android:text="3"
-        android:textColor="#FFFFFF"
-        android:textColorLink="#E91E63"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/imageView10"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="step 1"
-        app:layout_constraintEnd_toEndOf="@+id/textViewStep1"
-        app:layout_constraintStart_toStartOf="@+id/textViewStep1"
-        app:layout_constraintTop_toBottomOf="@+id/textViewStep1" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="step 2"
-        app:layout_constraintEnd_toEndOf="@+id/textViewStep2"
-        app:layout_constraintStart_toStartOf="@+id/textViewStep2"
-        app:layout_constraintTop_toBottomOf="@+id/textViewStep2" />
-
 
     <Button
         android:id="@+id/button_Confirm2B"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="#E5F2FF"
+        android:layout_marginTop="24dp"
         android:text="Confirm"
-        android:textColor="#0055FF"
-        android:textStyle="bold"
+        android:background="@drawable/background_extracted_text"
+        android:backgroundTint="@color/colorPrimary"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView_PhotoB" />
@@ -122,21 +33,30 @@
         android:id="@+id/textView_InstructionB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="Select a photo of the Resume"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="Take a photo of the employee"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/verified_include2" />
 
     <Button
         android:id="@+id/button_TakePhotoB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:background="@drawable/background_extracted_text"
+        android:backgroundTint="@color/colorPrimary"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:text="Take photo"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_InstructionB" />
 
@@ -146,6 +66,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="From Gallery"
+        android:background="@drawable/background_extracted_text"
+        android:backgroundTint="@color/colorPrimary"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_TakePhotoB" />
@@ -154,9 +80,10 @@
         android:id="@+id/imageView_PhotoB"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintDimensionRatio="h,16:9"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_GalleryB"
         app:srcCompat="@drawable/cardblank" />

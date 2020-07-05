@@ -543,7 +543,7 @@ public class ManualForm extends Fragment {
                     });
         } else {
             photoDownloadUri = Uri.parse("noProfile");
-            //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No profile selected", Toast.LENGTH_SHORT).show();
         }
 
         if (resumeUri != null) {
@@ -590,7 +590,7 @@ public class ManualForm extends Fragment {
         } else {
             resumeDownloadUri = Uri.parse("noResume");
             saveToDatabase(name, address, phone, email, employeeEducation, employeeSkills, age,position);
-            //Toast.makeText(getActivity(), "No file selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "No resume selected", Toast.LENGTH_SHORT).show();
         }
     }
 
