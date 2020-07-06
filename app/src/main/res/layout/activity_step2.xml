@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".Step2Activity">
 
+    <TextView
+        android:id="@+id/textView_ask_change2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:text="Want to change?"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_Confirm2B" />
+
     <include
         android:id="@+id/verified_include2"
         layout="@layout/step_2_verify"
@@ -17,12 +31,12 @@
         android:id="@+id/button_Confirm2B"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Confirm"
+        android:layout_marginTop="16dp"
         android:background="@drawable/background_extracted_text"
         android:backgroundTint="@color/colorPrimary"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
+        android:text="verify"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +50,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="Take a photo of the employee"
+        android:text="Select a photo of the employee"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +61,7 @@
         android:id="@+id/button_TakePhotoB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/background_extracted_text"
         android:backgroundTint="@color/colorPrimary"
         android:paddingLeft="15dp"
@@ -56,20 +70,20 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_InstructionB" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_ask_change2" />
 
     <Button
         android:id="@+id/button_GalleryB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="From Gallery"
         android:background="@drawable/background_extracted_text"
         android:backgroundTint="@color/colorPrimary"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
+        android:text="From Gallery"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,13 +94,13 @@
         android:id="@+id/imageView_PhotoB"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintDimensionRatio="h,16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_GalleryB"
-        app:srcCompat="@drawable/cardblank" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_InstructionB"
+        app:srcCompat="@drawable/faceblank" />
 
     <TextView
         android:id="@+id/textView_error"

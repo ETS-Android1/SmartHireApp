@@ -21,7 +21,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="This is the resume photo to be verified.\n"
+        android:text="Select a photo of the resume."
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -80,11 +80,12 @@
         android:id="@+id/imageView_Photo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintDimensionRatio="h,16:9"
         app:layout_constraintEnd_toEndOf="@+id/textView_Instruction"
         app:layout_constraintStart_toStartOf="@+id/textView_Instruction"
         app:layout_constraintTop_toBottomOf="@+id/textView_Instruction"
-        app:srcCompat="@drawable/faceblank" />
+        app:srcCompat="@drawable/cardblank" />
 
     <Button
         android:id="@+id/button_Confirm"
