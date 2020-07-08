@@ -199,15 +199,15 @@ public class EmployeeProfileFragment extends Fragment {
 
             Intent intent = new Intent(getContext(), Step1Activity.class);
             if (employeeProfilePhoto.equals("noProfile")){
-                intent.putExtra("employeeFace","N/A");
+                intent.putExtra("employeeResume","N/A");
             } else {
-                intent.putExtra("employeeFace",employeeProfilePhoto);
+                intent.putExtra("employeeResume","N/A");
 
             }
             if (employeeResume.equals("noResume")){
-                intent.putExtra("employeeResume","N/A");
+                intent.putExtra("employeeFace","N/A");
             } else {
-                intent.putExtra("employeeResume",employeeResume);
+                intent.putExtra("employeeFace",employeeResume);
 
             }
             intent.putExtra("employeeKey",selectedKey);

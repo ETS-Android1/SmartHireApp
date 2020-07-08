@@ -74,6 +74,8 @@ public class Step2Activity extends AppCompatActivity {
 
     Bitmap bitmap1,bitmap2;
 
+    LoadingDialog dialog = new LoadingDialog(Step2Activity.this);
+
 
 
 
@@ -89,6 +91,7 @@ public class Step2Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             imageUri = data.getData();
             imageUriPass = imageUri;
+            dialog.startLoadingDialog();
             new CheckPhotoTask().execute(imageUri.toString());
             //imageView.setImageURI(imageUri);
             //bool_image = true;
@@ -96,6 +99,7 @@ public class Step2Activity extends AppCompatActivity {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             imageUriPass = imageUri;
+            dialog.startLoadingDialog();
             new CheckPhotoTask().execute(imageUri.toString());
             //imageView.setImageURI(imageUri);
             //bool_image = true;
@@ -242,6 +246,7 @@ public class Step2Activity extends AppCompatActivity {
                 textView_error.setText("unknown error");
                 bool_image = false;
             }
+            dialog.dissmissDialog();
 
         }
 
@@ -301,10 +306,12 @@ public class Step2Activity extends AppCompatActivity {
                             Log.d("User", databaseError.getMessage());
                         }
                     });
+                    dialog.dissmissDialog();
 
                     Intent intent = new Intent(getApplicationContext(), Step3Activity.class);
                     startActivity(intent);
                 } else {
+                    dialog.dissmissDialog();
                     Toast.makeText(getBaseContext(), "Failed!", Toast.LENGTH_SHORT).show();
                     textView_error.setText("The faces are different");
                 }
@@ -480,6 +487,7 @@ public class Step2Activity extends AppCompatActivity {
 
 
                     if (bool_image== true){
+                        dialog.startLoadingDialog();
                         readAllDataEX();
                     } else {
                         Toast.makeText(getApplicationContext(),"Please upload your image",Toast.LENGTH_LONG).show();

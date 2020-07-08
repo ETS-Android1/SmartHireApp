@@ -39,6 +39,8 @@ public class Login extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     private int loginStatus=0;
 
+    LoadingDialog dialog = new LoadingDialog(Login.this);
+
     User user;
 
 
@@ -79,6 +81,8 @@ public class Login extends AppCompatActivity {
                 //mAuth = FirebaseAuth.getInstance();
                 //userID = mAuth.getCurrentUser().getUid();
 
+                dialog.startLoadingDialog();
+
 
 
                 reff.addValueEventListener(new ValueEventListener() {
@@ -96,6 +100,7 @@ public class Login extends AppCompatActivity {
                                 editor.putString("USER_NAME",ds.child("name").getValue().toString());
                                 editor.putString("USER_EMAIL",ds.child("email").getValue().toString());
                                 editor.commit();
+                                dialog.dissmissDialog();
 
 
                                 Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
@@ -103,6 +108,7 @@ public class Login extends AppCompatActivity {
                             }
                         }
                         if (loginStatus!=1){
+                            dialog.dissmissDialog();
                             Toast.makeText(Login.this,"Login Failed: Invalid username or password",Toast.LENGTH_LONG).show();
                         }
                     }
@@ -166,6 +172,8 @@ public class Login extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
+            dialog.startLoadingDialog();
+
             // Signed in successfully, show authenticated UI.
             reff = FirebaseDatabase.getInstance().getReference().child("User");
             reff.addValueEventListener(new ValueEventListener() {
@@ -183,6 +191,8 @@ public class Login extends AppCompatActivity {
                             editor.putString("USER_EMAIL",ds.child("email").getValue().toString());
                             editor.commit();
 
+                            dialog.dissmissDialog();
+
                             mGoogleSignInClient.signOut();
                             Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
 
@@ -197,6 +207,9 @@ public class Login extends AppCompatActivity {
                         intent.putExtra("Register_UserId",account.getEmail());
                         intent.putExtra("Register_UserName",account.getDisplayName());
                         intent.putExtra("Register_Password","N/A");
+
+                        dialog.dissmissDialog();
+
                         mGoogleSignInClient.signOut();
                         startActivity(intent);
                     }
@@ -204,6 +217,7 @@ public class Login extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    dialog.dissmissDialog();
 
                 }
             });
@@ -223,6 +237,7 @@ public class Login extends AppCompatActivity {
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            dialog.dissmissDialog();
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(Login.this,"Failed: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
 

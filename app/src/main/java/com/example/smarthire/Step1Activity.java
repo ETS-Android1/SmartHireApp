@@ -71,6 +71,8 @@ public class Step1Activity extends AppCompatActivity {
 
     private FaceServiceClient faceServiceClient = new FaceServiceRestClient(API_LINK, API_KEY);
 
+    LoadingDialog dialog = new LoadingDialog(Step1Activity.this);
+
     class CheckPhotoTaskFirebase extends AsyncTask<Bitmap,String, Integer> {
         @Override
         protected void onPostExecute(Integer integer) {
@@ -85,6 +87,7 @@ public class Step1Activity extends AppCompatActivity {
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
                                 imageView.setImageBitmap(bitmap);
                                 firebaseImage = true;
+                                dialog.dissmissDialog();
 
                             }
                         });
@@ -93,9 +96,11 @@ public class Step1Activity extends AppCompatActivity {
             } else if (integer==2||integer==3||integer==0) {
                 textView_error.setText(errorMessage);
                 bool_image = false;
+                dialog.dissmissDialog();
             } else {
                 textView_error.setText("unknown error");
                 bool_image = false;
+                dialog.dissmissDialog();
             }
 
         }
@@ -153,6 +158,7 @@ public class Step1Activity extends AppCompatActivity {
                 textView_error.setText("unknown error");
                 bool_image = false;
             }
+            dialog.dissmissDialog();
 
         }
 
@@ -205,6 +211,8 @@ public class Step1Activity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView_Photo);
 
 
+        dialog.startLoadingDialog();
+
 
         Bundle bundle = getIntent().getExtras();
         String data = bundle.getString("employeeFace");
@@ -223,6 +231,8 @@ public class Step1Activity extends AppCompatActivity {
 
                         }
                     });
+        } else {
+            dialog.dissmissDialog();
         }
 
 
@@ -305,12 +315,14 @@ public class Step1Activity extends AppCompatActivity {
             imageUri = data.getData();
             imageUriPass = imageUri;
             firebaseImage = false;
+            dialog.startLoadingDialog();
             new CheckPhotoTask().execute(imageUri.toString());
         }
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             imageUriPass = imageUri;
             firebaseImage = false;
+            dialog.startLoadingDialog();
             new CheckPhotoTask().execute(imageUri.toString());
         }
 
