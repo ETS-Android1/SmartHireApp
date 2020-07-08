@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -312,7 +314,8 @@ public class Step2Activity extends AppCompatActivity {
                     startActivity(intent);
                 } else {
                     dialog.dissmissDialog();
-                    Toast.makeText(getBaseContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                    showCustomToast("Failed",Toast.LENGTH_SHORT);
+                    //Toast.makeText(getBaseContext(), "Failed!", Toast.LENGTH_SHORT).show();
                     textView_error.setText("The faces are different");
                 }
             }
@@ -490,10 +493,12 @@ public class Step2Activity extends AppCompatActivity {
                         dialog.startLoadingDialog();
                         readAllDataEX();
                     } else {
-                        Toast.makeText(getApplicationContext(),"Please upload your image",Toast.LENGTH_LONG).show();
+                        showCustomToast("Please upload your image",Toast.LENGTH_LONG);
+                        //Toast.makeText(getApplicationContext(),"Please upload your image",Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
+                    showCustomToast(e.toString(),Toast.LENGTH_LONG);
+                    //Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -554,7 +559,8 @@ public class Step2Activity extends AppCompatActivity {
                 new VerifyTaskFb().execute(params);
             }
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(),""+e,Toast.LENGTH_SHORT).show();
+            showCustomToast(""+e,Toast.LENGTH_SHORT);
+            //Toast.makeText(getApplicationContext(),""+e,Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -601,6 +607,22 @@ public class Step2Activity extends AppCompatActivity {
                 bitmap2 = bitmap;
             }
         });
+    }
+
+    private void showCustomToast(String msg, int length){
+
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_toast, findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.text);
+        text.setText(msg);
+
+        Toast toast = new Toast(Step2Activity.this);
+        toast.setGravity(Gravity.BOTTOM, 0, 120);
+        toast.setDuration(length);
+        toast.setView(layout);
+        toast.show();
+
     }
 
 
