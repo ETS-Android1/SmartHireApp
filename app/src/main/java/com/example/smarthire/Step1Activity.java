@@ -68,7 +68,7 @@ public class Step1Activity extends AppCompatActivity {
     private static final int STORAGE_REQUEST_CODE = 400;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private final String API_KEY="298ac06ff3884863928b35b43e7d07a6";
+    private final String API_KEY="d88466ed30124b38bcc124f250a09c46";
     private final String API_LINK="https://southeastasia.api.cognitive.microsoft.com/face/v1.0/";
 
     private FaceServiceClient faceServiceClient = new FaceServiceRestClient(API_LINK, API_KEY);

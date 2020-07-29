@@ -59,7 +59,7 @@ public class Step2Activity extends AppCompatActivity {
     boolean firebaseImagePre;
     String errorMessage;
 
-    private final String API_KEY="298ac06ff3884863928b35b43e7d07a6";
+    private final String API_KEY="d88466ed30124b38bcc124f250a09c46";
     private final String API_LINK="https://southeastasia.api.cognitive.microsoft.com/face/v1.0/";
 
     private FaceServiceClient faceServiceClient = new FaceServiceRestClient(API_LINK, API_KEY);
