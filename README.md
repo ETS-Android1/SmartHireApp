@@ -17,12 +17,12 @@ The artificial intelligence algorithms used are Optical Characters Optimization 
 
 ## Sample User Interface
 #### Home Page
-![home page](https://github.com/yujune/Hire-Sample-UI/blob/master/Home.JPG)
+![home page](https://github.com/yujune/Hire-Sample-UI/blob/master/home.JPG)
 ### Profile Page
 ![profile page](https://github.com/yujune/Hire-Sample-UI/blob/master/Profile.JPG)
 ### Upload Page
-![upload page](https://github.com/yujune/Hire-Sample-UI/blob/master/A.I..JPG)
+![upload page](https://github.com/yujune/Hire-Sample-UI/blob/master/upload.JPG)
 ### Manual Form Page
-![manual form](https://github.com/yujune/Hire-Sample-UI/blob/master/Manual.JPG)
+![manual form](https://github.com/yujune/Hire-Sample-UI/blob/master/manual.JPG)
 ### Extracted Details Page
 ![extracted details](https://github.com/yujune/Hire-Sample-UI/blob/master/Extracted.png)
