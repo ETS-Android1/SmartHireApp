@@ -18,8 +18,8 @@ The artificial intelligence algorithms used are Optical Characters Optimization 
 ## Sample User Interface
 #### Home Page
 ![home page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/home.jpeg)
-### Profile Page
-![profile page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/Profile.JPG)
+### Contact Page
+![profile page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/contact.jpeg)
 ### Upload Page
 ![upload page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/upload.jpeg)
 ### Manual Form Page
