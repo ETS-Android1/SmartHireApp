@@ -29,3 +29,11 @@ The artificial intelligence algorithms used are Optical Characters Optimization 
 ## Demo
 ### Extract Resume's credentials
 ![extracted details](https://github.com/yujune/SmartHireApp/blob/master/screenshots/demo.gif)
+
+## App's layout structure
+-- HomeFragment controls 
+
+## Description
+- BottomNavigation/activity_bottom_navigation -> navController for homeFragment, ManualForm, profileFragment, saveEmployeeFragment, employeeProfileFragment
+- HomeFragment controls fabAddEmployee from activity_fab_for_employee_list.xml, 
+- activity_fab_for_employee_list.xml contains employee list, fabAddEmployee 
