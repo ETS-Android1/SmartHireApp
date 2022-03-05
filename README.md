@@ -18,22 +18,11 @@ The artificial intelligence algorithms used are Optical Characters Optimization 
 
 ## Sample User Interface
 #### Home Page
-![home page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/home.jpeg)
-### Contact Page
-![profile page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/contact.jpeg)
-### Upload Page
-![upload page](https://github.com/yujune/SmartHireApp/blob/master/screenshots/upload.jpeg)
-### Manual Form Page
-![manual form](https://github.com/yujune/SmartHireApp/blob/master/screenshots/manual.jpeg)
+<img src="https://github.com/yujune/SmartHireApp/blob/master/screenshots/home.jpeg" width="300"/> |
+<img src="https://github.com/yujune/SmartHireApp/blob/master/screenshots/contact.jpeg" width="300"/> 
+<img src="https://github.com/yujune/SmartHireApp/blob/master/screenshots/upload.jpeg" width="300"/>
+<img src="https://github.com/yujune/SmartHireApp/blob/master/screenshots/manual.jpeg" width="300"/>
 
 ## Demo
 ### Extract Resume's credentials
 ![extracted details](https://github.com/yujune/SmartHireApp/blob/master/screenshots/demo.gif)
-
-## App's layout structure
--- HomeFragment controls 
-
-## Description
-- BottomNavigation/activity_bottom_navigation -> navController for homeFragment, ManualForm, profileFragment, saveEmployeeFragment, employeeProfileFragment
-- HomeFragment controls fabAddEmployee from activity_fab_for_employee_list.xml, 
-- activity_fab_for_employee_list.xml contains employee list, fabAddEmployee 
